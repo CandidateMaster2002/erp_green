@@ -1,0 +1,554 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <style>
+        /* Default width for larger screens */
+        #html-content {
+
+            margin: 0;
+            /* Center align */
+        }
+
+        .authorised_signature {
+            margin-top: 5rem;
+            margin-left: 6rem;
+            padding-left: 3rem;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            padding: 3px;
+            text-align: center;
+            /* Center align text */
+        }
+
+        .table-bordered th {
+            background-color: #f8f9fa;
+            border-top: none;
+        }
+
+        .table-of-receipt th,
+        .table-of-receipt td {
+            padding: 0px;
+            /* Adjust padding as needed */
+            padding-left: 1px;
+            padding-right: 1px;
+            text-align: center;
+            /* Center align text */
+            margin: 0;
+            padding-top: -5px;
+            margin-top: -10px;
+
+        }
+
+        .cartitems tr,
+        td {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .frame1 {
+            width: 55rem;
+            height: 39rem;
+            background: #FFF;
+            padding: 15px;
+        }
+
+        .receipt-container {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+
+            position: relative;
+            width: 50.2365rem;
+            flex-shrink: 0;
+            border: 0.2px solid #1E1E1E;
+        }
+
+        .shop-name {
+            position: relative;
+            display: flex;
+            width: 16.20863rem;
+            height: 1.2455rem;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 1.25rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .logo-container {
+            display: flex;
+            width: 7.625rem;
+            height: 3.5rem;
+            gap: 0.13638rem;
+            flex-shrink: 0;
+
+            color: #00ACC1;
+        }
+
+        .shop-info {
+            margin-top: 0.48rem;
+            width: 34.413rem;
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1rem;
+        }
+
+        .shop-info-child1 {
+            display: flex;
+            width: 12.21775rem;
+
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .shop-info-child2 {
+            width: 13.933rem;
+            flex-shrink: 0;
+        }
+
+        .customer-details {
+            width: 11.61225rem;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+        }
+
+        .customer-details p {
+            display: flex;
+            width: 11.61225rem;
+            flex-direction: column;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+            margin-bottom: 0;
+        }
+
+        .receipt-type {
+            display: flex;
+            width: 18.40925rem;
+            height: 1.2455rem;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 2rem;
+            color: #1E1E1E;
+            font-size: 1.15rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .receipt-details {
+            width: 11.61225rem;
+            height: 2.77413rem;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        .receipt-details p {
+            display: flex;
+            width: 11.61225rem;
+            height: 0.78725rem;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            margin-bottom: 0;
+        }
+
+        .cart-table {
+            position: relative;
+            width: 50.2365rem;
+            height: 4.56863rem;
+            border: 0.05rem solid #1E1E1E;
+            left: -1rem;
+            margin-top: 0.75rem;
+        }
+
+        .cart-table thead th {
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            margin: auto;
+
+            border: 0.05rem solid #1E1E1E;
+
+        }
+
+        .cart-table tbody td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-top: none !important;
+            height: 0;
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 0.875rem;
+            text-transform: uppercase;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .footer-gst-distribution {
+            position: relative;
+            left: 3.2rem;
+            width: 19.03875rem;
+            height: 4rem;
+            margin-top: 2rem;
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .footer-gst-distribution thead th {
+            color: #000;
+            line-height: normal;
+            margin: auto;
+            border: 0.05rem solid #1E1E1E;
+        }
+
+        .footer-gst-distribution tbody td {
+            border: 1px solid #000;
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 0.875rem;
+            text-transform: uppercase;
+            padding-right: 0rem;
+        }
+
+
+        .footer-1 {
+            position: relative;
+            left: -1rem;
+            top: -0.05rem;
+            width: 20.2rem;
+            height: 10.10rem;
+
+
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+        }
+
+        .receipt-msg {
+            border-bottom: 0.05rem solid #1E1E1E;
+            height: 1.76rem;
+            font-weight: 300;
+            line-height: normal;
+        }
+
+        .receipt-tnc .header {
+            font-weight: 600;
+            line-height: normal;
+            text-decoration-line: underline;
+            margin-left: 0.34rem;
+            margin-top: 0.47rem;
+
+            height: 5.95rem;
+        }
+
+        .receipt-tnc {
+            font-weight: 300;
+            line-height: normal;
+            margin-left: 0.34rem;
+            margin-top: 0.47rem;
+
+            height: 5.95rem;
+        }
+
+
+        .receipt-sign {
+            border-top: 0.05rem solid #1E1E1E;
+            width: 9.03875rem;
+            font-weight: 600;
+            line-height: normal;
+            text-align: center;
+
+            margin-left: auto;
+            margin-bottom: 1rem;
+        }
+
+        .footer-2 {
+            width: 13.25rem;
+
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+            margin-left: 35rem;
+            margin-right: auto;
+            margin-top: -5rem;
+        }
+
+        .cart-summary {
+            height: 5.32rem;
+            border-bottom: 0.05rem solid #1E1E1E;
+        }
+
+        .cart-summary .label {
+            font-weight: 600;
+        }
+
+        .cart-total {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .watermark-receipt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 0, 0, 0.3);
+            font-size: 5rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="d-flex justify-content-center">
+    <div class="frame1" id="html-content">
+        <div class="receipt-container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="shop-name pharmacyName">
+                        Dawaai
+                    </div>
+                    <div class="shop-info d-flex justify-content-between">
+                        <div class="shop-info-child1 shopaddress">
+                            203/A1, Rukhmini Apt., Friends Colony,<br>
+                            Katol Road, Nagpur, Maharashtra, 440013<br>
+                            +91 77700 71144
+                        </div>
+                    </div>
+                    <p class="my-0 gstin " style="font-size: smaller;">GSTIN : NA
+                    </p>
+                </div>
+                <div class="logo-container">
+                    <img src="data:image/svg+xml;base64,<%= image %>" alt="Logo">
+                </div>
+            </div>
+            <hr class="px-0">
+            <div class="receipt-type">
+                Subscription Receipt
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="customer-details">
+                    <p style="font-weight: 600;" class="pb-3">
+                        INVOICE TO
+                    </p>
+                    <p class="customername">
+                        <%= data.orgDetails.org_name || 'NA' %>
+                    </p>
+                    <p class="shippingadd">
+                        Address: <%= data.orgDetails.org_address || 'NA' %>
+                    </p>
+                    <p class="mobilenumber">
+                        Mobile: <%= data.orgDetails.org_telephone || 'NA' %>
+                    </p>
+                </div>
+
+                <div class="receipt-details pt-2">
+                    <p class="invoicenumber">
+                        Invoice no.: <%= data.billDetails.bill_id || 'NA' %>
+                    </p>
+                    <p class="orderdate">
+                        Date: <%= new Date(data.billDetails.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                    </p>
+                </div>
+            </div>
+            <table class="cart-table table-of-receipt">
+                <thead>
+                    <tr>
+                        <th style="width: 2.62rem;">S.No</th>
+                        <th style="width: 3.1rem;">Plan Name</th>
+                        <th style="width: 4.4rem;">Payment Method</th>
+                        <th style="width: 3.25rem;">Renewal Date</th>
+                        <th style="width: 2.62rem;">MRP(₹)</th>
+                        <th style="width: 2.62rem;">GST%</th>
+                        <th style="width: 2.62rem;">Total(₹)</th>
+                    </tr>
+                </thead>
+                <tbody class="cartitems py-0 my-0">
+                    <tr style="padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                        <td
+                            style="width: 2.62rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            1
+                        </td>
+                        <td
+                            style="width: 3.1rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            <%= data.billDetails.plan_name %>
+                        </td>
+                        <td
+                            style="width: 4.4rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            UPI
+                        </td>
+                        <td
+                            style="width: 3.25rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            <%= new Date(data.billDetails.end_date).toLocaleDateString('en-US', {
+                                year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                        </td>
+                        <td
+                            style="width: 2.62rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            <%= data.billDetails.amount %>
+                        </td>
+                        <td
+                            style="width: 2.62rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            0
+                        </td>
+                        <td
+                            style="width: 2.62rem; height: 0rem; padding-top: 0px; padding-bottom: 0px; margin-top:0px; margin-bottom:0px">
+                            <%= data.billDetails.amount %>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <div class="d-flex flex-row">
+                <table class="footer-gst-distribution text-center">
+                    <thead>
+                        <tr>
+                            <th>GST%</th>
+                            <th>Taxable Amt</th>
+                            <th>CGST</th>
+                            <th>SGST</th>
+                            <th>Total GST</th>
+                        </tr>
+                    </thead>
+                    <tbody class="p-0 px-1">
+                        
+                            <tr>
+                                <td>
+                                   1
+                                </td>
+                                <td class="taxAmt">
+                                    1
+                                </td>
+                                <td class="cgst">
+                                   1
+                                </td>
+                                <td class="sgst-">
+                                    1
+                                </td>
+                                <td class="totalGst">
+                                    1
+                                </td>
+                            </tr>
+                           
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="taxAmtTotal">
+                                        1
+                                    </td>
+                                    <td class="cgstTotal">
+                                       1
+                                    </td>
+                                    <td class="sgstTotal">
+                                        1
+                                    </td>
+                                    <td class="totalGst">
+                                        1
+                                    </td>
+                                </tr>
+                    </tbody>
+                </table> -->
+
+            <!-- <div class="footer-1">
+                    <div class="receipt-msg d-flex justify-content-center py-1 ">
+                        <p class="justify-content-center mx-auto">
+                            “GET WELL SOON BY DAWA.AI”
+                        </p>
+                    </div>
+                    <div class="receipt-info">
+                        <div class="receipt-tnc">
+                            <div>
+                                <div style="font-weight: 600;">Terms & Conditions</div>
+                                <p>Confirm Medicines from your Doctor before use</p>
+                            </div>
+                        </div>
+                        <div class="receipt-sign">
+                            Authorised Signature
+                        </div>
+                    </div>
+                </div> -->
+            <div class="authorised_signature">
+                Authorised Signature
+            </div>
+            <div class="footer-2">
+                <div class="cart-summary">
+                    <div class="d-flex justify-content-between">
+                        <div class="label">SUBTOTAL</div>
+                        <div class="subtotal">
+                            <%= data.billDetails.amount %>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="label">DISCOUNT</div>
+                        <div class="additionaldisc">
+                            0
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <div class="label">GST @ 0%</div>
+                        <div class="mop">
+                            0
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-total">
+                    <div class="d-flex justify-content-between">
+                        <div>TOTAL (INR)</div>
+                        <div class="grandtotal">
+                            <%= data.billDetails.amount %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

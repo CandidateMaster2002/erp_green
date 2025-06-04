@@ -1,0 +1,451 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <style>
+        @media(max-width: 768px) {
+
+            .mob-view-from-to {
+                display: inline;
+            }
+
+            .mob-view-from-to input {
+                width: 100%;
+            }
+
+            .mob-view-from-to div {
+                margin: 30px 0;
+            }
+
+            .mob {
+                align-items: start;
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start !important;
+            }
+
+            .head-invoicelist {
+                text-align: center;
+            }
+
+            .mob-view-search {
+                width: 100% !important;
+
+            }
+
+            .mob-view {
+                margin: 10px 0;
+            }
+        }
+
+
+        /* .mob-view-search {
+      width: 62%;
+
+    }*/
+    </style>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <h4 class="fw-bold py-3 mb-1">GSTR-2</h4>
+                                    <hr class="mb-4">
+
+                                    <div>
+                                        <div class="card mb-4">
+                                            <div class="row align-items-center flex ">
+                                                <div class="col-md-2  text-center">
+                                                    <h5 class="card-header mb-2">From Date</h5>
+                                                </div>
+                                                <div class="col-md-4 ">
+                                                    <div class="card-header">
+                                                        <input class="form-control" type="date" id="html5-date-input"
+                                                            name="fromdate" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 text-center">
+                                                    <h5 class="card-header mb-2">To Date</h5>
+                                                </div>
+                                                <div class="col-md-4 ">
+                                                    <div class="card-header">
+                                                        <input class="form-control" type="date" id="html5-date-input"
+                                                            name="todate" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center mb-4">
+                                            <button type="button" class="btn btn-primary" id="generatereport">Generate
+                                                Report</button>
+                                        </div>
+
+                                        <!-- Report List -->
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h5 class="card-title mb-0">GSTR-2 Report</h5>
+                                                    <div id="downloadSection" style="display: none;">
+                                                        <button class="btn-sm btn-primary dropdown-toggle" type="button"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">Download</button>
+                                                        <ul class="dropdown-menu" id="downloadOptions">
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive text-nowrap">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sl No.</th>
+                                                                <th>Particulars</th>
+                                                                <th>No. of Invoices</th>
+                                                                <th>Taxable Value</th>
+                                                                <th>Integrated Tax</th>
+                                                                <th>Central Tax</th>
+                                                                <th>State Tax</th>
+                                                                <th>Cess</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="reportcart">
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td class="fw-bold">B2B Invoices - 3, 4A</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td class="fw-bold">Credit/Debit Notes Regular - 6C</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>3</td>
+                                                                <td class="fw-bold">Import of Services - 4C</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>4</td>
+                                                                <td class="fw-bold">Import of Goods - 5</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>5</td>
+                                                                <td class="fw-bold">Credit/Debit Notes Unregistered - 6C</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>6</td>
+                                                                <td class="fw-bold">Nil Rated Invoices - 7 (Summary)</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- / Report List -->
+
+
+                                    </div>
+                                </div>
+                                <!-- / Content -->
+
+                                <div class="content-backdrop fade"></div>
+                            </div>
+                            <!-- Content wrapper -->
+                            </>
+                            <!-- / Layout page -->
+                    </div>
+
+
+
+                    <!-- Overlay -->
+                    <div class="layout-overlay layout-menu-toggle"></div>
+
+
+            </div>
+            <!-- / Layout wrapper -->
+
+            <%- include('../partials/footercode.ejs') %>
+                <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+                <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+                <script>
+
+                    $(document).ready(function () {
+
+                        // Hide validation messages on input
+                        $('input').each(function () {
+                            $(this).on('input', function () {
+                                if ($(this).val() == '') {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                        });
+
+
+                        // Default date range is previous month
+                        var today = new Date();
+                        var firstDayPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                        var lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+                        // Formatting the dates
+                        var ddFirst = String(firstDayPrevMonth.getDate()).padStart(2, '0');
+                        var mmFirst = String(firstDayPrevMonth.getMonth() + 1).padStart(2, '0'); //January is 0!
+                        var yyyyFirst = firstDayPrevMonth.getFullYear();
+                        var formattedFirstDayPrevMonth = yyyyFirst + '-' + mmFirst + '-' + ddFirst;
+
+                        var ddLast = String(lastDayPrevMonth.getDate()).padStart(2, '0');
+                        var mmLast = String(lastDayPrevMonth.getMonth() + 1).padStart(2, '0'); //January is 0!
+                        var yyyyLast = lastDayPrevMonth.getFullYear();
+                        var formattedLastDayPrevMonth = yyyyLast + '-' + mmLast + '-' + ddLast;
+
+                        // Setting the values to inputs
+                        $("input[name='fromdate']").val(formattedFirstDayPrevMonth);
+                        $("input[name='todate']").val(formattedLastDayPrevMonth);
+                        $("#generatereport").click(function (e) {
+
+                            e.preventDefault();
+                            var isValid = true;
+
+                            var fromDate = $("input[name='fromdate']").val();
+                            var toDate = $("input[name='todate']").val();
+
+                            if (fromDate == '') {
+                                $("input[name='fromdate']").addClass('is-invalid');
+                                $("input[name='fromdate']").focus();
+                                isValid = false;
+                            } else {
+                                $("input[name='fromdate']").removeClass('is-invalid');
+                            }
+
+                            if (toDate == '') {
+                                $("input[name='todate']").addClass('is-invalid');
+                                $("input[name='todate']").focus();
+                                isValid = false;
+                            } else {
+                                $("input[name='todate']").removeClass('is-invalid');
+                            }
+
+                            if (fromDate > toDate) {
+                                $("input[name='fromdate']").addClass('is-invalid');
+                                $("input[name='todate']").addClass('is-invalid');
+                                $("input[name='todate']").focus();
+                                isValid = false;
+                            } else {
+                                $("input[name='fromdate']").removeClass('is-invalid');
+                                $("input[name='todate']").removeClass('is-invalid');
+                            }
+
+                            if (isValid) {
+
+                                // Show loader
+                                $('#loader').show();
+
+                                $.ajax({
+                                    url: '/api/v2/reports/gstr2',
+                                    type: 'POST',
+                                    data: JSON.stringify({
+                                        orgId: "<%=orgId%>",
+                                        startDate: fromDate,
+                                        endDate: toDate
+                                    }),
+                                    contentType: 'application/json',
+                                    success: function (response) {
+                                        data = response.data;
+                                        $('#loader').hide();
+
+                                        // Clear the table body
+                                        $('#reportcart').empty();
+
+                                        var excelLink = "/api/v2/download/gstr2/excel?orgId=<%=orgId%>&startDate=" + fromDate + "&endDate=" + toDate;
+
+                                        // Update download options with dynamic links
+                                        $("#downloadOptions").html(`
+                                            <li><a class="dropdown-item" href="${excelLink}" download="GSTR1_Report_Excel.zip">Excel</a></li>
+                                        `);
+
+                                        // Show the download button
+                                        $("#downloadSection").show();
+
+
+                                        // Populate the table with the fetched data
+                                        $('#reportcart').append(`
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="fw-bold">B2B Invoices - 3, 4A</td>
+                                            <td class="text-end">${data.inwardB2B.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.inwardB2B.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardB2B.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardB2B.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardB2B.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardB2B.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td class="fw-bold">Credit/Debit Notes Regular - 6C</td>
+                                            <td class="text-end">${data.inwardCDNR.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNR.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNR.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNR.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNR.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNR.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td class="fw-bold">Import of Services - 4C</td>
+                                            <td class="text-end">${data.importServices.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.importServices.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importServices.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importServices.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importServices.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importServices.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td class="fw-bold">Import of Goods - 5</td>
+                                            <td class="text-end">${data.importGoods.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.importGoods.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importGoods.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importGoods.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importGoods.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.importGoods.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td class="fw-bold">Credit/Debit Notes Unregistered - 6C</td>
+                                            <td class="text-end">${data.inwardCDNUR.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNUR.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNUR.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNUR.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNUR.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardCDNUR.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td class="fw-bold">Nil Rated Invoices - 7 (Summary)</td>
+                                            <td class="text-end">${data.inwardNilExemp.total_voucher_count}</td>
+                                            <td class="text-end">${parseFloat(data.inwardNilExemp.total_taxable_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardNilExemp.total_igst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardNilExemp.total_cgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardNilExemp.total_sgst_value).toLocaleString('en-IN')}</td>
+                                            <td class="text-end">${parseFloat(data.inwardNilExemp.total_cess_value).toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    `);
+                                    },
+                                    error: function (error) {
+                                        $('#loader').hide();
+                                        console.log('Error fetching data', error);
+                                    }
+                                });
+
+                            }
+                        })
+                    })
+                </script>
+
+                <style>
+                    @media (max-width: 767px) {
+
+                        .card-body.d-flex .row.w-100 {
+                            flex-direction: row;
+                            /* Ensure row direction */
+                            justify-content: start;
+                            /* Center the content */
+                            align-items: flex-start;
+                        }
+
+                        .col-6 {
+                            flex: 0 0 50%;
+                            /* Make each input take up 50% of the width */
+                            max-width: 50%;
+
+                        }
+
+                        .text-center select {
+                            width: 100%;
+                            /* Ensure the select input takes full width */
+                        }
+
+                        .card-header {
+                            font-size: 0.75em;
+                            /* Adjust the font size as needed */
+                            display: flex;
+                            justify-content: flex-start;
+                            /* Align content to the left */
+                            align-items: flex-start;
+                            padding: 10px;
+                        }
+
+                        .card-header input {
+                            margin-right: 0.5rem;
+                        }
+                    }
+                </style>
+
+    </body>
+
+
+    </html>

@@ -1,0 +1,240 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <div class="d-flex justify-content-between m-0 p-0">
+                                        <h4 class="fw-bold py-3 mb-1">Near Expiry Products</h4>
+                                        <a type="button" class="btn btn-icon btn-danger my-2 mx-3"
+                                            href="/product_stock">
+                                            <i class='bx bx-x bx-sm'></i>
+                                        </a>
+                                    </div>
+
+                                    <button id="downloadBtn" class="btn btn-primary">Download Excel</button>
+
+
+                                    <!-- <div class="d-flex justify-content-between m-0 p-0">
+                                        <div class="input-group input-group-merge">
+                                            <span class="input-group-text" id="basic-addon-search31"><i
+                                                    class="bx bx-search"></i></span>
+                                            <input type="text" class="form-control" placeholder="Search Product..."
+                                                onkeyup="var value = $(this).val().toLowerCase();$('#nearExpiryData tbody tr').filter(function() {$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)});">
+                                        </div>
+
+                                    </div> -->
+
+
+                                    <hr class="mb-4">
+
+                                    <div class="card" id="nearExpiryData">
+                                        <div class="card-header row">
+                                            <h5 class="col-md-7 mb-0">Product List</h5>
+                                            <div class="col-md-5 d-flex justify-content-between">
+                                                <div class="form-check form-check-inline mt-3">
+                                                    <input class="form-check-input" type="radio" name="filter"
+                                                        id="last3Month" value="last3Month">
+                                                    <label class="form-check-label" for="last3MonthRadio">Last 3
+                                                        Month</label>
+                                                </div>
+                                                <div class="form-check form-check-inline mt-3">
+                                                    <input class="form-check-input" type="radio" name="filter"
+                                                        id="next3MonthRadio" value="next3Month" checked>
+                                                    <label class="form-check-label" for="next3MonthRadio">Next 3
+                                                        Month</label>
+                                                </div>
+                                                <div class="form-check form-check-inline mt-3">
+                                                    <input class="form-check-input" type="radio" name="filter"
+                                                        id="thisMonthRadio" value="thisMonth">
+                                                    <label class="form-check-label" for="thisMonthRadio">This
+                                                        Month</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-hover dataTable" id="DataTables_Table_1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Product Name
+
+                                                        </th>
+                                                        <th>
+                                                            Batch No.
+                                                        </th>
+                                                        <th>
+                                                            Expiry
+                                                        </th>
+                                                        <th>
+                                                            Pack Units
+                                                        </th>
+                                                        <th>
+                                                            Rem Qty (Pri: Sec)
+                                                        </th>
+                                                        <th>
+                                                            Rate/P.Unit
+                                                        </th>
+                                                        <th>
+                                                            Cost
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0" id="additems">
+
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="table-danger">
+                                                        <td class="h5 ps-5" colspan="6">Total</td>
+                                                        <td class="h5" id="totalCost"></td> <!-- Total cost here -->
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- / Content -->
+
+                                <div class="content-backdrop fade"></div>
+                            </div>
+                            <!-- Content wrapper -->
+                    </div>
+                    <!-- / Layout page -->
+            </div>
+
+            <!-- Overlay -->
+            <div class="layout-overlay layout-menu-toggle"></div>
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+            <!-- Page JS -->
+            <script src="/js/tables-datatables-basic.js"></script>
+            <!-- XLSX library -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+            <!-- FileSaver library -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+            <script>
+                $(document).ready(function () {
+
+                    var orgId = "<%=orgId%>"
+                    console.log(orgId);
+
+                    var selectedFilter = $("input[name='filter']:checked").val();
+                    console.log(selectedFilter);
+
+                    function displayTable(filter) {
+
+                        $.get(`/api/v2/near-expiry/${orgId}/${filter}`, function (data, status) {
+                            var items = data.data;
+                            console.log('in product stock', items);
+
+                            var totalCost = 0;
+                            for (let i = 0; i < items.length; i++) {
+                                var date = new Date(items[i].exp_date);
+                                var options = { year: 'numeric', month: 'long' };
+                                var expdate = date.toLocaleDateString('en-US', options);
+
+                                var totalQty = parseInt(items[i].batch_qty);
+                                var saledPri = parseInt(items[i].saled_pri_qty);
+                                var saledSec = parseInt(items[i].saled_sec_qty);
+                                var conversion = parseInt(items[i].conversion);
+
+                                var remPriQty = totalQty - saledPri;
+                                var remSecQty = (conversion - saledSec) == conversion ? 0 : conversion - saledSec;
+
+                                var cost = items[i].purchase_rate * remPriQty + (items[i].purchase_rate / conversion) * remSecQty;
+
+                                totalCost += cost;
+                                var html = `
+                                        <tr>
+                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].med_name}</strong></td>
+                                            <td>${items[i].batch_name}</td>
+                                            <td>${expdate}</td>
+                                            <td>${items[i].primary_unit} of ${items[i].secondary_unit}</td>
+                                            <td>${remPriQty} : ${remSecQty}</td>
+                                            <td>₹${items[i].purchase_rate}</td>
+                                            <td>₹${cost.toFixed(2)}</td>
+                                        </tr>`
+
+                                $("#additems").append(html);
+                            }
+
+                            $("#totalCost").text(`₹${totalCost.toFixed(2)}`);
+                        })
+
+                    }
+                    displayTable(selectedFilter);
+
+                    $("input[name='filter']").change(function () {
+                        selectedFilter = $("input[name='filter']:checked").val();
+                        $("#additems").empty();
+                        displayTable(selectedFilter);
+                    });
+                })
+            </script>
+
+            <script>
+                // Function to convert data into Excel file format and trigger download
+                function exportToExcel() {
+                    // Fetch the table content
+                    const table = $("#DataTables_Table_1")[0];
+                    const ws = XLSX.utils.table_to_sheet(table);
+
+                    // Create a new workbook
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+                    // Generate Excel file in binary format
+                    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+
+                    // Convert binary data to Blob
+                    const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+
+                    // Trigger download
+                    saveAs(blob, "table_data.xlsx");
+                }
+
+                // Function to convert string to array buffer
+                function s2ab(s) {
+                    const buf = new ArrayBuffer(s.length);
+                    const view = new Uint8Array(buf);
+                    for (let i = 0; i < s.length; i++) {
+                        view[i] = s.charCodeAt(i) & 0xff;
+                    }
+                    return buf;
+                }
+
+                // Attach click event listener to the download button using jQuery
+                $(document).on("click", "#downloadBtn", function () {
+                    exportToExcel();
+                });
+            </script>
+
+
+
+    </body>
+
+
+    </html>

@@ -1,0 +1,514 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <head>
+        <link rel="stylesheet" href="/vendor/libs/perfect-scrollbar/perfect-scrollbar.css">
+    </head>
+
+    <body>
+
+        <!-- Content -->
+
+
+        <div class="authentication-wrapper authentication-cover">
+            <div class="authentication-inner row m-0">
+
+                <!-- Left Text -->
+                <div class="d-none d-lg-flex col-lg-4 align-items-center justify-content-end p-5 pe-0"
+                    style="background-color: #7F82FF;">
+                    <div class="w-px-400">
+                        <img src="/img/backgrounds/create-account-light.png" class="img-fluid" alt="multi-steps"
+                            width="600" data-app-dark-img="illustrations/create-account-dark.png"
+                            data-app-light-img="illustrations/create-account-light.html">
+                    </div>
+                </div>
+                <!-- /Left Text -->
+
+                <!--  Multi Steps Registration -->
+                <div class="d-flex col-lg-8 align-items-center justify-content-center authentication-bg p-sm-5 p-3">
+                    <div class="w-px-700">
+                        <div id="multiStepsValidation" class="bs-stepper shadow-none">
+
+                            <div class="bs-stepper-content">
+
+                                <!-- Personal Info -->
+                                <div id="pharmacyDetails" class="content">
+                                    <div class="content-header mb-3">
+                                        <h3 class="mb-2">Register Your Pharmacy</h3>
+                                        <span>Enter Your Pharmacy Details</span>
+                                    </div>
+                                    <div class="row g-3 d-flex justify-content-center">
+                                        <div class="col-sm-10 has-validation">
+                                            <label class="form-label" for="org_name">Pharmacy name</label>
+                                            <input type="text" id="org_name" name="org_name" class="form-control"
+                                                required />
+                                        </div>
+                                        <div class="col-sm-10 has-validation">
+                                            <label class="form-label" for="owner_name">Owner name</label>
+                                            <input type="text" id="owner_name" name="owner_name" class="form-control"
+                                                required />
+                                        </div>
+                                        <div class="col-sm-10 has-validation">
+                                            <label class="form-label" for="org_telephone">Phone Number</label>
+                                            <div class="input-group has-validation">
+                                                <span id="basic-icon-default-phone" class="input-group-text"><i class='bx bx-phone'></i></span>
+                                                <input type="tel" id="org_telephone" name="org_telephone" class="form-control"
+                                                    pattern="[0-9]{10}" inputmode="numeric"
+                                                    minlength="10" maxlength="10"
+                                                    placeholder="Enter 10-digit phone number" required
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                                     />
+                                                     <input type="hidden" id="org_email" name="org_email" value="<%= email %>" />
+                                            </div>
+                                            <div class="invalid-feedback">Please provide a valid 10-digit phone number.</div>
+                                        </div>
+                                        
+                                        <div class="col-sm-10">
+                                            <label class="form-label" for="org_dl_no_1">DL No. 1</label>
+                                            <div class="input-group has-validation">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                        class='bx bx-detail'></i></span>
+                                                <input type="text" id="dl1_ft" value="20" class="form-control" readonly>
+                                                <select type="text" id="dl1_st" class="form-select">
+                                                    <option value="" disabled> State</option>
+                                                    <option value="AD">Andhra Pradesh</option>
+                                                    <option value="AR"> Arunachal Pradesh</option>
+                                                    <option value="AS"> Assam</option>
+                                                    <option value="BR"> Bihar</option>
+                                                    <option value="CG"> Chattisgarh</option>
+                                                    <option value="DL"> Delhi</option>
+                                                    <option value="GA"> Goa</option>
+                                                    <option value="GJ"> Gujarat</option>
+                                                    <option value="HR"> Haryana</option>
+                                                    <option value="HP"> Himachal Pradesh</option>
+                                                    <option value="JK"> Jammu and Kashmir</option>
+                                                    <option value="JH"> Jharkhand</option>
+                                                    <option value="KA"> Karnataka</option>
+                                                    <option value="KL"> Kerala</option>
+                                                    <option value="LD"> Lakshadweep Islands</option>
+                                                    <option value="MP"> Madhya Pradesh</option>
+                                                    <option value="MH" selected> Maharashtra</option>
+                                                    <option value="MN"> Manipur</option>
+                                                    <option value="ML"> Meghalaya</option>
+                                                    <option value="MZ"> Mizoram</option>
+                                                    <option value="NL"> Nagaland</option>
+                                                    <option value="OD"> Odisha</option>
+                                                    <option value="PY"> Pondicherry</option>
+                                                    <option value="PB"> Punjab</option>
+                                                    <option value="RJ"> Rajasthan</option>
+                                                    <option value="SK"> Sikkim</option>
+                                                    <option value="TN"> Tamil Nadu</option>
+                                                    <option value="TS"> Telangana</option>
+                                                    <option value="TR"> Tripura</option>
+                                                    <option value="UP"> Uttar Pradesh</option>
+                                                    <option value="UK"> Uttarakhand</option>
+                                                    <option value="WB"> West Bengal</option>
+                                                </select>
+                                                <input type="text" id="dl1_ct" placeholder="Zone" class="form-control" required>
+                                                <!-- <select type="text" id="dl1_ct" class="form-select">
+                                                    <option selected>Zone</option>
+                                                    <option value="AH1">AHMEDNAGAR ZONE 1</option>
+                                                    <option value="AH2">AHMEDNAGAR ZONE 2</option>
+                                                    <option value="AKO">Akola</option>
+                                                    <option value="AMR">AMARAVATI</option>
+                                                    <option value="AZ1">AURANGABAD</option>
+                                                    <option value="AZ2">AURANGABAD ZONE 2</option>
+                                                    <option value="BEE">BEED</option>
+                                                    <option value="BHA">BHANDARA</option>
+                                                    <option value="BUL">BULDANA</option>
+                                                    <option value="CHA">CHANDRAPUR</option>
+                                                    <option value="DHU">DHULE</option>
+                                                    <option value="GAD">GADCHIROLI</option>
+                                                    <option value="GON">Gondia</option>
+                                                    <option value="HIN">Hingoli</option>
+                                                    <option value="JAL">JALGAON</option>
+                                                    <option value="JLN">JALNA</option>
+                                                    <option value="KZ1">KOLHAPUR ZONE 1</option>
+                                                    <option value="KZ2">KOLHAPUR ZONE 2</option>
+                                                    <option value="LAT">LATUR</option>
+                                                    <option value="MZ1">Mumbai-Zone1</option>
+                                                    <option value="MZ2">Mumbai-Zone2</option>
+                                                    <option value="MZ3">Mumbai-Zone3</option>
+                                                    <option value="MZ4">Mumbai-Zone4</option>
+                                                    <option value="MZ5">Mumbai-Zone5</option>
+                                                    <option value="MZ6">Mumbai-Zone6</option>
+                                                    <option value="MZ7">Mumbai-Zone7</option>
+                                                    <option value="NAN">NANDED</option>
+                                                    <option value="NDR">NANDURBAR</option>
+                                                    <option value="NG1">NAGPUR ZONE 1</option>
+                                                    <option value="NG2">NAGPUR ZONE 2</option>
+                                                    <option value="NZ1">Nashik Z-1 District</option>
+                                                    <option value="NZ2">Nashik Z-2 District</option>
+                                                    <option value="NZ3">Nashik Z-3 District</option>
+                                                    <option value="OSD">OutState District</option>
+                                                    <option value="PAR">PARBHANI</option>
+                                                    <option value="PL1">PALGHAR ZONE 1</option>
+                                                    <option value="PL2">PALGHAR ZONE 2</option>
+                                                    <option value="PL3">PALGHAR ZONE 3</option>
+                                                    <option value="PZ1">Pune-Zone1</option>
+                                                    <option value="PZ2">Pune-Zone2</option>
+                                                    <option value="PZ3">Pune-Zone3</option>
+                                                    <option value="PZ4">Pune-Zone4</option>
+                                                    <option value="PZ5">Pune-Zone5</option>
+                                                    <option value="PZ6">Pune-Zone6</option>
+                                                    <option value="RAT">RATNAGIRI</option>
+                                                    <option value="RZ1">RAIGAD ZONE 1</option>
+                                                    <option value="RZ2">RAIGAD ZONE 2</option>
+                                                    <option value="SAN">SANGLI</option>
+                                                    <option value="SAT">SATARA</option>
+                                                    <option value="SIN">SINDHUDURG</option>
+                                                    <option value="SOL">SOLAPUR</option>
+                                                    <option value="TZ1">Thane-Zone1</option>
+                                                    <option value="TZ2">Thane-Zone2</option>
+                                                    <option value="TZ3">Thane-Zone3</option>
+                                                    <option value="TZ4">Thane-Zone4</option>
+                                                    <option value="TZ5">Thane-Zone5</option>
+                                                    <option value="TZ6">Thane-Zone6</option>
+                                                    <option value="TZ7">Thane-Zone7</option>
+                                                    <option value="USM">USMANABAD</option>
+                                                    <option value="VAS">WASHIM</option>
+                                                    <option value="WAR">WARDHA</option>
+                                                    <option value="YEO">YAVATMAL</option>
+                                                </select> -->
+                                                <input type="text" id="dl1_ln" placeholder="License No."
+                                                    class="form-control" minlength="6" maxlength="6" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <label class="form-label" for="org_dl_no_2">DL No. 2</label>
+                                            <div class="input-group has-validation">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                        class='bx bx-detail'></i></span>
+                                                <input type="text" id="dl2_ft" value="21" class="form-control" readonly>
+                                                <select type="text" id="dl2_st" class="form-select">
+                                                    <option value="" disabled> State</option>
+                                                    <option value="AD">Andhra Pradesh</option>
+                                                    <option value="AR"> Arunachal Pradesh</option>
+                                                    <option value="AS"> Assam</option>
+                                                    <option value="BR"> Bihar</option>
+                                                    <option value="CG"> Chattisgarh</option>
+                                                    <option value="DL"> Delhi</option>
+                                                    <option value="GA"> Goa</option>
+                                                    <option value="GJ"> Gujarat</option>
+                                                    <option value="HR"> Haryana</option>
+                                                    <option value="HP"> Himachal Pradesh</option>
+                                                    <option value="JK"> Jammu and Kashmir</option>
+                                                    <option value="JH"> Jharkhand</option>
+                                                    <option value="KA"> Karnataka</option>
+                                                    <option value="KL"> Kerala</option>
+                                                    <option value="LD"> Lakshadweep Islands</option>
+                                                    <option value="MP"> Madhya Pradesh</option>
+                                                    <option value="MH" selected > Maharashtra</option>
+                                                    <option value="MN"> Manipur</option>
+                                                    <option value="ML"> Meghalaya</option>
+                                                    <option value="MZ"> Mizoram</option>
+                                                    <option value="NL"> Nagaland</option>
+                                                    <option value="OD"> Odisha</option>
+                                                    <option value="PY"> Pondicherry</option>
+                                                    <option value="PB"> Punjab</option>
+                                                    <option value="RJ"> Rajasthan</option>
+                                                    <option value="SK"> Sikkim</option>
+                                                    <option value="TN"> Tamil Nadu</option>
+                                                    <option value="TS"> Telangana</option>
+                                                    <option value="TR"> Tripura</option>
+                                                    <option value="UP"> Uttar Pradesh</option>
+                                                    <option value="UK"> Uttarakhand</option>
+                                                    <option value="WB"> West Bengal</option>
+                                                </select>
+                                                <input type="text" id="dl2_ct" placeholder="Zone" class="form-control" required>
+                                                <!-- <select type="text" id="dl2_ct" class="form-select">
+                                                    <option selected>Zone</option>
+                                                    <option value="AH1">AHMEDNAGAR ZONE 1</option>
+                                                    <option value="AH2">AHMEDNAGAR ZONE 2</option>
+                                                    <option value="AKO">Akola</option>
+                                                    <option value="AMR">AMARAVATI</option>
+                                                    <option value="AZ1">AURANGABAD</option>
+                                                    <option value="AZ2">AURANGABAD ZONE 2</option>
+                                                    <option value="BEE">BEED</option>
+                                                    <option value="BHA">BHANDARA</option>
+                                                    <option value="BUL">BULDANA</option>
+                                                    <option value="CHA">CHANDRAPUR</option>
+                                                    <option value="DHU">DHULE</option>
+                                                    <option value="GAD">GADCHIROLI</option>
+                                                    <option value="GON">Gondia</option>
+                                                    <option value="HIN">Hingoli</option>
+                                                    <option value="JAL">JALGAON</option>
+                                                    <option value="JLN">JALNA</option>
+                                                    <option value="KZ1">KOLHAPUR ZONE 1</option>
+                                                    <option value="KZ2">KOLHAPUR ZONE 2</option>
+                                                    <option value="LAT">LATUR</option>
+                                                    <option value="MZ1">Mumbai-Zone1</option>
+                                                    <option value="MZ2">Mumbai-Zone2</option>
+                                                    <option value="MZ3">Mumbai-Zone3</option>
+                                                    <option value="MZ4">Mumbai-Zone4</option>
+                                                    <option value="MZ5">Mumbai-Zone5</option>
+                                                    <option value="MZ6">Mumbai-Zone6</option>
+                                                    <option value="MZ7">Mumbai-Zone7</option>
+                                                    <option value="NAN">NANDED</option>
+                                                    <option value="NDR">NANDURBAR</option>
+                                                    <option value="NG1">NAGPUR ZONE 1</option>
+                                                    <option value="NG2">NAGPUR ZONE 2</option>
+                                                    <option value="NZ1">Nashik Z-1 District</option>
+                                                    <option value="NZ2">Nashik Z-2 District</option>
+                                                    <option value="NZ3">Nashik Z-3 District</option>
+                                                    <option value="OSD">OutState District</option>
+                                                    <option value="PAR">PARBHANI</option>
+                                                    <option value="PL1">PALGHAR ZONE 1</option>
+                                                    <option value="PL2">PALGHAR ZONE 2</option>
+                                                    <option value="PL3">PALGHAR ZONE 3</option>
+                                                    <option value="PZ1">Pune-Zone1</option>
+                                                    <option value="PZ2">Pune-Zone2</option>
+                                                    <option value="PZ3">Pune-Zone3</option>
+                                                    <option value="PZ4">Pune-Zone4</option>
+                                                    <option value="PZ5">Pune-Zone5</option>
+                                                    <option value="PZ6">Pune-Zone6</option>
+                                                    <option value="RAT">RATNAGIRI</option>
+                                                    <option value="RZ1">RAIGAD ZONE 1</option>
+                                                    <option value="RZ2">RAIGAD ZONE 2</option>
+                                                    <option value="SAN">SANGLI</option>
+                                                    <option value="SAT">SATARA</option>
+                                                    <option value="SIN">SINDHUDURG</option>
+                                                    <option value="SOL">SOLAPUR</option>
+                                                    <option value="TZ1">Thane-Zone1</option>
+                                                    <option value="TZ2">Thane-Zone2</option>
+                                                    <option value="TZ3">Thane-Zone3</option>
+                                                    <option value="TZ4">Thane-Zone4</option>
+                                                    <option value="TZ5">Thane-Zone5</option>
+                                                    <option value="TZ6">Thane-Zone6</option>
+                                                    <option value="TZ7">Thane-Zone7</option>
+                                                    <option value="USM">USMANABAD</option>
+                                                    <option value="VAS">WASHIM</option>
+                                                    <option value="WAR">WARDHA</option>
+                                                    <option value="YEO">YAVATMAL</option>
+                                                </select> -->
+                                                <input type="text" id="dl2_ln" placeholder="License No."
+                                                    class="form-control" minlength="6" maxlength="6" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 has-validation">
+                                            <label class="form-label" for="org_pincode">Pincode</label>
+                                            <input type="number" id="org_pincode" name="org_pincode"
+                                                class="form-control" required />
+                                        </div>
+                                        <div class="col-sm-10 has-validation">
+                                            <label class="form-label" for="org_address">Address</label>
+                                            <textarea type="text" id="org_address" name="org_address"
+                                                class="form-control" required></textarea>
+
+                                        </div>
+                                        <div class="col-sm-10 has-validation">
+                                            <hr class="mb-4">
+                                            <div class="card overflow-hidden mb-2" style="height: 230px;">
+                                                <h6 class="card-header py-3 border">TERMS AND CONDITIONS</h6>
+                                                <div class="card-body" id="vertical-example">
+                                                    <%- include('../partials/terms_n_conditions.ejs') %>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-10">
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="defaultCheck1" />
+                                                <label class="form-check-label" for="defaultCheck1">
+                                                    Agree : Hereby I agree to the Terms and Conditions mentioned above.
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+
+                                        <div class="col-sm-4 my-4">
+                                            <button class="btn btn-primary btn-next w-100"
+                                                id="submitPharmacyDetails">Confirm</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Multi Steps Registration -->
+                </div>
+            </div>
+
+            <!-- / Content -->
+
+
+
+            <%- include('../partials/footercode.ejs') %>
+
+                <!-- Page JS -->
+                <script src="/js/pages-auth-two-steps.js"></script>
+                <script src="/js/extended-ui-perfect-scrollbar.js"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        // Validation check on input
+                        $('input').each(function () {
+                            $(this).on('input', function () {
+                                if ($(this).val() == '') {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                        });
+                        $('select').each(function () {
+                            $(this).on('input', function () {
+                                if ($(this).val() == 'default' || $(this).val() == null) {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                        });
+
+                        // Validate address
+                        $("#org_address").on('input', function () {
+                            if ($("#org_address").val() == '') {
+                                $("#org_address").addClass('is-invalid');
+                                isValid = false;
+                            } else {
+                                $("#org_address").removeClass('is-invalid');
+                            }
+                        });
+
+                        var lat;
+                        var long;
+
+                        if ("geolocation" in navigator) {
+                            navigator.geolocation.getCurrentPosition(function (position) {
+                                lat = position.coords.latitude;
+                                long = position.coords.longitude;
+                            });
+                        } else {
+                            console.log("Geolocation does not work in this browser");
+                        }
+
+                        $("#dl2_ln").on('input', function () {
+                            if ($("#dl1_ln").val() == $("#dl2_ln").val()) {
+                                $("#dl2_ln").val(null);
+                                return alert(" DL Number 1  and DL Number 2 cannot be same");
+                            }
+                        });
+
+                        var city;
+                        var state;
+
+                        $("#org_pincode").on('input', function () {
+
+                            var pin = $("#org_pincode").val();
+
+                            if (pin.length > 6) {
+                                return alert("Enter correct 6-digit Pincode")
+                            }
+                            if (pin.length == 6) {
+                                $.get("https://api.postalpincode.in/pincode/" + pin, function (response) {
+                                    if (response[0].PostOffice === null) {
+                                        return alert("Invalid Pincode")
+                                    }
+                                    city = response[0].PostOffice[0].Block;
+                                    state = response[0].PostOffice[0].State
+
+                                })
+                            }
+                        })
+
+
+                        $("#submitPharmacyDetails").click(function (e) {
+                            e.preventDefault();
+                            var isValid = true;
+                            $('input:required').each(function () {
+                                if ($(this).val() == '') {
+                                    $(this).addClass('is-invalid');
+                                    isValid = false;
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+
+                            if ($("#org_address").val() == '') {
+                                $("#org_address").addClass('is-invalid');
+                                isValid = false;
+                            } else {
+                                $("#org_address").removeClass('is-invalid');
+                            }
+
+
+                            if (!$("#defaultCheck1").prop("checked")) {
+                                return alert("Please check Terms and Conditions before submitting.");
+                            }
+                            var dl_no_1 = $("#dl1_ft").val().toString() + '-' + $("#dl1_st").val().toString() + '-' + $("#dl1_ct").val().toString() + '-' + $("#dl1_ln").val().toString();
+                            var dl_no_2 = $("#dl2_ft").val().toString() + '-' + $("#dl2_st").val().toString() + '-' + $("#dl2_ct").val().toString() + '-' + $("#dl2_ln").val().toString();
+
+                            if (isValid) {
+                                $.ajax({
+                                    url: `/api/auth/register`,
+                                    type: 'POST',
+                                    data: JSON.stringify({
+                                        org_email: $("#org_email").val(), 
+                                        org_telephone: $("#org_telephone").val(),
+                                        org_name: $("#org_name").val(),
+                                        owner_name: $("#owner_name").val(),
+                                        org_dl_no_1: dl_no_1,
+                                        org_dl_no_2: dl_no_2,
+                                        org_pincode: $("#org_pincode").val(),
+                                        org_address: $("#org_address").val(),
+                                        org_city: city,
+                                        org_state: state,
+                                        org_lat: lat,
+                                        org_long: long
+                                    }),
+                                    contentType: 'application/json',
+                                    success: function (response) {
+                                        window.location.href = response.redirect
+                                    },
+                                    error: function (error) {
+                                        console.log('error', error);
+                                    }
+                                })
+
+
+                            }
+
+                        })
+
+                    })
+                </script>
+                <script>
+                    $(document).ready(function () {
+                      $('#org_telephone').on('input', function () {
+                        const phone = $(this).val();
+                  
+                        if (phone.length === 10) {
+                          $.ajax({
+                            url: '/api/auth/check-phone',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ phone }),
+                            success: function (res) {
+                              if (res.exists) {
+                                alert('Phone number already exists.');
+                                $('#org_telephone').addClass('is-invalid');
+                                $('#submitPharmacyDetails').prop('disabled', true);
+                              } else {
+                                $('#org_telephone').removeClass('is-invalid');
+                                $('#submitPharmacyDetails').prop('disabled', false);
+                              }
+                            },
+                            error: function () {
+                              alert('Error checking phone number.');
+                            }
+                          });
+                        } else {
+                          $('#submitPharmacyDetails').prop('disabled', false);
+                          $('#org_telephone').removeClass('is-invalid');
+                        }
+                      });
+                    });
+                  </script>
+                  
+
+
+    </body>
+
+    </html>

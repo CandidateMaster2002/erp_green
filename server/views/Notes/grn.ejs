@@ -1,0 +1,1898 @@
+<%- include('../partials/headercode.ejs') %>
+
+
+    <body>
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <div class="row d-flex justify-content-between align-items-center m-0 p-0">
+                                        <h4 class="col-md-7 fw-bold py-3 mb-1">Purchase Bill</h4>
+                                        <div class="col-md-5 text-center mt-3 d-flex justify-content-around align-items-center p-0">
+                                            <div>
+                                                <div class="form-check form-check-inline mt-3">
+                                                    <input class="form-check-input" type="radio" name="paymentMethod"
+                                                        id="cashRadio" value="CASH" checked>
+                                                    <label class="form-check-label" for="cashRadio">Cash</label>
+                                                </div>
+                                                <div class="form-check form-check-inline mt-3">
+                                                    <input class="form-check-input" type="radio" name="paymentMethod"
+                                                        id="creditRadio" value="CREDIT">
+                                                    <label class="form-check-label" for="creditRadio">Credit</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="text-center mx-2">
+                                                <a class="btn btn-primary btn-responsive" style="color: white;" href="/new_vendor">+
+                                                    Add Distributor</a>    
+                                            </div>
+                                            <div class="text-center mx-2">
+                                                <a class="btn btn-info btn-responsive" style="color: white;"
+                                                    href="/grn/csv/upload">CSV Upload</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <hr class="mb-4">
+                                    <form>
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <div class="card mb-4">
+                                                    <h5 class="card-header">Distributor Name</h5>
+                                                    <div class="card-body has-validation" id="vendorname">
+                                                        <select class="form-select" id="vendorselect" required>
+                                                            <option value="default" selected>Select Distributor</option>
+                                                            <%vendors.forEach(function(vendor) {%>
+                                                                <option value="<%= vendor.vendor_id %>">
+                                                                    <%= vendor.vendor_name %>
+                                                                </option>
+                                                                <%});%>
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Please select a distributor.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card mb-4 py-1">
+
+                                                    <h6 class="card-header py-1" id="contact"></h6>
+                                                    <h6 class="card-header py-1" id="email"></h6>
+                                                    <h6 class="card-header py-1" id="dl_no"></h6>
+                                                    <h6 class="card-header py-1" id="gstin"></h6>
+                                                    <h6 class="card-header py-1" id="address"></h6>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="card mb-4">
+                                                    <h5 class="card-header">Distributor Invoice Number</h5>
+                                                    <div class="card-body has-validation">
+                                                        <input type="text" class="form-control" id="vendorinvoicenumber"
+                                                            placeholder="Enter Invoice Number" required />
+                                                        <div class="invalid-feedback">
+                                                            Please enter invoice number.
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="card mb-4">
+                                                    <h5 class="card-header">Invoice Date </h5>
+
+                                                    <div class="card-body has-validation">
+                                                        <input class="form-control" type="date" id="html5-date-input"
+                                                            id="invoiceDate" name="invoiceDate" required />
+                                                        <div class="invalid-feedback">
+                                                            Please select invoice date.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between m-0 p-0">
+                                                <h4 class="fw-bold py-3 mb-1"> Add Product To Your Cart</h4>
+
+                                            </div>
+                                            <hr class="mb-4">
+                                            <form class="myForm">
+                                                <div class="card mb-4 mx-2 col-sm-12">
+
+                                                    <div class="card-body ">
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-fullname">Product Name</label>
+                                                            <div class="col-sm-10">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        id="medicinename"
+                                                                        placeholder="Type product name here.."
+                                                                        name="productname" required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select a product.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-fullname">Mfg/Mkt</label>
+                                                            <div class="col-sm-10">
+                                                                <div class="input-group input-group-merge">
+                                                                    <input type="text" class="form-control" id="brand"
+                                                                        placeholder="Product manufacturer/marketer"
+                                                                        name="brand">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-fullname">Salt Comp.</label>
+                                                            <div class="col-sm-10">
+                                                                <div class="input-group input-group-merge">
+                                                                    <input type="text" class="form-control" id="salt"
+                                                                        placeholder="Product salt composition"
+                                                                        name="salt">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-address">Unit</label>
+                                                            <div class="col-sm-4 me-0">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" id="primaryDropdown"
+                                                                        name="primary" required>
+                                                                        <option value="default" selected>Primary
+                                                                        </option>
+                                                                        <option value="STP">STP</option>
+                                                                        <option value="AMP">AMP</option>
+                                                                        <option value="BOX">BOX</option>
+                                                                        <option value="BTL">BTL</option>
+                                                                        <option value="PCS">PCS</option>
+                                                                        <option value="TUBE">TUBE</option>
+                                                                        <option value="DROP">DROP</option>
+                                                                        <option value="DRSP">DRSP (Dry Syrup)</option>
+                                                                        <option value="E/D">E/D (Eye Drop)</option>
+                                                                        <option value="EAR/D">EAR/D (Ear Drop)</option>
+                                                                        <option value="INJ">INJ (Injection)</option>
+                                                                        <option value="INH">INH (Inhaler)</option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select primary unit.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="col-sm-2 text-center mx-0 p-0">
+                                                                <p class="fs-4"></p>
+                                                            </div>
+
+                                                            <div class="col-sm-4 ms-0">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" id="secondaryDropdown"
+                                                                        name="secondary" required>
+                                                                        <option value="default" selected>Secondary
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select secondary unit.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <div class="row">
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">HSN Code</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Eg- 30049047" id="hsn" name="hsn"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        maxlength="8" minlength="4" required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter HSN code.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">GST (%)</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" name="gst" id="gst"
+                                                                        required>
+                                                                        <option value="default" selected>Select GST %
+                                                                        </option>
+                                                                        <option value="0">0%</option>
+                                                                        <option value="5">5%</option>
+                                                                        <option value="12">12%</option>
+                                                                        <option value="18">18%</option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select GST.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row">
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="category">Category</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" name="category"
+                                                                        id="categorySelect" required>
+                                                                        <option value="default" selected>Select Category
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select category.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">Reorder
+                                                                Level</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        id="threshold"
+                                                                        placeholder="Minimum stock quantity"
+                                                                        name="threshold" required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter reorder level.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="card mb-4 mx-2 col-sm-12">
+
+                                                    <div class="card-body ">
+                                                        <h4 class="fs-5">Batch Details</h4>
+                                                        <hr>
+                                                        <div class="row">
+
+                                                            <label class="col-sm-2 col-form-label "
+                                                                for="basic-icon-default-companyname">Batch No.</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Eg- B6AEW8852" id="batchname"
+                                                                        required />
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter batch number.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-address">Exp Date</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input class="form-control expiry-date-mask"
+                                                                        type="text" name="addexp" placeholder="MM/YY"
+                                                                        required />
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter valid expiry date.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">Conversion</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <span class="input-group-text"
+                                                                        id="primarypopulate"></span>
+                                                                    <span class="input-group-text">=</span>
+                                                                    <input type="text" class="form-control rounded-0"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode)) || parseInt(this.value + String.fromCharCode(event.charCode)) > 500 || parseInt(this.value + String.fromCharCode(event.charCode)) < 1) return false;"
+                                                                        id="conversion" required
+                                                                        placeholder="Enter conversion" />
+                                                                    <span class="input-group-text"
+                                                                        id="secondarypopulate"></span>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter conversion.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-email">QTY</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Enter quantity"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode)) || parseInt(this.value + String.fromCharCode(event.charCode)) > 999) return false;"
+                                                                        id="addquantity" name="quantity" required>
+                                                                    <span class="input-group-text"
+                                                                        id="getprimaryunit"></span>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter quantity.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row">
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">MRP</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        name="addmrp" placeholder="Enter MRP Rate"
+                                                                        id="price"
+                                                                        onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter MRP.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-companyname">PTR</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        id="addpur" placeholder="Enter Purchase rate"
+                                                                        required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter PTR.
+                                                                    </div>
+                                                                </div>
+                                                                <!-- <div style="font-size: smaller; color: blue; margin-top: 5px; display: none;"
+                                                                    id="r_margin">
+                                                                    Retailer Margin: <span
+                                                                        id="retailer_margin">20</span>% -->
+                                                                <div style="font-size: smaller; color: blue; margin-top: 5px; display: none;"
+                                                                    id="r_margin">
+                                                                    PTR = <span id="suggest_ptr"></span> @ Retailer
+                                                                    Margin: 20%
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="bulk_discount">Discount
+                                                                (%)</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group input-group-merge">
+                                                                    <input type="text" class="form-control"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        name="bulk_discount" id="bulk_discount"
+                                                                        placeholder="Eg- 5%">
+                                                                </div>
+                                                            </div>
+
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="free_scheme">Free</label>
+                                                            <div class="col-sm-4 mb-3">
+                                                                <div class="input-group input-group-merge">
+                                                                    <input type="text" class="form-control"
+                                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                        name="free_scheme" id="free_scheme"
+                                                                        placeholder="Enter free quantity">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-sm-12 text-center">
+                                                            <btn class="btn btn-primary" id="addtocart">Add
+                                                                to
+                                                                Cart</btn>
+                                                            <div>
+                                                                <div style=" color: blue; margin-top: 5px; display: none;"
+                                                                    id="b_price">
+                                                                    Base price: <span id="base_price"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </form>
+                                    <hr class="mb-4">
+
+                                    <div class="card">
+                                        <h5 class="card-header">Cart</h5>
+                                        <div class="card-body">
+                                            <div class="table-responsive text-nowrap">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Product name</th>
+                                                            <th>Batch</th>
+                                                            <th>Expiry</th>
+                                                            <th>MRP</th>
+                                                            <th>PTR</th>
+                                                            <th>QTY</th>
+                                                            <th>Unit</th>
+                                                            <th>GST(%)</th>
+                                                            <th>Dis(%)</th>
+                                                            <th>Amount</th>
+                                                            <th class="col-1">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="cart">
+                                                        <!-- Cart items will be added here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row d-flex justify-content-evenly mt-4">
+
+                                        <div class="d-flex row m-0 p-0">
+                                            <h4 class="col-sm-7 fw-bold py-3 mb-2">Bill Summary</h4>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="card mb-4">
+                                                <h5 class="card-header"> Total Gross (₹)</h5>
+                                                <div class="card-body">
+                                                    <div class="has-validation">
+                                                        <input type="number" class="form-control" id="totalGross"
+                                                            readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" id="creditPeriodInputBox" style="display: none;">
+                                            <div class="card mb-4">
+                                                <div class="d-flex justify-content-between m-0 p-0">
+                                                    <h5 class="card-header">Credit Period</h5>
+                                                </div>
+                                                <div class="card-body pt-0" id="creditPeriodInput">
+                                                    <select class="form-select form-select">
+                                                        <option value="0">0D</option>
+                                                        <option value="10">10D</option>
+                                                        <option value="15">15D</option>
+                                                        <option value="30">30D</option>
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" id="lessDiscountBox">
+                                            <div class="card mb-4">
+                                                <div class="d-flex justify-content-between m-0 p-0">
+                                                    <h5 class="card-header">Less Discount (₹)</h5>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" class="form-control" id="lessDiscount"
+                                                            onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                            name="lessDiscount" placeholder="Less Discount in (₹)" />
+                                                        <div class="invalid-feedback">
+                                                            Less Discount cannot be greater than total amount
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="card mb-4">
+                                                <div class="row m-0 p-0">
+                                                    <h5 class="card-header">CR/DR (₹) </h5>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" class="form-control"
+                                                            onkeypress="javascript: if (!/[-0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                            id="creditAmt" placeholder="Enter CR/DR" />
+                                                        <div class="invalid-feedback">
+                                                            Credit Amount cannot be greater than subtotal
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="card mb-4">
+                                                <h5 class="card-header"> Total Amount (₹)</h5>
+                                                <div class="card-body">
+                                                    <div class="has-validation">
+                                                        <input type="number" class="form-control" id="totalAmt"
+                                                            readonly />
+                                                        <div class="invalid-feedback">
+                                                            Item cart empty cannot submit
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-check mt-3 d-flex justify-content-center align-items-center">
+                                        <input class="form-check-input mx-1" type="checkbox" value="" id="defaultCheck1"
+                                            checked>
+                                        <label class="form-check-label mx-1" for="defaultCheck1">
+                                            Disclaimer : Hereby I assure that product details given here is
+                                            validated by this pharmacy .
+                                        </label>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <a>
+                                            <button class="btn btn-primary px-5" id="submitorder">Submit</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+            </div>
+        </div>
+
+
+        <%- include('../partials/footercode.ejs') %>
+            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+            <script>
+                var productId;
+                var inventoryId;
+                var orgID = '<%= orgId %>';
+                var customerData = [];
+                var autoCompleteDataNumber = [];
+                var autoCompleteDataName = [];
+                var primaryUnit;
+                var secondaryUnit;
+                var batchIdwhenSelected;
+                var availablePrimaryQty;
+                var availableSecondaryQty;
+
+                var cartarray = [];
+                $(document).ready(function () {
+
+                    // Hide validation messages on input
+                    $('input').each(function () {
+                        $(this).on('input', function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+                    });
+                    $('select:required').each(function () {
+                        $(this).on('input', function () {
+                            if ($(this).val() == 'default' || $(this).val() == null) {
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+                    });
+
+                    $("#contact").text("Contact No :");
+                    $("#email").text("Email :");
+                    $("#dl_no").text("DL No. :");
+                    $("#gstin").text("GSTIN :");
+                    $("#address").text("Address :");
+
+                    // Default the invoice date to today's date
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                    var yyyy = today.getFullYear();
+                    today = yyyy + '-' + mm + '-' + dd;
+                    $("input[name='invoiceDate']").val(today);
+
+
+                    // Get the distributor details when the page loads
+                    function getDistributorDetails(vendorId) {
+                        $.get(`/api/v2/distributor/${vendorId}`, function (data, status) {
+                            var vendorDetails = data.data;
+                            console.log(vendorDetails);
+                            vendorId = vendorDetails.vendor_id;
+
+                            var number = `Contact: ${vendorDetails.vendor_contact}`
+                            var email = `Email : ${vendorDetails.vendor_email}`
+                            var dl_no = `DL No. : ${vendorDetails.vendor_dl_no_1}, ${vendorDetails.vendor_dl_no_2}`
+                            var gstin = `GSTIN : ${vendorDetails.vendor_gstin}`
+                            var address = `Address : ${vendorDetails.vendor_address}`
+
+                            $("#contact").text(number);
+                            $("#email").text(email);
+                            $("#dl_no").text(dl_no);
+                            $("#gstin").text(gstin);
+                            $("#address").text(address);
+                        });
+                    }
+
+
+                    // Event listener for changes in the vendor dropdown
+                    var vendorId = -1;
+                    $('#vendorselect').change(function () {
+                        var selectedVendorId = $(this).val();
+                        vendorId = selectedVendorId;
+                        getDistributorDetails(selectedVendorId);
+                    });
+
+
+                    // Event listener for changes in the payment method radio buttons
+                    $('input[name="paymentMethod"]').change(function () {
+                        // Check if the "Cash" radio button is selected
+                        if ($('#cashRadio').is(':checked')) {
+                            $('#creditPeriodInputBox').hide();
+                            $('#lessDiscountBox').show();
+                            $('#creditPeriodInput').val('');
+                        } else {
+                            $('#creditPeriodInputBox').show();
+                            $('#lessDiscountBox').hide();
+                        }
+                    });
+
+                    $("input[name='productname']").autocomplete({
+                        minLength: 2,
+                        source: function (request, response) {
+                            let query = request.term;
+
+                            $.ajax({
+                                url: `/api/autocomplete?query=${query}&orgId=${orgID}`,
+                                type: 'GET',
+                                success: function (ajaxResponse) {
+                                    console.log(ajaxResponse)
+                                    let results = ajaxResponse.filter(item => item.med_name.toLowerCase()).slice(0, 10);
+
+                                    if (results.length === 0) {
+                                        results.push({ med_name: null }); // Add a null item for the custom message
+                                    }
+                                    console.log(results);
+                                    response(results);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            })
+                        },
+                        select: function (event, ui) {
+                            productId = ui.item.id;
+                            $.get(`/api/v2/check-inventory?productId=${productId}&orgId=${orgID}`, function (data, status) {
+                                console.log('got this data from inventory', data);
+                                if (data.data.length == 1) {
+
+                                    var items = data.data[0];
+                                    inventoryId = items.inventory_id;
+                                    console.log(inventoryId);
+                                    $("select[name = 'gst']").val(items.gst).prop('disabled', true);
+                                    $("#hsn").val(items.hsn).prop('disabled', true);
+                                    $("select[name='primary']").val(items.primary_unit).prop('disabled', true);
+                                    populateSecondaryDropdown();
+                                    $("select[name='secondary']").val(items.secondary_unit).prop('disabled', true);
+                                    $("input[name='threshold']").val(items.threshold).prop('disabled', true);
+                                    $("select[name='category']").val(items.category_id);
+                                    if ($("select[name='category']").val() != null) {
+                                        $("select[name='category']").prop('disabled', true);
+                                    }
+                                    var primaryUnit = $("select[name='primary']").val();
+                                    var secondaryUnit = $("select[name='secondary']").val();
+                                    $("#primarypopulate").text(`1 ${primaryUnit}`);
+                                    $("#secondarypopulate").text(`${secondaryUnit}`);
+
+                                    // Remove validations for autopopulated fields
+                                    $('input:required').each(function () {
+                                        if ($(this).val() != '') {
+                                            $(this).removeClass('is-invalid');
+                                        }
+                                    });
+
+                                    $('select:required').each(function () {
+                                        if ($(this).val() != 'default' || $(this).val() != null) {
+                                            $(this).removeClass('is-invalid');
+                                        }
+                                    });
+                                }
+                            })
+
+                            setTimeout(function () {
+                                console.log(ui.item);
+                                $("input[name='productname']").val(ui.item.med_name);
+                                $("input[name='brand']").val(ui.item.mfd_mkt).prop('disabled', true);
+                                $("input[name='salt']").val(ui.item.salt_composition).prop('disabled', true);
+                                $("input[name='threshold']").val(1);
+                                $("select[name='category']").val(3);
+
+                                // Remove validations for autopopulated fields
+                                $('input:required').each(function () {
+                                    if ($(this).val() != '') {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+
+                                $('select:required').each(function () {
+                                    if ($(this).val() != 'default' || $(this).val() != null) {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+                            }, 0)
+                        }
+                    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+
+                        if (item.med_name) {
+
+                            return $('<li>')
+                                .append('<div>' + item.med_name + ' [' + item.pack_size + ']' + '</div>')
+                                .appendTo(ul);
+                        }
+                        else {
+                            return $('<li>').append('<div>No matching products found</div>').appendTo(ul);
+                        }
+
+                    };
+
+                    //HSN-GST autocomplete
+                    $("input[name='hsn']").autocomplete({
+                        minLength: 1,
+                        source: function (request, response) {
+                            let query = request.term;
+
+                            $.ajax({
+                                url: `/api/v2/search-hsn-gst?query=${query}`,
+                                type: 'GET',
+                                success: function (ajaxResponse) {
+                                    let results = ajaxResponse['data'].filter(item => item.hsn_code);
+
+                                    if (results.length === 0) {
+                                        results.push({ hsn_code: null }); // Add a null item for the custom message
+                                    }
+                                    console.log(results);
+                                    response(results);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            })
+                        },
+                        select: function (event, ui) {
+                            setTimeout(function () {
+                                console.log(ui.item);
+                                $("input[name='hsn']").val(ui.item.hsn_code);
+                                $("select[name='gst']").val(ui.item.gst_rate);
+
+                                // Remove validations for autopopulated gst field
+                                if ($("select[name='gst']").val() != 'default' || $("select[name='gst']").val() != null) {
+                                    $("select[name='gst']").removeClass('is-invalid');
+                                }
+                            }, 0)
+                        }
+
+                    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                        if (item.hsn_code) {
+                            return $('<li>')
+                                .append('<div>' + item.hsn_code + '</div>')
+                                .appendTo(ul);
+                        }
+                    }
+
+                    // Fetch categories from the API using jQuery
+                    $.get("/api/v2/all-category", function (response) {
+                        // Get the select element
+                        var categorySelect = $("#categorySelect");
+
+                        // Populate the dropdown with options
+                        $.each(response.data, function (index, category) {
+                            var option = $('<option>', {
+                                value: category.category_id,
+                                text: category.category_name
+                            });
+                            categorySelect.append(option);
+                        });
+                    }).fail(function (error) {
+                        console.error("Error fetching categories:", error);
+                    });
+
+                    var secondaryOptions = {
+                        STP: ['TAB', 'CAP'],
+                        AMP: ['AMP', 'PCS'],
+                        BOX: ['BOX', 'TAB', 'CAP', 'PCS', 'BTL', 'TUBE', 'DROP', 'DRSP', 'E/D', 'EAR/D', 'INJ', 'INH'],
+                        BTL: ['BTL', 'PCS', 'TAB', 'CAP'],
+                        TUBE: ['TUBE', 'PCS'],
+                        DROP: ['DROP', 'PCS'],
+                        DRSP: ['DRSP', 'PCS'],
+                        "E/D": ['E/D', 'PCS'],
+                        "EAR/D": ['EAR/D', 'PCS'],
+                        INJ: ['INJ', 'PCS'],
+                        INH: ['INH', 'PCS'],
+                        PCS: ['PCS']
+                    };
+
+                    function populateSecondaryDropdown() {
+                        // Clear existing options in the secondary dropdown
+                        $('#secondaryDropdown').html('<option value="default" selected disabled>Select Secondary</option>');
+
+                        // Get the selected value from the primary dropdown
+                        var selectedValue = $('#primaryDropdown').val();
+
+                        // Populate the secondary dropdown with options based on the selected value
+                        if (selectedValue in secondaryOptions) {
+                            $.each(secondaryOptions[selectedValue], function (index, option) {
+                                $('#secondaryDropdown').append('<option value="' + option + '">' + option + '</option>');
+                            });
+                        }
+                    }
+
+                    // Event listener for changes in the primary dropdown
+                    $('#primaryDropdown').change(populateSecondaryDropdown);
+
+                    //changes in stp and tabs
+                    $("select[name='primary'], select[name='secondary']").on("change", function () {
+                        var primaryUnit = $("select[name='primary']").val();
+                        var secondaryUnit = $("select[name='secondary']").val();
+
+                        $("#primarypopulate").text(`1 ${primaryUnit}`);
+                        $("#secondarypopulate").text(`${secondaryUnit}`);
+                    })
+
+                    // Formatted expiry date input
+                    var cleave = new Cleave('.expiry-date-mask', {
+                        date: true,
+                        datePattern: ['m', 'y']
+                    });
+
+                    // Expiry date validation
+                    $("[name='addexp']").on('change', function () {
+                        var input = $(this);
+                        var exp_date = input.val();
+
+                        var year = parseInt(exp_date.split('/')[1], 10);
+                        year = year < 70 ? 2000 + year : 1900 + year;
+                        var expiryDate = new Date(year, exp_date.split('/')[0] - 1);
+
+                        // Get the current year and month
+                        var today = new Date();
+                        var currentYear = today.getFullYear();
+                        var currentMonth = today.getMonth();
+
+                        if (expiryDate.getFullYear() < currentYear ||
+                            (expiryDate.getFullYear() === currentYear && expiryDate.getMonth() < currentMonth) ||
+                            expiryDate.getFullYear() > currentYear + 10) {
+                            $("[name='addexp']").val(null);
+                            $("[name='addexp']").addClass('is-invalid');
+                        } else {
+                            $(".invalid-feedback").hide();
+                        }
+                    });
+
+                    //PTR < MRP Validation
+                    $("#addpur, #price").on('change', function () {
+                        var ptr = parseFloat($("#addpur").val());
+                        var mrp = parseFloat($("#price").val());
+
+                        if (ptr >= mrp) {
+                            $("#addpur").val(null);
+                            $("#addpur").addClass('is-invalid');
+                        } else {
+                            $("#addpur").removeClass('is-invalid');
+                        }
+
+                        if (mrp <= ptr) {
+                            $("#price").val(null);
+                            $("#price").addClass('is-invalid');
+                        } else {
+                            $("#price").removeClass('is-invalid');
+                        }
+                    });
+
+                    // Calculate PTR
+                    function calcuatePTR(mrp, gst, retailerMargin) {
+                        return (mrp - (mrp * (retailerMargin / 100))) / (1 + (gst / 100));
+                    }
+
+                    function calculateRetailerMargin(mrp, ptr, gst) {
+                        return ((((mrp - ptr) / mrp) * 100) - ((ptr / mrp) * gst));
+                    }
+
+                    // Calcuate Base Price
+                    function calcuateBasePrice(mrp, ptr, gst, qty, free, bulkDis) {
+                        var free_cf = 1 - (1 / ((1 + (gst / 100)) * (qty + free)));
+                        var bulkDis_cf = 1 - (bulkDis / ((1 + (gst / 100)) * 100));
+
+                        if (free == 0) { // Boundary condition
+                            return ptr * bulkDis_cf;
+                        }
+                        return ptr * free_cf * bulkDis_cf;;
+                    }
+
+                    // Logic for calculating PTR
+                    // $("select[name='gst']").on("change", function () {
+                    //     var mrp = parseFloat($("#price").val());
+                    //     var gst = parseFloat($("select[name='gst']").val());
+                    //     var retailerMargin = parseFloat($("#retailer_margin").text());
+                    //     var ptr = calcuatePTR(mrp, gst, retailerMargin);
+                    //     $("#addpur").val(ptr.toFixed(2))
+                    // });
+
+
+                    // Calculate Retail margin on change of MRP
+                    $("#price").on("keyup", function () {
+                        $("#r_margin").show();
+
+                        var mrp = parseFloat($("#price").val()) || 0;
+                        var gst = parseFloat($("select[name='gst']").val()) || 0;
+                        var ptr = parseFloat($("#addpur").val()) || 0;
+
+                        var retailerMargin = calculateRetailerMargin(mrp, ptr, gst);
+
+                        $("#retailer_margin").text(retailerMargin.toFixed(2));
+                    });
+
+                    // Calculate PTR on change of MRP
+                    // $("#price").on("keyup", function () {
+                    //     $("#r_margin").show();
+                    //     var mrp = parseFloat($("#price").val()) || 0;
+                    //     var gst = parseFloat($("select[name='gst']").val()) || 0;
+                    //     var retailerMargin = parseFloat($("#retailer_margin").text());
+                    //     var ptr = calcuatePTR(mrp, gst, retailerMargin);
+                    //     $("#addpur").val(ptr.toFixed(2))
+                    // });
+
+                    // Calculate default PTR@20% on change of MRP
+                    $("#price").on("keyup", function () {
+                        $("#suggest_ptr").show();
+                        var mrp = parseFloat($("#price").val()) || 0;
+                        var gst = parseFloat($("select[name='gst']").val()) || 0;
+                        var retailerMargin = 20;
+
+                        var ptr = calcuatePTR(mrp, gst, retailerMargin);
+
+                        $("#suggest_ptr").text(ptr.toFixed(2));
+                    });
+
+
+                    // Calculate Retail margin on change of PTR
+                    $("#addpur").on("keyup", function () {
+                        var mrp = parseFloat($("#price").val()) || 0;
+                        var gst = parseFloat($("select[name='gst']").val()) || 0;
+                        var ptr = parseFloat($("#addpur").val()) || 0;
+                        var qty = parseFloat($("input[name='quantity']").val()) || 0;
+                        var free = parseFloat($("#free_scheme").val()) || 0;
+                        var bulkDis = parseFloat($("#bulk_discount").val()) || 0;
+
+                        var retailerMargin = calculateRetailerMargin(mrp, ptr, gst);
+
+                        var basePrice = calcuateBasePrice(mrp, ptr, gst, qty, free, bulkDis);
+
+                        $("#retailer_margin").text(retailerMargin.toFixed(2));
+                        $("#b_price").show();
+                        $("#base_price").text(basePrice.toFixed(2));
+                    })
+
+                    // Compute base price on change
+                    $("#free_scheme, #bulk_discount, input[name='quantity']").on("keyup", function () {
+                        var mrp = parseFloat($("#price").val()) || 0;
+                        var gst = parseFloat($("select[name='gst']").val()) || 0;
+                        var ptr = parseFloat($("#addpur").val()) || 0;
+                        var qty = parseFloat($("input[name='quantity']").val()) || 0;
+                        var free = parseFloat($("#free_scheme").val()) || 0;
+                        var bulkDis = parseFloat($("#bulk_discount").val()) || 0;
+
+                        var basePrice = calcuateBasePrice(mrp, ptr, gst, qty, free, bulkDis);
+
+                        $("#b_price").show();
+                        $("#base_price").text(basePrice.toFixed(2));
+                    })
+
+                    //  Clear input fields on product name change
+                    $("input[name='productname']").on('input', function () {
+                        productId = undefined;
+                        inventoryId = undefined;
+                        $("select[name = 'gst']").val('default').prop('disabled', false);;
+                        $("#hsn").val('').prop('disabled', false);;
+                        $("select[name='primary']").val('default').prop('disabled', false);;
+                        $("select[name='secondary']").val('default').prop('disabled', false);;
+                        $("input[name='threshold']").val("").prop('disabled', false);;
+                        $("#brand").val('').prop('disabled', false);
+                        $("#salt").val('').prop('disabled', false);
+                        $("select[name='category']").val('default').prop('disabled', false);
+                    })
+
+                    // Get data when refresh
+                    var grnCartItems = JSON.parse(localStorage.getItem('grncartdetails')) || [];
+                    var vendorDataLocal = JSON.parse(localStorage.getItem('vendordata')) || [];
+
+                    if (grnCartItems.length != 0) {
+                        $("#vendorinvoicenumber").val((vendorDataLocal.vendorInvoiceNo));
+                        var vendorInvoiceDate = new Date(vendorDataLocal.vendorInvoiceDate);
+                        var dd = String(vendorInvoiceDate.getDate()).padStart(2, '0');
+                        var mm = String(vendorInvoiceDate.getMonth() + 1).padStart(2, '0');
+                        var yyyy = vendorInvoiceDate.getFullYear();
+                        vendorInvoiceDate = yyyy + '-' + mm + '-' + dd;
+                        $("input[name='invoiceDate']").val(vendorInvoiceDate);
+                        vendorId = vendorDataLocal.vendorId;
+                        $("#vendorselect").val(vendorDataLocal.vendorId);
+                        getDistributorDetails(vendorDataLocal.vendorId);
+                    } else {
+                        $("#totalGross").val(0);
+                        $("#lessDiscount").val(0);
+                        $("#creditAmt").val(0);
+                        $("#totalAmt").val(0);
+                    }
+                    renderRefreshCart(grnCartItems);
+
+                    function renderRefreshCart(items) {
+                        $('#cart').empty();
+                        for (var i = 0; i < items.length; i++) {
+                            cartarray.push(items[i]);
+
+                            var datetime = items[i].expdate;
+                            var expDate = moment(datetime).format('MM/YYYY'); // Formating the expiry date
+
+                            htmlData = `
+                                <tr>
+                                    <td class="card_id">${i + 1}</td>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${items[i].productname}</strong></td>
+                                    <td>${items[i].batch}</td>
+                                    <td>${expDate}</td>
+                                    <td>${items[i].mrp}</td>
+                                    <td>${items[i].purchase}</td>
+                                    <td>${items[i].qty}</td>
+                                    <td>${items[i].punit}</td>
+                                    <td>${items[i].gst}</td>
+                                    <td>${items[i].bulk_discount}</td>
+                                    <td>${items[i].gross_amt}</td>
+                                    <td>
+                                    <div class="action-btns">
+                                        <button type="button" id="edit-button" class="edit-button btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                                        <button type="button" class="delete-button btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                                    </div>
+                                    </td>
+                                </tr>`
+                            $('#cart').append(htmlData);
+                        }
+                        getBillSummary();
+                    }
+                    //end of logic for refresh data
+
+                    var setLocalData;
+                    var getLocalData;
+                    var htmlData;
+                    $("#addtocart").click(function (e) {
+
+                        e.preventDefault();
+                        var isValid = true;
+                        $('input:required').each(function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                                $(this).focus();
+                                isValid = false;
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+
+                        $('select:required').each(function () {
+                            if ($(this).val() == 'default' || $(this).val() == null) {
+                                $(this).addClass('is-invalid');
+                                isValid = false;
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+
+                        if (parseInt($("#addquantity").val()) == 0) {
+                            $("#addquantity").addClass('is-invalid');
+                            $("#addquantity").focus();
+                            isValid = false;
+                        }
+
+                        if (parseFloat($("#price").val()) == 0) {
+                            $("#price").addClass('is-invalid');
+                            $("#price").focus();
+                            isValid = false;
+                        }
+
+                        if (isValid) {
+
+                            $("#r_margin").hide();
+                            $("input[name='productname']").prop('disabled', false);
+                            $("input[name='brand']").prop('disabled', false);
+                            $("input[name='salt']").prop('disabled', false);
+                            $("select[name = 'gst']").prop('disabled', false);
+                            $("#hsn").prop('disabled', false);
+                            $("select[name='primary']").prop('disabled', false);
+                            $("select[name='secondary']").prop('disabled', false);
+                            $("input[name='threshold']").prop('disabled', false);
+                            $("select[name='category']").prop('disabled', false);
+
+                            var products = $("#medicinename").val();
+                            var brand = $("#brand").val();
+                            var salt = $("#salt").val();
+                            var category_id = $("select[name='category']").val();
+                            var gst = parseFloat($("select[name = 'gst']").val());
+                            var hsn = $("#hsn").val();
+                            var Punit = $("select[name='primary']").val();
+                            var Sunit = $("select[name='secondary']").val();
+                            var moq = $("input[name='threshold']").val();
+
+
+
+                            // Convert expdate to yyyy-mm-dd format
+                            var exp = $('[name="addexp"]').val();
+                            var year = parseInt(exp.split('/')[1], 10);
+                            year = year < 70 ? 2000 + year : 1900 + year;
+                            var firstDayOfNextMonth = new Date(year, exp.split('/')[0]);
+                            firstDayOfNextMonth.setDate(firstDayOfNextMonth.getDate() - 1);
+                            var exp = firstDayOfNextMonth.toISOString().slice(0, 10);
+
+
+                            var batch = $("#batchname").val();
+                            var conversion = $("#conversion").val();
+                            var shelflabel = $("#shelflabel").val();
+                            var mrp = parseFloat($("#price").val());
+                            var purchase = parseFloat($("#addpur").val());
+                            var free = parseFloat($("#free_scheme").val()) || 0;
+                            var bulk_discount = parseFloat($("#bulk_discount").val()) || 0;
+                            var base_price = $("#base_price").text();
+                            var quantity = parseFloat($("input[name='quantity']").val());
+
+                            //logic for calculating amount
+                            var grossValue = (purchase * quantity * (1 - (bulk_discount / 100)));
+                            var gstValue = grossValue * (gst / 100);
+                            var amount = (grossValue + gstValue);
+
+                            cartarray.push({
+                                productId: productId,
+                                inventoryId: inventoryId,
+                                productname: products,
+                                brandname: brand,
+                                salt: salt,
+                                category_id: category_id,
+                                gst: gst,
+                                hsn: hsn,
+                                punit: Punit,
+                                sunit: Sunit,
+                                moq: moq,
+
+                                batch: batch,
+                                expdate: exp,
+                                conversion: conversion,
+                                shelflabel: shelflabel,
+                                mrp: mrp.toFixed(2),
+                                purchase: purchase.toFixed(2),
+                                free: free,
+                                bulk_discount: bulk_discount.toFixed(2),
+                                base_price: base_price,
+                                qty: quantity + free,
+                                gross_amt: grossValue.toFixed(2),
+                                total_amt: amount.toFixed(2),
+                            })
+                            console.log('cart details', cartarray);
+
+                            setLocalData = JSON.stringify(cartarray);
+
+                            localStorage.setItem("grncartdetails", setLocalData);
+
+                            // also add the customer data to local storage
+                            var storeDistributorData = {
+                                vendorId: $("#vendorselect option:selected").val(),
+                                vendorInvoiceNo: $("#vendorinvoicenumber").val(),
+                                vendorInvoiceDate: $("input[name='invoiceDate']").val()
+                            };
+                            localStorage.setItem("vendordata", JSON.stringify(storeDistributorData));
+
+                            productId = undefined;
+                            inventoryId = undefined;
+                            $("#medicinename").val("");
+                            $("select[name = 'gst']").val('Select option');
+                            $("#hsn").val("");
+                            $("select[name='primary']").val('Primary');
+                            $("select[name='secondary']").val('Secondary');
+                            $("input[name='threshold']").val("");
+                            $("#brand").val('')
+                            $("#salt").val('')
+                            $("select[name='category']").val('Select Category');
+
+                            $("#batchname").val("");
+                            $('[name="addexp"]').val('');
+                            $("#conversion").val("");
+                            $("#primarypopulate").text("");
+                            $("#secondarypopulate").text("");
+                            $("#shelflabel").val("");
+                            $("#price").val("");
+                            $("#addpur").val("");
+                            $("#free_scheme").val("");
+                            $("#bulk_discount").val("");
+                            $("#base_price").text("");
+                            $("input[name='quantity']").val("");
+                        }
+
+                    })
+
+                    // logic for redering cart data on addtocart click 
+                    $("#addtocart").on('click', function () {
+                        cartItems = JSON.parse(localStorage.getItem('grncartdetails')) || [];
+                        renderCart(cartItems);
+                        getBillSummary();
+                    });
+
+                    //rendercart functionality
+                    function renderCart(items) {
+                        $('#cart').empty();
+                        for (var i = 0; i < items.length; i++) {
+
+                            var datetime = items[i].expdate;
+                            var expDate = moment(datetime).format('MM/YYYY'); // Formating the expiry date
+
+                            htmlData = `
+                                    <tr>
+                                        <td class="card_id">${i + 1}</td>
+                                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${items[i].productname}</strong></td>
+                                        <td>${items[i].batch}</td>
+                                        <td>${expDate}</td>
+                                        <td>${items[i].mrp}</td>
+                                        <td>${items[i].purchase}</td>
+                                        <td>${items[i].qty}</td>
+                                        <td>${items[i].punit}</td>
+                                        <td>${items[i].gst}</td>
+                                        <td>${items[i].bulk_discount}</td>
+                                        <td>${items[i].gross_amt}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button type="button" id="edit-button" class="edit-button btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                                                <button type="button" class="delete-button btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>`
+                            $('#cart').append(htmlData);
+                        }
+                    }
+                    //end of rendereing data logic
+
+                    //deletefunctionality
+                    $("#cart").on("click", ".delete-button", function () {
+                        var item = $(this).closest("tr");
+                        var item_id = item.find(".card_id").text().trim();
+                        var cartItemsinStorage = JSON.parse(localStorage.getItem('grncartdetails')) || [];
+                        cartItemsinStorage.splice(item_id - 1, 1);
+                        cartarray = cartItemsinStorage;
+                        localStorage.setItem('grncartdetails', JSON.stringify(cartItemsinStorage));
+                        renderCart(cartItemsinStorage);
+                        getBillSummary();
+                    });
+                    //endofdeletefunctionality
+
+                    //edit functionality  
+                    $("#cart").on("click", ".edit-button", function () {
+                        var item = $(this).closest("tr");
+                        var item_id = item.find(".card_id").text().trim();
+                        var UpdatecartItemsinStorage = JSON.parse(localStorage.getItem('grncartdetails')) || [];
+                        var selectedItem = UpdatecartItemsinStorage[item_id - 1];
+                        productId = selectedItem.productId;
+
+                        $("#medicinename").val(selectedItem.productname);
+                        $("#brand").val(selectedItem.brandname);
+                        $("#salt").val(selectedItem.salt);
+                        $("select[name = 'gst']").val(selectedItem.gst);
+                        $("#hsn").val(selectedItem.hsn);
+                        $("select[name='primary']").val(selectedItem.punit);
+                        populateSecondaryDropdown();
+                        $("select[name='secondary']").val(selectedItem.sunit);
+                        $("input[name='threshold']").val(selectedItem.moq);
+                        $("#categorySelect").val(selectedItem.category_id);
+
+                        $("#batchname").val(selectedItem.batch);
+                        $('[name="addexp"]').val('');
+                        $("#primarypopulate").text(selectedItem.punit);
+                        $("#secondarypopulate").text(selectedItem.sunit);
+                        $("#conversion").val(selectedItem.conversion);
+                        $("#price").val(selectedItem.mrp);
+                        $("#addpur").val(selectedItem.purchase);
+                        $("#free_scheme").val(selectedItem.free);
+                        $("#bulk_discount").val(selectedItem.bulk_discount);
+                        $("#base_price").text(selectedItem.base_price);
+                        $("input[name='quantity']").val(selectedItem.qty - selectedItem.free);
+
+                        UpdatecartItemsinStorage.splice(item_id - 1, 1);
+                        cartarray = UpdatecartItemsinStorage;
+                        localStorage.setItem('grncartdetails', JSON.stringify(UpdatecartItemsinStorage));
+                        renderCart(UpdatecartItemsinStorage);
+                        getBillSummary();
+                    })
+                    //end of edit functionality
+
+
+                    function getBillSummary() {
+
+                        getAllData = JSON.parse(localStorage.getItem("grncartdetails")) || [];
+
+                        if (getAllData.length != 0) {
+                            var totalAmt = 0;
+                            var totalGross = 0;
+                            var totalGST = 0;
+                            var lessDiscount = parseFloat($("#lessDiscount").val()) || 0;
+                            var creditAmtInput = parseFloat($("#creditAmt").val()) || 0;
+
+                            for (let i = 0; i < getAllData.length; i++) {
+                                totalGross += parseFloat(getAllData[i].gross_amt);
+                            }
+                            var lessDiscountPercent = (lessDiscount / totalGross) * 100;
+
+                            for (let i = 0; i < getAllData.length; i++) {
+                                totalGST += (getAllData[i].gross_amt * (1 - lessDiscountPercent / 100)) * getAllData[i].gst / 100;
+                            }
+                            $("#totalGross").val(totalGross.toFixed(2));
+
+                            totalAmt = totalGross + totalGST - lessDiscount + creditAmtInput;
+                            $("#totalAmt").val(totalAmt.toFixed(2));
+                        }
+                        else if (getAllData.length == 0) {
+                            $("#totalGross").val(0);
+                            $("#totalAmt").val(0);
+                        }
+                    }
+
+                    // Ensure credit Amount is not greater than total Amount and not less than zero
+                    $('#creditAmt').on("input", function () {
+                        var getTotalAmt = parseFloat($("#totalGross").val());
+                        var creditAmtInput = parseFloat($(this).val());
+
+                        if (Math.abs(creditAmtInput) > getTotalAmt) {
+                            $('#creditAmt').addClass('is-invalid');
+                            $('#creditAmt').focus();
+                            $(this).val(getTotalAmt);
+                        } else {
+                            getBillSummary();
+                            $('#creditAmt').removeClass('is-invalid');
+                        }
+                    });
+
+                    // Ensure less discount is not greater than total Amount and not less than zero
+                    $('#lessDiscount').on("input", function () {
+                        var getTotalAmt = parseFloat($("#totalGross").val());
+                        var lessDiscountInput = parseFloat($(this).val());
+                        console.log(getTotalAmt, lessDiscountInput)
+
+                        if (lessDiscountInput > getTotalAmt) {
+                            $('#lessDiscount').addClass('is-invalid');
+                            $('#lessDiscount').focus();
+                            $(this).val(getTotalAmt);
+                        } else {
+                            getBillSummary();
+                            $('#lessDiscount').removeClass('is-invalid');
+                        }
+                    });
+
+                    // Calculate final amount on input of additional discount
+                    // $('#creditAmt').on("input", function () {
+                    //     var getTotalAmt = parseFloat(("#totalGross").val());
+                    //     var creditAmtInput = parseFloat($(this).val());
+
+                    //     var finalAmount= getTotalAmt - creditAmtInput;
+                    //     $("#finalamount").val(finalAmount.toFixed(2));
+                    // });
+
+
+                    var orderDetails;
+                    var org = '<%=orgId%>';
+
+                    $("#submitorder").click(function (e) {
+
+                        e.preventDefault();
+                        var isValid = true;
+
+                        // Validations
+                        if ($("#vendorselect").val() === 'default') {
+                            $('#vendorselect').addClass('is-invalid');
+                            $('#vendorselect').focus();
+                            isValid = false;
+                        }
+
+                        if ($("#vendorinvoicenumber").val() == '') {
+                            $("#vendorinvoicenumber").addClass('is-invalid');
+                            $("#vendorinvoicenumber").focus();
+                            isValid = false;
+                        }
+
+                        if ($("input[name='invoiceDate']").val() == '') {
+                            $("input[name='invoiceDate']").addClass('is-invalid');
+                            $("input[name='invoiceDate']").focus();
+                            isValid = false;
+                        }
+
+                        if ($("#totalGross").val() == 0 || $("#totalGross").val() == '') {
+                            $("#totalGross").addClass('is-invalid');
+                            $("#totalGross").focus();
+                            isValid = false;
+                        }
+
+                        if ($("#lessDiscount").val() == '') {
+                            $("#lessDiscount").addClass('is-invalid');
+                            $("#lessDiscount").focus();
+                            isValid = false;
+                        }
+
+                        if (!$("#defaultCheck1").prop("checked")) {
+                            return alert("Please check the disclaimer before submitting.");
+                        }
+
+                        if (isValid) {
+                            $("#submitorder").prop('disabled', true);
+
+                            // Show loader
+                            $('#loader').show();
+
+                            var cartDetails = JSON.parse(localStorage.getItem("grncartdetails"));
+                            var lessDiscount = parseFloat($("#lessDiscount").val() || 0);
+                            var creditDebit = parseFloat($("#creditAmt").val()) || 0;
+                            var totalPurchase = 0;
+
+                            /////////////////// version 2 ///////////////////////
+
+                            purchaseItems = [];
+                            for (let i in cartDetails) {
+                                purchaseItems.push({
+                                    inventoryId: cartDetails[i].inventoryId,
+                                    productId: cartDetails[i].productId,
+                                    categoryId: cartDetails[i].category_id,
+                                    medName: cartDetails[i].productname,
+                                    mfdMkt: cartDetails[i].brandname,
+                                    salt: cartDetails[i].salt,
+                                    gst: cartDetails[i].gst,
+                                    hsn: cartDetails[i].hsn,
+                                    primaryUnit: cartDetails[i].punit,
+                                    secondaryUnit: cartDetails[i].sunit,
+                                    threshold: cartDetails[i].moq,
+                                    batchName: cartDetails[i].batch,
+                                    expDate: cartDetails[i].expdate,
+                                    conversion: cartDetails[i].conversion,
+                                    shelfLabel: cartDetails[i].shelflabel,
+                                    mrp: cartDetails[i].mrp,
+                                    ptr: cartDetails[i].purchase,
+                                    free: cartDetails[i].free,
+                                    bulkDiscount: cartDetails[i].bulk_discount,
+                                    basePrice: cartDetails[i].base_price,
+                                    quantity: cartDetails[i].qty,
+                                })
+                                totalPurchase += parseFloat((cartDetails[i].qty - cartDetails[i].free) * cartDetails[i].purchase * (1 - cartDetails[i].bulk_discount / 100));
+                            }
+
+                            var purchaseData = {
+                                vendorId: vendorId,
+                                orgId: org,
+                                vendorInvoice: $("#vendorinvoicenumber").val(),
+                                invoiceDate: $("input[name='invoiceDate']").val(),
+                                paymentMethod: $('input[name="paymentMethod"]:checked').val(),
+                                creditPeriod: $("#creditPeriodInput").val() || 0,
+                                totalGross: totalPurchase.toFixed(2),
+                                lessDiscount: lessDiscount.toFixed(2),
+                                creditDebit: creditDebit.toFixed(2),
+                                purchaseItems,
+                            }
+
+                            $.ajax({
+                                url: `/api/v2/purchaseEntry`,
+                                type: 'POST',
+                                data: JSON.stringify(purchaseData),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    grnInvoiceNo = response.grnInvoiceNo;
+                                    $('#loader').hide();
+                                    localStorage.removeItem("grncartdetails");
+                                    localStorage.removeItem("vendordata");
+                                    window.location.href = `/grn_receipt/${grnInvoiceNo}`
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                    alert("Not Created", error)
+                                }
+                            })
+
+
+                            /////////////////// version 1 ///////////////////////
+                            // $.ajax({
+                            //     url: `/api/creategrn/`,
+                            //     type: 'POST',
+                            //     data: JSON.stringify({
+                            //         pharmacyId: pharmacyDetails.pharmaId,
+                            //         vendor_id: vendorId,
+                            //         vendor_invoice: $("#vendorinvoicenumber").val(),
+                            //         total: totalPurchase,
+                            //         org_id: org,
+                            //         invoice_date: $("input[name='invoiceDate']").val(),
+                            //         credit_period: $("#creditPeriodInput").val() || 0,
+                            //         less_discount: lessDiscount,
+                            //         credit_debit: creditDebit,
+                            //         payment_method: $('input[name="paymentMethod"]:checked').val(),
+                            //     }),
+                            //     contentType: 'application/json',
+                            //     success: function (response) {
+
+                            //         var GRNid = response.grn_invoice_no;
+
+                            //         console.log('Balance Updated', response);
+                            //         console.log('orderdetails of grn', cartDetails);
+
+                            //         for (let i in cartDetails) {
+
+                            //             if (cartDetails[i].productId == undefined) {
+                            //                 var customProductDetails = {
+                            //                     org_id: org,
+                            //                     med_name: cartDetails[i].productname,
+                            //                     mfd_mkt: cartDetails[i].brandname,
+                            //                     salt: cartDetails[i].salt,
+                            //                     conversion: cartDetails[i].conversion,
+                            //                 }
+
+                            //                 $.ajax({
+                            //                     url: '/api/createproduct',
+                            //                     type: 'POST',
+                            //                     data: JSON.stringify(customProductDetails),
+                            //                     contentType: 'application/json',
+                            //                     success: function (response) {
+                            //                         console.log(response);
+                            //                         cartDetails[i].productId = response.product_id;
+
+                            //                         var productDetails = {
+                            //                             product_id: cartDetails[i].productId,
+                            //                             org_id: org,
+                            //                             category_id: cartDetails[i].category_id,
+                            //                             gst: cartDetails[i].gst,
+                            //                             hsn: cartDetails[i].hsn,
+                            //                             primary_unit: cartDetails[i].punit,
+                            //                             secondary_unit: cartDetails[i].sunit,
+                            //                             threshold: cartDetails[i].moq
+                            //                         }
+
+                            //                         console.log('product details', productDetails);
+                            //                         $.ajax({
+                            //                             url: `/api/createinventory/`,
+                            //                             type: 'POST',
+                            //                             data: JSON.stringify(productDetails),
+                            //                             contentType: 'application/json',
+                            //                             success: function (response) {
+                            //                                 cartDetails[i].inventoryId = response.data.insertId;
+
+                            //                                 var batchDetails = {
+                            //                                     product_id: cartDetails[i].productId,
+                            //                                     org_id: org,
+                            //                                     inventory_id: cartDetails[i].inventoryId,
+                            //                                     batch_name: cartDetails[i].batch,
+                            //                                     exp_date: cartDetails[i].expdate,
+                            //                                     conversion: cartDetails[i].conversion,
+                            //                                     batch_qty: cartDetails[i].qty,
+                            //                                     purchase_rate: cartDetails[i].purchase,
+                            //                                     mrp: cartDetails[i].mrp,
+                            //                                     free: cartDetails[i].free,
+                            //                                     bulk_discount: cartDetails[i].bulk_discount,
+                            //                                     base_price: cartDetails[i].base_price,
+                            //                                     shelf_label: cartDetails[i].shelflabel,
+                            //                                     grn_id: GRNid
+                            //                                 }
+
+                            //                                 $.ajax({
+                            //                                     url: `/api/addbatch/`,
+                            //                                     type: 'POST',
+                            //                                     data: JSON.stringify(batchDetails),
+                            //                                     contentType: 'application/json',
+                            //                                     success: function (response) {
+                            //                                         $.ajax({
+                            //                                             url: `/api/creategrncarts`,
+                            //                                             type: 'POST',
+                            //                                             data: JSON.stringify({
+                            //                                                 grn_id: GRNid,
+                            //                                                 product_id: cartDetails[i].productId,
+                            //                                                 gst: cartDetails[i].gst,
+                            //                                                 category_id: cartDetails[i].category_id,
+                            //                                                 hsn: cartDetails[i].hsn,
+                            //                                                 punit: cartDetails[i].punit,
+                            //                                                 sunit: cartDetails[i].sunit,
+                            //                                                 moq: cartDetails[i].moq,
+                            //                                                 batch_name: cartDetails[i].batch,
+                            //                                                 exp: cartDetails[i].expdate,
+                            //                                                 conversion: cartDetails[i].conversion,
+                            //                                                 shelf_label: cartDetails[i].shelflabel,
+                            //                                                 purchase: cartDetails[i].purchase,
+                            //                                                 mrp: cartDetails[i].mrp,
+                            //                                                 free: cartDetails[i].free,
+                            //                                                 bulk_discount: cartDetails[i].bulk_discount,
+                            //                                                 base_price: cartDetails[i].base_price,
+                            //                                                 qty: cartDetails[i].qty,
+
+                            //                                             }),
+                            //                                             contentType: 'application/json',
+                            //                                             success: function (response) {
+                            //                                                 console.log('grn done', response);
+                            //                                             },
+                            //                                             error: function (error) {
+                            //                                                 $('#loader').hide();
+                            //                                                 console.log('error in grn', error);
+                            //                                                 return alert("not Created", error)
+                            //                                             }
+                            //                                         })
+                            //                                         console.log(response);
+
+                            //                                     },
+                            //                                     error: function (error) {
+                            //                                         $('#loader').hide();
+                            //                                         console.log(error);
+                            //                                         return alert("not Created", error)
+                            //                                     }
+                            //                                 })
+                            //                             },
+                            //                             error: function (error) {
+                            //                                 $('#loader').hide();
+                            //                                 console.log(error);
+                            //                                 return alert("not Created", error)
+                            //                             }
+                            //                         })
+
+                            //                     },
+                            //                 })
+                            //             }
+
+                            //             else {
+                            //                 // If productId fetched (Product is in Master Database)
+                            //                 $.get(`/api/checkbyid?product=${cartDetails[i].productId}&org=${orgID}`, function (data, status) {
+                            //                     console.log(data.data);
+                            //                     if (data.data.length === 0) {
+
+                            //                         var productDetails = {
+                            //                             product_id: cartDetails[i].productId,
+                            //                             org_id: org,
+                            //                             category_id: cartDetails[i].category_id,
+                            //                             gst: cartDetails[i].gst,
+                            //                             hsn: cartDetails[i].hsn,
+                            //                             primary_unit: cartDetails[i].punit,
+                            //                             secondary_unit: cartDetails[i].sunit,
+                            //                             threshold: cartDetails[i].moq
+                            //                         }
+
+
+                            //                         $.ajax({
+                            //                             url: `/api/createinventory/`,
+                            //                             type: 'POST',
+                            //                             data: JSON.stringify(productDetails),
+                            //                             contentType: 'application/json',
+                            //                             success: function (response) {
+
+                            //                                 cartDetails[i].inventoryId = response.data.insertId;
+
+                            //                                 var batchDetails = {
+                            //                                     product_id: cartDetails[i].productId,
+                            //                                     org_id: org,
+                            //                                     inventory_id: cartDetails[i].inventoryId,
+                            //                                     batch_name: cartDetails[i].batch,
+                            //                                     exp_date: cartDetails[i].expdate,
+                            //                                     conversion: cartDetails[i].conversion,
+                            //                                     batch_qty: cartDetails[i].qty,
+                            //                                     purchase_rate: cartDetails[i].purchase,
+                            //                                     mrp: cartDetails[i].mrp,
+                            //                                     free: cartDetails[i].free,
+                            //                                     bulk_discount: cartDetails[i].bulk_discount,
+                            //                                     base_price: cartDetails[i].base_price,
+                            //                                     shelf_label: cartDetails[i].shelflabel,
+                            //                                     grn_id: GRNid
+                            //                                 }
+                            //                                 //console.log(batchDetails);
+
+                            //                                 $.ajax({
+                            //                                     url: `/api/addbatch/`,
+                            //                                     type: 'POST',
+                            //                                     data: JSON.stringify(batchDetails),
+                            //                                     contentType: 'application/json',
+                            //                                     success: function (response) {
+
+
+                            //                                         $.ajax({
+                            //                                             url: `/api/creategrncarts`,
+                            //                                             type: 'POST',
+                            //                                             data: JSON.stringify({
+                            //                                                 grn_id: GRNid,
+                            //                                                 product_id: cartDetails[i].productId,
+                            //                                                 gst: cartDetails[i].gst,
+                            //                                                 category_id: cartDetails[i].category_id,
+                            //                                                 hsn: cartDetails[i].hsn,
+                            //                                                 punit: cartDetails[i].punit,
+                            //                                                 sunit: cartDetails[i].sunit,
+                            //                                                 moq: cartDetails[i].moq,
+                            //                                                 batch_name: cartDetails[i].batch,
+                            //                                                 exp: cartDetails[i].expdate,
+                            //                                                 conversion: cartDetails[i].conversion,
+                            //                                                 shelf_label: cartDetails[i].shelflabel,
+                            //                                                 purchase: cartDetails[i].purchase,
+                            //                                                 mrp: cartDetails[i].mrp,
+                            //                                                 free: cartDetails[i].free,
+                            //                                                 bulk_discount: cartDetails[i].bulk_discount,
+                            //                                                 base_price: cartDetails[i].base_price,
+                            //                                                 qty: cartDetails[i].qty,
+
+                            //                                             }),
+                            //                                             contentType: 'application/json',
+                            //                                             success: function (response) {
+                            //                                                 console.log('grn done', response);
+                            //                                             },
+                            //                                             error: function (error) {
+                            //                                                 $('#loader').hide();
+                            //                                                 console.log('error in grn', error);
+                            //                                                 return alert("not Created", error)
+                            //                                             }
+                            //                                         })
+                            //                                         console.log(response);
+                            //                                     },
+                            //                                     error: function (error) {
+                            //                                         $('#loader').hide();
+                            //                                         console.log(error);
+                            //                                         return alert("not Created", error)
+                            //                                     }
+                            //                                 })
+                            //                                 console.log(response);
+                            //                             },
+                            //                             error: function (error) {
+                            //                                 $('#loader').hide();
+                            //                                 console.log(error);
+                            //                                 return alert("not Created", error)
+                            //                             }
+                            //                         })
+                            //                     } else {
+                            //                         var batchDetails = {
+                            //                             product_id: cartDetails[i].productId,
+                            //                             org_id: org,
+                            //                             inventory_id: cartDetails[i].inventoryId,
+                            //                             batch_name: cartDetails[i].batch,
+                            //                             exp_date: cartDetails[i].expdate,
+                            //                             conversion: cartDetails[i].conversion,
+                            //                             batch_qty: cartDetails[i].qty,
+                            //                             purchase_rate: cartDetails[i].purchase,
+                            //                             mrp: cartDetails[i].mrp,
+                            //                             free: cartDetails[i].free,
+                            //                             bulk_discount: cartDetails[i].bulk_discount,
+                            //                             base_price: cartDetails[i].base_price,
+                            //                             shelf_label: cartDetails[i].shelflabel,
+                            //                             grn_id: GRNid
+                            //                         }
+                            //                         //console.log(batchDetails);
+
+                            //                         $.ajax({
+                            //                             url: `/api/addbatch/`,
+                            //                             type: 'POST',
+                            //                             data: JSON.stringify(batchDetails),
+                            //                             contentType: 'application/json',
+                            //                             success: function (response) {
+
+                            //                                 $.ajax({
+                            //                                     url: `/api/creategrncarts`,
+                            //                                     type: 'POST',
+                            //                                     data: JSON.stringify({
+                            //                                         grn_id: GRNid,
+                            //                                         product_id: cartDetails[i].productId,
+                            //                                         gst: cartDetails[i].gst,
+                            //                                         hsn: cartDetails[i].hsn,
+                            //                                         punit: cartDetails[i].punit,
+                            //                                         sunit: cartDetails[i].sunit,
+                            //                                         moq: cartDetails[i].moq,
+                            //                                         batch_name: cartDetails[i].batch,
+                            //                                         exp: cartDetails[i].expdate,
+                            //                                         conversion: cartDetails[i].conversion,
+                            //                                         shelf_label: cartDetails[i].shelflabel,
+                            //                                         purchase: cartDetails[i].purchase,
+                            //                                         mrp: cartDetails[i].mrp,
+                            //                                         free: cartDetails[i].free,
+                            //                                         bulk_discount: cartDetails[i].bulk_discount,
+                            //                                         base_price: cartDetails[i].base_price,
+                            //                                         qty: cartDetails[i].qty,
+
+                            //                                     }),
+                            //                                     contentType: 'application/json',
+                            //                                     success: function (response) {
+                            //                                         console.log('grn done', response);
+                            //                                     },
+                            //                                     error: function (error) {
+                            //                                         console.log('error in grn', error);
+                            //                                         return alert("Not Created", error)
+                            //                                     }
+                            //                                 })
+                            //                                 console.log(response);
+                            //                             },
+                            //                             error: function (error) {
+                            //                                 $('#loader').hide();
+                            //                                 console.log(error);
+                            //                                 return alert("Not Created", error)
+                            //                             }
+                            //                         })
+                            //                     }
+                            //                 })
+                            //             }
+                            //         }
+
+                            //         //Clear inputs
+                            //         $('#vendorselect').val('default');
+                            //         $('#vendorinvoicenumber').val('');
+                            //         $("input[name='invoiceDate']").val('');
+                            //         $("#creditPeriodInput").val('');
+                            //         $("#lessDiscount").val('');
+                            //         $("#creditAmt").val('');
+                            //         $("#totalGross").val('');
+                            //         $("#totalAmt").val('')
+
+                            //         setTimeout(() => {
+                            //             $('#loader').hide();
+                            //             localStorage.removeItem("grncartdetails");
+                            //             localStorage.removeItem("vendordata");
+                            //             window.location.href = `/grn_receipt/${GRNid}`
+                            //         }, 3000);
+                            //     },
+                            //     error: function (error) {
+                            //         $('#loader').hide();
+                            //         alert("Not Created! Please refresh page", error)
+                            //     }
+                            // })
+
+                        }
+                    })
+
+                });
+            </script>
+
+    </body>
+
+    </html>

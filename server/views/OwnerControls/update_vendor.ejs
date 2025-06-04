@@ -1,0 +1,440 @@
+<%- include('../partials/headercode.ejs') %>
+
+  <body>
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar  ">
+      <div class="layout-container">
+
+        <!-- sidebar imported -->
+        <%- include('../partials/sidebar.ejs') %>
+
+          <!-- Layout container -->
+          <div class="layout-page">
+
+            <!-- navbar imported -->
+            <%- include('../partials/navbar.ejs') %>
+
+              <!-- Content wrapper -->
+              <div class="content-wrapper">
+
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+
+                  <div class="d-flex justify-content-between m-0 p-0">
+                    <h4 class="fw-bold py-3 mb-1"> Update Distributor Details</h4>
+                    <a type="button" class="btn btn-icon btn-danger my-2 mx-3" href="/vendor_list">
+                      <i class='bx bx-x bx-sm'></i>
+                    </a>
+                  </div>
+
+                  <hr class="mb-4">
+
+                  <div class="card mb-4 mx-auto col-md-10">
+
+                    <div class="card-body ">
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="vendor_name">Distributor
+                          Name<span style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-sm-10">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                class="bx bx-user"></i></span>
+                            <input type="text" class="form-control" id="vendor_name" placeholder="" name="vendor_name"
+                              value="<%=vendor[0].vendor_name%>" required>
+                            <div class="invalid-feedback">
+                              Please enter distributor name.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="vendor_contact">Contact
+                          Number<span style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-sm-4">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                class="bx bx-phone"></i></span>
+                            <input type="text" id="vendor_contact" class="form-control phone-mask" placeholder=""
+                              name="vendor_contact" value="<%=vendor[0].vendor_contact%>"
+                              oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);  if (this.value.length > 0 && !/[6-9]/.test(this.value[0])) this.value = '';"
+                              onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                              type="tel" maxlength="10" required>
+                            <div class="invalid-feedback">
+                              Please enter contact number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <label class="col-sm-2 col-form-label ps-4" for="vendor_email">Email</label>
+                        <div class="col-sm-4">
+                          <div class="input-group has-validation">
+                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                            <input type="text" id="vendor_email" class="form-control" placeholder="email@example.com"
+                              name="vendor_email" value="<%=vendor[0].vendor_email%>">
+                            <div class="invalid-feedback">
+                              Please enter valid email.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="vendor_gstin">GSTIN<span
+                            style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-sm-4">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                class="bx bxs-bank"></i></span>
+                            <input type="text" id="vendor_gstin" class="form-control phone-mask" placeholder=""
+                              name="vendor_gstin" value="<%=vendor[0].vendor_gstin %>" minlength="15" maxlength="15"
+                              required>
+                            <div class="invalid-feedback">
+                              Please enter valid GSTIN.
+                            </div>
+                          </div>
+                        </div>
+
+                        <label class="col-sm-2 col-form-label ps-4" for="vendor_fssai">FSSAI<span
+                            style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-sm-4">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                class="bx bxs-bank"></i></span>
+                            <input type="text" id="vendor_fssai" class="form-control phone-mask" placeholder=""
+                              name="vendor_fssai" value="<%=vendor[0].vendor_fssai %>" required>
+                            <div class="invalid-feedback">
+                              Please enter valid FSSAI.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-2 col-form-label" for="org_dl_no_1">DL Number 1<span
+                            style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-10">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-fullname2" class="input-group-text border"><i
+                                class='bx bx-detail'></i></span>
+                            <input type="text" id="dl1_ft" value="20B" style="text-align: center;"
+                              class="form-control border" readonly>
+                            <select type="text" id="dl1_st" placeholder="State (eg:-MH)"
+                              class="form-control border px-1" required>
+                              <option value="" disabled> State</option>
+                              <option value="AD">Andhra Pradesh</option>
+                              <option value="AR"> Arunachal Pradesh</option>
+                              <option value="AS"> Assam</option>
+                              <option value="BR"> Bihar</option>
+                              <option value="CG"> Chattisgarh</option>
+                              <option value="DL"> Delhi</option>
+                              <option value="GA"> Goa</option>
+                              <option value="GJ"> Gujarat</option>
+                              <option value="HR"> Haryana</option>
+                              <option value="HP"> Himachal Pradesh</option>
+                              <option value="JK"> Jammu and Kashmir</option>
+                              <option value="JH"> Jharkhand</option>
+                              <option value="KA"> Karnataka</option>
+                              <option value="KL"> Kerala</option>
+                              <option value="LD"> Lakshadweep Islands</option>
+                              <option value="MP"> Madhya Pradesh</option>
+                              <option value="MH"> Maharashtra</option>
+                              <option value="MN"> Manipur</option>
+                              <option value="ML"> Meghalaya</option>
+                              <option value="MZ"> Mizoram</option>
+                              <option value="NL"> Nagaland</option>
+                              <option value="OD"> Odisha</option>
+                              <option value="PY"> Pondicherry</option>
+                              <option value="PB"> Punjab</option>
+                              <option value="RJ"> Rajasthan</option>
+                              <option value="SK"> Sikkim</option>
+                              <option value="TN"> Tamil Nadu</option>
+                              <option value="TS"> Telangana</option>
+                              <option value="TR"> Tripura</option>
+                              <option value="UP"> Uttar Pradesh</option>
+                              <option value="UK"> Uttarakhand</option>
+                              <option value="WB"> West Bengal</option>
+                            </select>
+                            <input type="text" id="dl1_ct" style="text-align: center;" placeholder="City"
+                              class="form-control border" required>
+                            <input type="text" id="dl1_ln" style="text-align: center;" placeholder="Lic. no."
+                              class="form-control border"
+                              onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                              required>
+                            <div class="invalid-feedback">
+                              Please enter valid DL number.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <label class="col-2 col-form-label" for="org_dl_no_2">DL Number
+                          2<span style="font-size: 15px; color: red">*</span></label>
+                        <div class="col-10">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-fullname2" class="input-group-text border"><i
+                                class='bx bx-detail'></i></span>
+                            <input type="text" id="dl2_ft" value="21B" style="text-align: center;"
+                              class="form-control border" readonly>
+                            <select type="text" id="dl2_st" placeholder="State (eg:-MH)"
+                              class="form-control border px-1" required>
+                              <option value="" disabled> State</option>
+                              <option value="AD">Andhra Pradesh</option>
+                              <option value="AR"> Arunachal Pradesh</option>
+                              <option value="AS"> Assam</option>
+                              <option value="BR"> Bihar</option>
+                              <option value="CG"> Chattisgarh</option>
+                              <option value="DL"> Delhi</option>
+                              <option value="GA"> Goa</option>
+                              <option value="GJ"> Gujarat</option>
+                              <option value="HR"> Haryana</option>
+                              <option value="HP"> Himachal Pradesh</option>
+                              <option value="JK"> Jammu and Kashmir</option>
+                              <option value="JH"> Jharkhand</option>
+                              <option value="KA"> Karnataka</option>
+                              <option value="KL"> Kerala</option>
+                              <option value="LD"> Lakshadweep Islands</option>
+                              <option value="MP"> Madhya Pradesh</option>
+                              <option value="MH"> Maharashtra</option>
+                              <option value="MN"> Manipur</option>
+                              <option value="ML"> Meghalaya</option>
+                              <option value="MZ"> Mizoram</option>
+                              <option value="NL"> Nagaland</option>
+                              <option value="OD"> Odisha</option>
+                              <option value="PY"> Pondicherry</option>
+                              <option value="PB"> Punjab</option>
+                              <option value="RJ"> Rajasthan</option>
+                              <option value="SK"> Sikkim</option>
+                              <option value="TN"> Tamil Nadu</option>
+                              <option value="TS"> Telangana</option>
+                              <option value="TR"> Tripura</option>
+                              <option value="UP"> Uttar Pradesh</option>
+                              <option value="UK"> Uttarakhand</option>
+                              <option value="WB"> West Bengal</option>
+                            </select>
+                            <input type="text" id="dl2_ct" style="text-align: center;" placeholder="City"
+                              class="form-control border" required>
+                            <input type="text" id="dl2_ln" style="text-align: center;" placeholder="Lic. no."
+                              class="form-control border"
+                              onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                              required>
+                            <div class="invalid-feedback">
+                              Please enter valid DL number.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="vendor_address">Address</label>
+                        <div class="col-sm-10">
+                          <div class="input-group has-validation">
+                            <textarea type="text" id="vendor_address" class="form-control" placeholder=""
+                              name="vendor_address" required><%=vendor[0].vendor_address %></textarea>
+                            <div class="invalid-feedback">
+                              Please enter address.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row justify-content-end">
+                        <div class="col-sm-10">
+                          <button type="submit" id="submitbtn" class="btn btn-primary">Update</button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <!-- / Content -->
+
+                <div class="content-backdrop fade"></div>
+              </div>
+              <!-- Content wrapper -->
+          </div>
+          <!-- / Layout page -->
+      </div>
+
+
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+
+    </div>
+    <!-- / Layout wrapper -->
+
+    <%- include('../partials/footercode.ejs') %>
+
+      <script>
+
+        $(document).ready(function () {
+
+          var splitDL1;
+          var dl_no_1 = "<%=vendor[0].vendor_dl_no_1%>";
+
+
+          if (dl_no_1 != '') {
+
+            splitDL1 = dl_no_1.split(/-/);
+            $("#dl1_st").val(splitDL1[1]);
+            $("#dl1_ct").val(splitDL1[2]);
+            $("#dl1_ln").val(splitDL1[3]);
+          }
+
+          var splitDL2;
+          var dl_no_2 = "<%=vendor[0].vendor_dl_no_2%>";
+          if (dl_no_2 != '') {
+
+            splitDL2 = dl_no_2.split(/-/);
+            $("#dl2_st").val(splitDL2[1]);
+            $("#dl2_ct").val(splitDL2[2]);
+            $("#dl2_ln").val(splitDL2[3]);
+          }
+
+          // Validate email address
+          var isEmailValid = true;
+          $("#vendor_email").change(function () {
+            var inputvalues = $(this).val();
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (inputvalues != '') {
+              if (!regex.test(inputvalues)) {
+                $("#vendor_email").addClass('is-invalid');
+                $("#vendor_email").focus();
+                isEmailValid = false;
+              } else {
+                $("#vendor_email").removeClass('is-invalid');
+                isEmailValid = true;
+              }
+            } else {
+              $("#vendor_email").removeClass('is-invalid');
+              isEmailValid = true;
+            }
+          });
+
+          $('input:required').each(function () {
+            $(this).on('input', function () {
+              if ($(this).val() == '') {
+                $(this).addClass('is-invalid');
+              } else {
+                $(this).removeClass('is-invalid');
+              }
+            });
+          });
+
+          // Validate address
+          $("#vendor_address").on('input', function () {
+            if ($("#vendor_address").val() == '') {
+              $("#vendor_address").addClass('is-invalid');
+              isValid = false;
+            } else {
+              $("#vendor_address").removeClass('is-invalid');
+            }
+          });
+
+          //Validate mobile number
+          var isContactValid = true;
+          $("#vendor_contact").on("input", function () {
+            var value = $(this).val();
+            if (value.length < 10) {
+              $(this).addClass("is-invalid");
+              isContactValid = false;
+            } else {
+              $(this).removeClass("is-invalid");
+              isContactValid = true;
+            }
+          });
+
+          // Validate GSTIN number
+          var isGstinValid = true;
+          $("#vendor_gstin").on("input", function () {
+            var value = $(this).val();
+            var regex = new RegExp(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/);
+
+            if (!regex.test(value)) {
+              $("#vendor_gstin").addClass('is-invalid');
+              $("#vendor_gstin").focus();
+              isGstinValid = false;
+            } else {
+              $("#vendor_gstin").removeClass('is-invalid');
+              isGstinValid = true;
+            }
+
+          });
+
+
+          $("#submitbtn").click(function (e) {
+
+            e.preventDefault();
+            var isValid = true;
+            $('input:required').each(function () {
+              if ($(this).val() == '') {
+                $(this).addClass('is-invalid');
+                isValid = false;
+              } else {
+                $(this).removeClass('is-invalid');
+              }
+            });
+
+            if ($("#vendor_address").val() == '') {
+              $("#vendor_address").addClass('is-invalid');
+              isValid = false;
+            } else {
+              $("#vendor_address").removeClass('is-invalid');
+            }
+
+            if (isValid) {
+              if (!isEmailValid) {
+                $("#vendor_email").addClass('is-invalid');
+                $("#vendor_email").focus();
+                return;
+              }
+              if (!isContactValid) {
+                $("#vendor_contact").addClass('is-invalid');
+                $("#vendor_contact").focus();
+                return;
+              }
+              if (!isGstinValid) {
+                $("#vendor_gstin").addClass('is-invalid');
+                $("#vendor_gstin").focus();
+                return;
+              }
+
+              var vendor_dl_no_1 = $("#dl1_ft").val().toString() + '-' + $("#dl1_st").val().toString() + '-' + $("#dl1_ct").val().toString() + '-' + $("#dl1_ln").val().toString();
+              var vendor_dl_no_2 = $("#dl2_ft").val().toString() + '-' + $("#dl2_st").val().toString() + '-' + $("#dl2_ct").val().toString() + '-' + $("#dl2_ln").val().toString();
+
+              var vendorId = "<%= vendor[0].vendor_id %>";
+
+              $.ajax({
+                url: `/api/vendor/${vendorId}/update`,
+                type: 'POST',
+                data: JSON.stringify({
+                  vendor_name: $("#vendor_name").val(),
+                  vendor_address: $("#vendor_address").val(),
+                  vendor_contact: $("#vendor_contact").val(),
+                  vendor_gstin: $("#vendor_gstin").val(),
+                  vendor_email: $("#vendor_email").val(),
+                  vendor_dl_no_1: vendor_dl_no_1,
+                  vendor_dl_no_2: vendor_dl_no_2,
+                  vendor_fssai: $("#vendor_fssai").val()
+                }),
+                contentType: 'application/json',
+                success: function (response) {
+                  window.location.href = '/vendor_list'
+                },
+                error: function (error) {
+                  console.log(error);
+                }
+              })
+            }
+          })
+        });
+      </script>
+  </body>
+
+  </html>

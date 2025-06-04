@@ -1,0 +1,178 @@
+<%- include('../partials/headercode.ejs') %>
+
+
+
+  <body>
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar  ">
+      <div class="layout-container">
+
+        <!-- sidebar imported -->
+        <%- include('../partials/sidebar.ejs') %>
+
+          <!-- Layout container -->
+          <div class="layout-page">
+
+            <!-- navbar imported -->
+            <%- include('../partials/navbar.ejs') %>
+
+              <!-- Content wrapper -->
+              <div class="content-wrapper">
+
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+
+                  <div class="d-flex justify-content-between m-0 p-0">
+                    <h4 class="fw-bold py-3 mb-1"> Update Customer</h4>
+                    <a type="button" href="/customer_list" class="btn btn-icon btn-danger my-2 mx-3">
+                      <i class='bx bx-x bx-sm'></i>
+                    </a>
+                  </div>
+
+                  <hr class="mb-4">
+
+                  <div class="card mb-4 mx-auto col-md-10">
+
+                    <div class="card-body ">
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="cust_name">Customer Name</label>
+                        <div class="col-sm-10">
+                          <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                class="bx bx-user"></i></span>
+                            <input type="text" class="form-control" id="cust_name" placeholder="Please Enter customer name" name="cust_name"
+                              value="<%= data[0].cust_name %>" required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 form-label" for="cust_telephone">Mobile No</label>
+                        <div class="col-sm-10">
+                          <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                class="bx bx-phone"></i></span>
+                            <input type="text" id="cust_telephone" class="form-control phone-mask" placeholder="Enter 10-digit mobile number"
+                              name="cust_telephone" value="<%= data[0].cust_telephone %>"
+                              oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);  if (this.value.length > 0 && !/[6-9]/.test(this.value[0])) this.value = '';"
+                              onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                              type="tel" maxlength="10" required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="cust_email">Email</label>
+                        <div class="col-sm-10">
+                          <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                            <input type="text" id="cust_email" class="form-control" placeholder="customer@gmail.com" name="cust_email"
+                              value="<%= data[0].cust_email %>">
+                          </div>
+
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="cust_doctor">Family Doctor</label>
+                        <div class="col-sm-10">
+                          <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class='bx bx-plus-medical'></i></span>
+                            <input class="form-control" id="cust_doctor" placeholder="Enter family doctor name" name="cust_doctor" type="text"
+                            value="<%= data[0].cust_doctor %>">
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="cust_address">Address</label>
+                        <div class="col-sm-10">
+                          <div class="input-group has-validation">
+                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class='bx bx-building-house'></i></span>
+                            <textarea type="text" id="cust_address" class="form-control"
+                              placeholder="Enter customer address" name="cust_address" 
+                              ><%= data[0].cust_address %></textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row justify-content-end">
+                        <div class="col-sm-10">
+                          <button type="submit" id="submitbtn" class="btn btn-primary">Update</button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                </div>
+                <!-- / Content -->
+
+                <div class="content-backdrop fade"></div>
+              </div>
+              <!-- Content wrapper -->
+          </div>
+          <!-- / Layout page -->
+      </div>
+
+
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+
+    </div>
+    <!-- / Layout wrapper -->
+
+    <%- include('../partials/footercode.ejs') %>
+
+      <script>
+        var custId = '<%= data[0].customer_id %>'
+        console.log(custId)
+        $("#cust_email").change(function () {
+          var inputvalues = $(this).val();
+          var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+          if (!regex.test(inputvalues)) {
+            alert("Invalid email id");
+          }
+        });
+
+        $("#submitbtn").click(function () {
+          if ($("#cust_name").val() == '') {
+            return alert('Please fill "Customer Name"');
+          }
+
+          if ($("#cust_telephone").val().length < 10) {
+            return alert('Please fill valid Phone number');
+          }
+          $.ajax({
+            url: `/api/cust/${custId}/update`,
+            type: 'POST',
+            data: JSON.stringify({
+              cust_name: $("#cust_name").val(),
+              cust_telephone: $("#cust_telephone").val(),
+              cust_email: $("#cust_email").val(),
+              cust_address: $("#cust_address").val(),
+              cust_doctor: $("#cust_doctor").val()
+            }),
+            contentType: 'application/json',
+            success: function (response) {
+              window.location.href = "/customer_list"
+            },
+            error: function (error) {
+              console.log(error);
+            }
+          })
+        })
+
+      </script>
+  </body>
+
+
+  </html>

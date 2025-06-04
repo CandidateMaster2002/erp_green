@@ -1,0 +1,107 @@
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="/vendor/libs/jquery/jquery.js"></script>
+<script src="/vendor/libs/popper/popper.js"></script>
+<script src="/vendor/js/bootstrap.js"></script>
+<script src="/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="/vendor/libs/hammer/hammer.js"></script>
+<script src="/vendor/libs/i18n/i18n.js"></script>
+<script src="/vendor/libs/typeahead-js/typeahead.js"></script>
+<script src="/vendor/js/menu.js"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="/vendor/libs/apex-charts/apexcharts.js"></script>
+<script src="/vendor/libs/select2/select2.js"></script>
+<script src="/vendor/libs/cleavejs/cleave.js"></script>
+<script src="/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
+<script src="/vendor/libs/moment/moment.js"></script>
+<script src="/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+
+<!-- Main JS -->
+<script src="/js/main.js"></script>
+
+
+<script src="/js/dashboards-analytics.js"></script>
+
+<!-- Shortcut keys -->
+<script>
+  $(document).ready(function () {
+    $(document).on('keydown', function (e) {
+      if (e.altKey) {
+        switch (e.key.toUpperCase()) {
+          case 'N':
+            // Navigate to the sale invoice page
+            window.location.href = '/sale_invoice';
+            break;
+          case 'M':
+            // Navigate to the sale sale invoice report page
+            window.location.href = '/sale_entry_report';
+            break;
+          case 'P':
+            // Navigate to the purchase bill page
+            window.location.href = '/grn';
+            break;
+          case 'I':
+            // Navigate to the inventory page
+            window.location.href = '/product_stock';
+            break;
+          case 'L':
+            // Navigate to the general ledger list page
+            window.location.href = '/general_ledger';
+            break;
+          case 'U':
+            // Navigate to the GRN report page
+            window.location.href = '/grn_report';
+            break;
+          case 'D':
+            // Navigate to the dashboard page
+            window.location.href = '/';
+            break;
+          case 'C':
+            // Navigate to the partwise in/out page
+            window.location.href = '/partywise_in_out';
+            break;
+          case 'G':
+            // Navigate to GSTR-1 page
+            window.location.href = '/gst/gstr1';
+            break;
+          case 'H':
+            // Navigate to GSTR-2 page
+            window.location.href = '/gst/gstr2';
+            break;
+            case 'A':
+            // Navigate to the re-order page
+            window.location.href = '/substitute_meds';
+            break;
+        }
+      } else if (e.ctrlKey) {
+        switch (e.key.toUpperCase()) {
+          
+          case 'F8':
+            // Navigate to the payment page
+            window.location.href = '/inventory_in_out';
+            break;
+        }
+      }
+      else {
+        switch (e.key.toUpperCase()) {
+          case 'F3':
+            // Navigate to the profile page
+            window.location.href = '/profile';
+            break;
+          case 'F4':
+            // Navigate to the my subscription page
+            window.location.href = '/my_subscription';
+            break;
+          case 'F5':
+            // Refresh the page
+            location.reload();
+            break;
+        }
+      }
+    });
+  });
+</script>

@@ -1,0 +1,830 @@
+<%- include('../partials/headercode.ejs') %>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar  ">
+      <div class="layout-container">
+
+        <!-- sidebar imported -->
+        <%- include('../partials/sidebar.ejs') %>
+
+          <!-- Layout container -->
+          <div class="layout-page">
+
+            <!-- navbar imported -->
+            <%- include('../partials/navbar.ejs') %>
+
+              <!-- Content wrapper -->
+              <div class="content-wrapper">
+
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+                  <h4 class="fw-bold py-3 mb-1">Debit Note</h4>
+                  <hr class="mb-4">
+                  <form>
+                    <div class="row">
+
+                      <div class="col-md-6">
+                        <div class="card mb-4">
+                          <h5 class="card-header">Distributor Name</h5>
+                          <div class="card-body has-validation" id="vendorname">
+                            <select class="form-select" id="vendorselect" aria-label="Default select example">
+                              <option selected>Select Distributor</option>
+                              <%vendors.forEach(function(vendor) {%>
+                                <option value="<%= vendor.vendor_id %>">
+                                  <%= vendor.vendor_name %>
+                                </option>
+                                <%});%>
+                            </select>
+                            <div class="invalid-feedback">
+                              Please select a distributor.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="card mb-4 py-1">
+
+                          <h6 class="card-header py-1" id="contact"></h6>
+                          <h6 class="card-header py-1" id="email"></h6>
+                          <h6 class="card-header py-1" id="dl_no"></h6>
+                          <h6 class="card-header py-1" id="gstin"></h6>
+                          <h6 class="card-header py-1" id="address"></h6>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </form>
+                  <hr>
+
+                  <!-- Bordered Table -->
+                  <div class="card mb-4 mx-0 px-0">
+
+                    <form class="form-main">
+
+                      <div class="card-body form-block mb-3">
+
+                        <div class="row w-100 m-0 p-0">
+                          <div class="col-md-4 col-12 mb-md-0 mb-3 ps-md-0 has-validation">
+                            <p class="mb-2 repeater-title fw-bold">Item</p>
+                            <input type="text" class="form-control mb-2" id="medicinename" name="medicinename"
+                              placeholder="Product Name" />
+                            <div class="invalid-feedback">
+                              Please select a product.
+                            </div>
+                            <input type="text" class="form-control" id="brand" placeholder="Brand Name" disabled />
+
+                          </div>
+                          <div class="col-md-2 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">Batch</p>
+                            <div class="mb-2" id="batchdroporinput">
+                              <input type="text" class="form-control" id="batch" placeholder="" readonly />
+                            </div>
+
+                            <input class="form-control" type="date" id="expdate" disabled />
+                          </div>
+                          <div class="col-md-1 col-6 mb-md-0 mb-3">
+                            <div class="has-validation">
+                              <p class="mb-2 repeater-title" id="primaryunitname">P.Unit<span></span></p>
+                              <input type="number" class="form-control px-1" id="pUnit" min="0" readonly />
+                              <div class="invalid-feedback">
+                                Please enter quantity.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-1 col-6 mb-md-0 mb-3">
+                            <div class="has-validation">
+                              <p class="mb-2 repeater-title" id="secondaryunitname">S.Unit<span></span></p>
+                              <input type="number" class="form-control px-1" id="sUnit" min="0" readonly />
+                              <div class="invalid-feedback">
+                                Please enter quantity.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">Rate / P.Unit</p>
+                            <input type="number" class="form-control" id="purchase_rate" placeholder="" min="0"
+                              disabled />
+                          </div>
+                          <!-- <div class="col-md-1 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">Disc %</p>
+                            <input type="number" class="form-control" id="discount" placeholder="" min="0" />
+                          </div> -->
+
+                          <div class="col-md-2 col-6 pe-0">
+                            <p class="mb-2 repeater-title">Total</p>
+                            <input type="text" class="form-control px-0" id="total" placeholder="" min="0" disabled />
+                            <div style="font-size: smaller;"><span id="profit"></span></div>
+                          </div>
+                        </div>
+
+                      </div>
+
+
+                      <div class="buttonBox text-center pb-3">
+                        <btn class="btn btn-primary" style="color: white;" id="addtocart">Add to
+                          Cart</btn>
+                        <input type="reset" class="btn btn-primary" style="color: white;" value="Clear" />
+                      </div>
+                    </form>
+                  </div>
+
+                  <!--/ Bordered Table -->
+
+                  <!-- PO Cart -->
+                  <div class="card">
+                    <h5 class="card-header">Item Cart</h5>
+                    <div class="card-body">
+                      <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="col-1">#</th>
+                              <th class="col-6">Product name</th>
+                              <th class="col-1">Batch</th>
+                              <th class="col-1" id="priqtycart">PQty</th>
+                              <th class="col-1" id="secqtycart">SQty</th>
+                              <th class="col-1">Rate/PUnit</th>
+                              <th class="col-1">Total</th>
+                              <th class="col-1">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody id="itemcart">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- / PO Cart -->
+
+
+                  <!-- / Content -->
+
+                  <div class="row d-flex justify-content-evenly mt-4">
+
+                    <div class="d-flex row m-0 p-0">
+                      <h4 class="col-sm-7 fw-bold py-3 mb-2">Summary</h4>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="card mb-4">
+                        <h5 class="card-header"> Total Amount (₹)</h5>
+                        <div class="card-body">
+                          <div class="has-validation">
+                            <input type="number" class="form-control" id="totalDebitAmt" disabled />
+                            <div class="invalid-feedback">
+                              Item cart empty cannot submit
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4" id="lessDiscountBox">
+                      <div class="card mb-4">
+                        <div class="d-flex justify-content-between m-0 p-0">
+                          <h5 class="card-header">Less Discount (₹)</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                          <div class="input-group has-validation">
+                            <input type="text" class="form-control" id="lessDiscount"
+                              onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                              name="lessDiscount" placeholder="Less Discount in (₹)" />
+                            <div class="invalid-feedback">
+                              Less Discount cannot be greater than total amount
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="text-center mt-3">
+                    <button type="button" class="btn btn-primary" id="submitdebit">Submit</button>
+                  </div>
+
+                  <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+              </div>
+              <!-- / Layout page -->
+          </div>
+
+
+
+          <!-- Overlay -->
+          <div class="layout-overlay layout-menu-toggle"></div>
+
+
+      </div>
+      <!-- / Layout wrapper -->
+
+
+      <%- include('../partials/footercode.ejs') %>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script>
+          var cartarray = [];
+          $(document).ready(function () {
+            $("#contact").text("Contact No :");
+            $("#email").text("Email :");
+            $("#dl_no").text("DL No. :");
+            $("#gstin").text("GSTIN :");
+            $("#address").text("Address :");
+
+            var vendorId;
+
+            // Get the distributor details when the page loads
+            function getDistributorDetails(vendorId) {
+              $.get(`/api/v2/distributor/${vendorId}`, function (data, status) {
+                var vendorDetails = data.data;
+                vendorId = vendorDetails.vendor_id;
+
+                var number = `Contact: ${vendorDetails.vendor_contact}`
+                var email = `Email : ${vendorDetails.vendor_email}`
+                var dl_no = `DL No. : ${vendorDetails.vendor_dl_no_1}, ${vendorDetails.vendor_dl_no_2}`
+                var gstin = `GSTIN : ${vendorDetails.vendor_gstin}`
+                var address = `Address : ${vendorDetails.vendor_address}`
+
+                $("#contact").text(number);
+                $("#email").text(email);
+                $("#dl_no").text(dl_no);
+                $("#gstin").text(gstin);
+                $("#address").text(address);
+              });
+            }
+
+
+            $('#vendorselect').change(function () {
+              var selectedVendorId = $(this).val();
+              vendorId = selectedVendorId;
+              getDistributorDetails(selectedVendorId);
+            })
+
+
+            // autocomplete functionality
+            var priceMed = -1;
+            var primaryUnit;
+            var secondaryUnit;
+            var conversion;
+            var gst;
+            var batchIdwhenSelected;
+            var availablePrimaryQty;
+            var availableSecondaryQty;
+
+            function resetBatchDropdown() {
+              $("#batchdroporinput input").remove();
+              $("#batchdroporinput").append(`<select class="form-select" id="batchnumber" aria-label="unit"></select>`)
+            }
+
+            function loadBatchData(batchId) {
+              $.get(`/api/v2/batches/${batchId}`, function (batchData) {
+                batchData = batchData.data;
+                if (batchData) {
+
+                  batchIdwhenSelected = batchData.batch_id;
+                  primaryUnit = batchData.primary_unit;
+                  secondaryUnit = batchData.secondary_unit;
+
+                  conversion = batchData.conversion;
+                  purchaseRate = parseFloat(batchData.purchase_rate);
+                  $("#purchase_rate").val(purchaseRate);
+                  gst_percent = parseFloat(batchData.gst);
+
+                  availablePrimaryQty = batchData.remPriQty;
+                  availableSecondaryQty = batchData.remSecQty;
+
+                  $("#pUnit").val(availablePrimaryQty)
+                  $("#sUnit").val(availableSecondaryQty)
+
+                  $("#primaryunitname span").text(` (${primaryUnit})`);
+                  $("#secondaryunitname span").text(` (${secondaryUnit})`);
+
+                  var date = new Date(batchData.exp_date);
+                  $("#expdate").val(date.toISOString().split('T')[0]);
+                  $("#shelflabel").val(batchData.shelf_label);
+
+                  $('#batchnumber').val(batchData.batch_name);
+
+                  // Remove validation if fields are populated
+                  if ($("#expdate").val() != '') {
+                    $("#expdate").removeClass('is-invalid');
+                  }
+
+                  calculateTotal();
+                } else {
+                  console.error('Batch data not found.');
+                }
+              });
+            }
+
+            $("input[name='medicinename']").autocomplete({
+              minLength: 2,
+              source: function (request, response) {
+
+                let query = request.term;
+
+                $.get(`/api/v2/search-inventory-product?orgId=<%=orgId%>&search=${query}`, function (data, status) {
+                  let searchTerm = request.term;
+                  let results = data.data.filter(item => item.med_name.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 10);
+                  response(results);
+                })
+
+              },
+              select: function (event, ui) {
+                setTimeout(function () {
+                  productId = ui.item.product_id;
+                  inventoryId = ui.item.inventory_id;
+
+                  //getting all the batches associated with the product
+                  $.get(`/api/v2/org/<%=orgId%>/product/${productId}/batches`, function (data, status) {
+
+                    if (data.data.length == 0) {
+                      $("#message").text(`ITEM NOT IN INVENTORY PLEASE ADD!!`);
+                    } else {
+
+                      $("#pUnit").prop('readonly', false);
+                      $("#sUnit").prop('readonly', false);
+
+                      //batch dropdown
+                      resetBatchDropdown();
+
+                      $.each(data.data, function (key, value) {
+                        var remPriQty = value.remPriQty;
+                        var remSecQty = value.remSecQty;
+                        $("#batchnumber").append(
+                          `<option value="${value.batch_name}" id="${value.batch_id}">${value.batch_name} ( ${remPriQty}:${remSecQty} )</option>`
+                        );
+                      });
+                    }
+
+                    // Populate data for the first batch
+                    if (data.data.length > 0) {
+                      loadBatchData(data.data[0].batch_id);
+                    }
+
+                    // Handle batch change
+                    $("#batchnumber").on("change", function () {
+                      var selectedBatchId = $("#batchnumber option:selected").attr('id');
+                      loadBatchData(selectedBatchId);
+                    });
+
+                    //populate the first qty to the product cart
+                    // batchIdwhenSelected = data.data[0].batch_id;
+                    // primaryUnit = data.data[0].primary_unit;
+                    // secondaryUnit = data.data[0].secondary_unit;
+                    // conversion = data.data[0].conversion;
+                    // gst = data.data[0].gst;
+
+                    // availablePrimaryQty = data.data[0].batch_qty - data.data[0].saled_pri_qty;
+                    // availableSecondaryQty = (data.data[0].conversion - data.data[0].saled_sec_qty) == data.data[0].conversion ? 0 : data.data[0].conversion - data.data[0].saled_sec_qty;
+                    // $("#pUnit").val(availablePrimaryQty).prop('readonly', false);;
+                    // $("#sUnit").val(availableSecondaryQty).prop('readonly', false);;
+                    // priceMed = data.data[0].purchase_rate;
+                    // $("#purchase_rate").val(priceMed);
+                    // calculateTotal();
+
+                    // $("#primaryunitname span").text(` (${primaryUnit})`);
+                    // $("#secondaryunitname span").text(` (${secondaryUnit})`);
+
+                    // //exp date populate and shelf label
+                    // var date = new Date(data.data[0].exp_date);
+                    // $("#expdate").val(date.toISOString().split('T')[0]);
+                    // //$("#expdate").prop('disabled', true);
+
+                    // $("#shelflabel").val(data.data[0].shelf_label);
+
+                    // $("#batch").val(data.data[0].batch_id);
+
+
+
+                    // $("#batchdroporinput").on("change", "#batchnumber", function () {
+                    //   var batchId = $("#batchdroporinput #batchnumber").val();
+                    //   batchIdwhenSelected = data.data[batchId].batch_id;
+
+                    //   $("#shelflabel").val(data.data[batchId].shelf_label);
+                    //   var date = new Date(data.data[batchId].exp_date);
+                    //   $("#expdate").val(date.toISOString().split('T')[0]);
+                    //   $("#purchase_rate").val(data.data[batchId].purchase_rate);
+                    //   conversion = data.data[batchId].conversion;
+                    //   gst = data.data[batchId].gst;
+
+                    //   availablePrimaryQty = data.data[batchId].batch_qty - data.data[batchId].saled_pri_qty;
+                    //   availableSecondaryQty = (data.data[batchId].conversion - data.data[batchId].saled_sec_qty) == data.data[batchId].conversion ? 0 : data.data[batchId].conversion - data.data[batchId].saled_sec_qty;
+
+                    //   $("#pUnit").val(availablePrimaryQty);
+                    //   $("#sUnit").val(availableSecondaryQty);
+
+                    //   calculateTotal();
+                    // })
+
+                  })
+
+                  $("#medicinename").val(ui.item.med_name);
+                  $('#brand').val(ui.item.mfd_mkt);
+                }, 0)
+              }
+            }).data('ui-autocomplete')._renderItem = function (ul, item) {
+              return $('<li>')
+                .append('<div>' + item.med_name + '(' + item.salt_composition + ')' + '</div>')
+                .appendTo(ul);
+            };
+            //endof autocomplete
+
+            var priQty = $("#pUnit");
+            var secQty = $("#sUnit");
+            var rateInput = $("#purchase_rate");
+            var totalInput = $("#total");
+
+            priQty.on("input", calculateTotal);
+            secQty.on("input", calculateTotal);
+
+            function calculateTotal() {
+              var primaryqty = parseInt(priQty.val()) || 0;
+              var secondaryqty = parseInt(secQty.val()) || 0;
+              var rate = parseFloat(rateInput.val()) || 0;
+              var total = primaryqty * rate + secondaryqty * rate / conversion;
+              totalInput.val(total.toFixed(2));
+            }
+
+            // On input medicine name clear all the fields
+            $("#medicinename").on('input', function () {
+              $("#brand").val("");
+              $("#pUnit").val("").prop('readonly', true);
+              $("#sUnit").val("").prop('readonly', true);
+              $("#purchase_rate").val("").prop('readonly', true);
+
+              $("#total").val("").prop('readonly', true);
+              $("#shelflabel").val("");
+              $("#batchdroporinput").empty();
+              $("#batchdroporinput").append(`<input type="text" class="form-control" id="batch" placeholder="" />`)
+              $("#batch").prop('readonly', true);
+              $("#expdate").val("").prop('readonly', true);
+              $("#message").empty();
+              $("#primaryunitname span").text(``);
+              $("#secondaryunitname span").text(``);
+            })
+
+            // Get data when refresh
+            var debitCartItems = JSON.parse(localStorage.getItem('debitnoteitems')) || [];
+            var vendorDataLocal = JSON.parse(localStorage.getItem('debitvendordata')) || [];
+
+            if (debitCartItems.length != 0) {
+              vendorId = vendorDataLocal.vendorId;
+              $("#vendorselect").val(vendorDataLocal.vendorId);
+              getDistributorDetails(vendorDataLocal.vendorId);
+              renderRefreshCart(debitCartItems);
+            } else {
+              $("#totalDebitAmt").val(0);
+              $("#lessDiscount").val(0);
+            }
+
+
+            function renderRefreshCart(items) {
+              $('#itemcart').empty();
+
+              for (var i = 0; i < items.length; i++) {
+                cartarray.push(items[i]);
+                htmlData = `
+                    <tr>
+                        <td class="card_id">${i + 1}</td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${items[i].productname}</strong></td>
+                        <td>${items[i].batchName}</td>
+                        <td>${items[i].priQty}</td>
+                        <td>${items[i].secQty}</td>
+                        <td>${items[i].ptr}</td>
+                        <td>${items[i].total}</td>
+                        <td>
+                        <div class="action-btns">
+                            <button type="button" id="edit-button" class="edit-button btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                            <button type="button" class="delete-button btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                        </div>
+                        </td>
+                    </tr>`
+                $('#itemcart').append(htmlData);
+              } getCartSummary();
+            }
+            //end of logic for refresh data
+
+
+
+            //redering cart details in debit note cart
+            var setLocalData;
+            var getLocalData;
+            var htmlData;
+            $("#addtocart").click(function () {
+
+              if ($("#vendorselect").val() == 'Select Distributor') {
+                $("#vendorselect").addClass('is-invalid');
+                $("#vendorselect").focus();
+                e.preventDefault();
+              } else {
+                $("#vendorselect").removeClass('is-invalid');
+              }
+
+              if ($("#medicinename").val() == '') {
+                $("#medicinename").addClass('is-invalid');
+                $("#medicinename").focus();
+                e.preventDefault();
+              } else {
+                $("#medicinename").removeClass('is-invalid');
+              }
+
+              if ($("#pUnit").val() == '') {
+                $("#pUnit").addClass('is-invalid');
+                $("#pUnit").focus();
+                e.preventDefault();
+              } else {
+                $("#pUnit").removeClass('is-invalid');
+              }
+
+              if ($("#pUnit").val() == 0 && $("#sUnit").val() == 0) {
+                $("#pUnit").addClass('is-invalid');
+                $("#pUnit").focus();
+                e.preventDefault();
+              } else {
+                $("#pUnit").removeClass('is-invalid');
+              }
+
+              if ($("#sUnit").val() == '') {
+                $("#sUnit").addClass('is-invalid');
+                $("#sUnit").focus();
+                e.preventDefault();
+              } else {
+                $("#sUnit").removeClass('is-invalid');
+              }
+
+              if ($("#batch").val() == '') {
+                $("#batch").addClass('is-invalid');
+                $("#batch").focus();
+                e.preventDefault();
+              } else {
+                $("#batch").removeClass('is-invalid');
+              }
+
+              if (priQty.val() > availablePrimaryQty) {
+                return alert("Don't Have Enough Meds Please ADD!!");
+              }
+
+              if (priQty.val() == availablePrimaryQty) {
+                if (secQty.val() > availableSecondaryQty)
+                  return alert("Don't Have Enough Meds Please ADD!!");
+              }
+
+              var products = $("#medicinename").val();
+              var brand = $("#brand").val();
+              var priCartQty = priQty.val();
+              var secCartQty = secQty.val();
+              var ptr = rateInput.val();
+
+              var gst = gst_percent;
+              var total = totalInput.val();
+
+              var shelflabel = $("#shelflabel").val();
+              var batch = $("#batchdroporinput #batchnumber").val();
+              var exp = $("#expdate").val();
+              var selectedUnit = $("#unit").val();
+
+              var batchId = batchIdwhenSelected;
+
+              // Check if batchId already exists in the cart
+              var batchExists = cartarray.some(function (item) {
+                return item.batchId === batchId;
+              });
+
+              if (!batchExists) {
+                cartarray.push({
+                  batchId: batchIdwhenSelected,
+                  productId: productId,
+                  inventoryId: inventoryId,
+                  productname: products,
+                  brand: brand,
+                  shelflabel: shelflabel,
+                  batchName: batch,
+                  expdate: exp,
+                  priQty: priCartQty,
+                  secQty: secCartQty,
+                  conversion: conversion,
+                  ptr: ptr,
+                  gst: gst,
+                  total: total,
+                  timestamp: new Date().getTime()
+                })
+
+                setLocalData = JSON.stringify(cartarray);
+                localStorage.setItem("debitnoteitems", setLocalData);
+              } else {
+                alert("This batch already added to cart")
+              }
+
+              // also add the Vendor data to local storage
+              var storeDistributorData = {
+                vendorId: $("#vendorselect option:selected").val(),
+              };
+              localStorage.setItem("debitvendordata", JSON.stringify(storeDistributorData));
+
+              conversion = undefined;
+              gst = undefined;
+              batchIdwhenSelected = undefined;
+              $("#medicinename").val("");
+              $("#brand").val("");
+              $("#pUnit").val("").prop('readonly', true);
+              $("#sUnit").val("").prop('readonly', true);
+              $("#purchase_rate").val("");
+
+              $("#total").val("");
+              $("#shelflabel").val("");
+              $("#batchdroporinput").empty();
+              $("#batchdroporinput").append(`<input type="text" class="form-control" id="batch" placeholder="" />`);
+              $("#batch").prop('readonly', true);
+              $("#expdate").val("");
+              $("#message").empty();
+              $("#primaryunitname span").text(``);
+              $("#secondaryunitname span").text(``);
+            })
+
+
+            // logic for redering cart data on addtocart click 
+            $("#addtocart").on('click', function () {
+              cartItems = JSON.parse(localStorage.getItem('debitnoteitems')) || [];
+              renderCart(cartItems);
+              getCartSummary();
+            });
+
+            //deletefunctionality
+            $("#itemcart").on("click", ".delete-button", function () {
+              var item = $(this).closest("tr");
+              var item_id = item.find(".card_id").text().trim();
+              var cartItemsinStorage = JSON.parse(localStorage.getItem('debitnoteitems')) || [];
+              cartItemsinStorage.splice(item_id - 1, 1);
+              cartarray = cartItemsinStorage;
+              localStorage.setItem('debitnoteitems', JSON.stringify(cartItemsinStorage));
+              renderCart(cartItemsinStorage);
+              getCartSummary();
+            });
+            //endofdeletefunctionality
+
+
+            //edit functionality  
+            $("#itemcart").on("click", ".edit-button", function () {
+              var item = $(this).closest("tr");
+              var item_id = item.find(".card_id").text().trim();
+              var UpdatecartItemsinStorage = JSON.parse(localStorage.getItem('debitnoteitems')) || [];
+              var selectedItem = UpdatecartItemsinStorage[item_id - 1];
+              productId = selectedItem.productId;
+              inventoryId = selectedItem.inventoryId;
+              batchIdwhenSelected = selectedItem.batchId;
+              $("#medicinename").val(selectedItem.productname);
+              $("#brand").val(selectedItem.brand);
+              $("#pUnit").val(selectedItem.priQty).prop('readonly', false);
+              $("#sUnit").val(selectedItem.secQty).prop('readonly', false);
+              $("#purchase_rate").val(selectedItem.ptr);
+              var expdate = new Date(selectedItem.expdate);
+              $("#total").val(selectedItem.total);
+              $("#expdate").val(expdate.toISOString().split('T')[0]);
+
+              //getting all data for batches
+              $.get(`/api/v2/org/<%=orgId%>/product/${productId}/batches`, function (data, status) {
+                if (data.data.length == 0) {
+                  $("#message").text(`ITEM NOT IN INVENTORY PLEASE ADD!!`);
+                } else {
+                  //batch dropdown
+                  resetBatchDropdown();
+
+                  data.data.forEach(function (value, key) {
+                    var remPriQty = value.remPriQty;
+                    var remSecQty = value.remSecQty;
+                    $("#batchnumber").append(
+                      `<option value="${value.batch_name}" id="${value.batch_id}">${value.batch_name} ( ${remPriQty}:${remSecQty} )</option>`
+                    );
+                  })
+                }
+                // Populate data for the batch added to cart
+                if (data.data.length > 0) {
+                  loadBatchData(batchIdwhenSelected);
+                }
+
+                // Handle batch change
+                $("#batchnumber").on("change", function () {
+                  var selectedBatchId = $("#batchnumber option:selected").attr('id');
+                  loadBatchData(selectedBatchId);
+                });
+              })
+
+              UpdatecartItemsinStorage.splice(item_id - 1, 1);
+              cartarray = UpdatecartItemsinStorage;
+              localStorage.setItem('debitnoteitems', JSON.stringify(UpdatecartItemsinStorage));
+              renderCart(UpdatecartItemsinStorage);
+              getCartSummary();
+
+            })
+            //end of edit functionality
+
+
+            //rendercart functionality
+            function renderCart(items) {
+              $('#itemcart').empty();
+
+              for (var i = 0; i < items.length; i++) {
+                htmlData = `
+                          <tr>
+                              <td class="card_id">${i + 1}</td>
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${items[i].productname}</strong></td>
+                              <td>${items[i].batchName}</td>
+                              <td>${items[i].priQty}</td>
+                              <td>${items[i].secQty}</td>
+                              <td>${items[i].ptr}</td>
+                              <td>${items[i].total}</td>
+                              <td>
+                              <div class="action-btns">
+                                  <button type="button" id="edit-button" class="edit-button btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                                  <button type="button" class="delete-button btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                              </div>
+                              </td>
+                          </tr>
+                          `
+                $('#itemcart').append(htmlData);
+              }
+            }
+            //end of rendereing data logic
+
+            // Function for cart summary
+            function getCartSummary() {
+              var totalDebitAmt = 0;
+              var debitCarts = JSON.parse(localStorage.getItem('debitnoteitems'));
+
+              if (debitCarts.length != 0) {
+                for (let i in debitCarts) {
+                  totalDebitAmt += parseFloat(debitCarts[i].total);
+                }
+                $("#totalDebitAmt").val(totalDebitAmt.toFixed(2));
+              }
+              else if (debitCarts.length == 0) {
+                $("#totalDebitAmt").val(0);
+              }
+            }
+
+
+            // post the data to the debit note
+            $("#submitdebit").click(function () {
+
+              var debitCarts = JSON.parse(localStorage.getItem('debitnoteitems'));
+              var debitAmt = 0;
+              var lessDiscount = parseFloat($("#lessDiscount").val() || 0);
+
+              if (debitCarts == null || debitCarts.length == 0) {
+                return alert("Item Cart Empty");
+              }
+
+              var debitNoteItems = [];
+              for (let i in debitCarts) {
+                debitNoteItems.push({
+                  productId: debitCarts[i].productId,
+                  batchId: debitCarts[i].batchId,
+                  debitPriQty: debitCarts[i].priQty,
+                  debitSecQty: debitCarts[i].secQty,
+                  ptr: debitCarts[i].ptr,
+                  gst: debitCarts[i].gst,
+                  conversion: debitCarts[i].conversion,
+                  totalDebit: debitCarts[i].total
+                });
+                debitAmt += parseFloat(debitCarts[i].total);
+              }
+
+              var debitNoteData = {
+                vendorId: vendorId,
+                orgId: '<%=orgId%>',
+                debitAmt: debitAmt.toFixed(2),
+                lessDiscount: lessDiscount.toFixed(2),
+                debitNoteItems: debitNoteItems
+              }
+
+
+              /////////////////// version 2 ///////////////////////
+              $.ajax({
+                url: `/api/v2/debitNoteEntry`,
+                type: 'POST',
+                data: JSON.stringify(debitNoteData),
+                contentType: 'application/json',
+                success: function (response) {
+                  debitInvoiceNo = response.debitInvoiceNo;
+                  localStorage.removeItem('debitnoteitems');
+                  window.location.href = `/debit_note_receipt/${debitInvoiceNo}`
+                },
+                error: function (error) {
+                  alert("Not Created", error)
+                }
+              })
+
+            })
+          })
+        </script>
+  </body>
+
+  </html>

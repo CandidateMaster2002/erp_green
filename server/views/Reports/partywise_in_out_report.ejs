@@ -1,0 +1,320 @@
+<%- include('../partials/headercode.ejs') %>
+
+<style>
+  @media(max-width: 768px) {
+    .mob-view-from-to {
+      display: inline;
+    }
+    .mob-view-from-to input {
+      width: 100%;
+    }
+    .mob-view-from-to div {
+      margin: 30px 0;
+    }
+    .mob {
+      align-items: start;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start !important;
+    }
+    .head-invoicelist {
+      text-align: center;
+    }
+    .mob-view-search {
+      width: 100% !important;
+    }
+    .mob-view {
+      margin: 10px 0;
+    }
+  }
+</style>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include('../partials/sidebar.ejs') %>
+      <div class="layout-page">
+        <%- include('../partials/navbar.ejs') %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-1">Partywise In/Out</h4>
+            <hr class="mb-4">
+
+            <div id="loader" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+              <div class="spinner-border spinner-border-lg text-primary" role="status" style="position: absolute; top: 50%; left: 50%;">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+                <div class="card p-3 col-md-6 me-1 mob-view">
+                  <div class="input-group has-validation">
+                    <select class="form-select" id="partytypeselect" aria-label="Default select example">
+                      <option selected>Select Party Type</option>
+                      <option id="distopt">Distributor</option>
+                      <option id="custopt">Customer</option>
+                    </select>
+                    <select class="form-select" id="partyselect" aria-label="Default select example">
+                      <option selected>Select Party</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a party.</div>
+                  </div>
+                </div>
+                <div class="card p-3 col-md-6">
+                  <div class="d-flex flex-column flex-md-row justify-content-between">
+                    <div class="d-flex flex-column flex-md-row align-items-center me-md-3 mb-2 mb-md-0 mob">
+                      <h5 class="mb-2 mb-md-0 me-md-2">From</h5>
+                      <input class="form-control" type="date" id="from-date-input" name="fromdate" />
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-center mob">
+                      <h5 class="mb-2 mb-md-0 me-md-2">To</h5>
+                      <input class="form-control" type="date" id="to-date-input" name="todate" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center mb-4">
+                <button type="button" class="btn btn-primary" id="generatereport">Generate Report</button>
+              </div>
+
+              <div class="card">
+                <h5 class="card-header">Report</h5>
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Bill No.</th>
+                          <th>Type</th>
+                          <th>Date</th>
+                          <th>Product</th>
+                          <th>Receive</th>
+                          <th>Issue</th>
+                        </tr>
+                      </thead>
+                      <tbody id="reportcart"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+  </div>
+
+  <%- include('../partials/footercode.ejs') %>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+    $(document).ready(function () {
+      const orgId = '<%= orgId %>';
+      console.log("orgId:", orgId);
+
+      function fetchDistributors() {
+          $.ajax({
+              url: '/api/v2/get-all-distributor',
+              type: 'GET',
+              data: { org: orgId },
+              success: function(response) {
+                  var vendors = response.data;
+                  var $partySelect = $('#partyselect');
+                  $partySelect.empty();
+                  $partySelect.append('<option selected>Select Party</option>');
+                  vendors.forEach(function(vendor) {
+                      var option = `<option value="${vendor.vendor_id}">${vendor.vendor_name}</option>`;
+                      $partySelect.append(option);
+                  });
+              },
+              error: function(error) {
+                  console.error("Error fetching distributors:", error);
+                  alert("Failed to load distributors. Please try again later.");
+              }
+          });
+      }
+
+      function fetchCustomers() {
+          $.ajax({
+              url: `/api/v2/org/${orgId}/customers`,
+              type: 'GET',
+              data: { org: orgId },
+              success: function(response) {
+                  var customers = response.data;
+                  var $partySelect = $('#partyselect');
+                  $partySelect.empty();
+                  $partySelect.append('<option selected>Select Party</option>');
+                  customers.forEach(function(customer) {
+                      var option = `<option value="${customer.customer_id}">${customer.cust_name}</option>`;
+                      $partySelect.append(option);
+                  });
+              },
+              error: function(error) {
+                  console.error("Error fetching customers:", error);
+                  alert("Failed to load customers. Please try again later.");
+              }
+          });
+      }
+
+      $('#partytypeselect').change(function () {
+          var selectedPartyType = $(this).find('option:selected').text();
+          if (selectedPartyType === 'Distributor') {
+              fetchDistributors();
+          } else if (selectedPartyType === 'Customer') {
+              fetchCustomers();
+          }
+      });
+
+      var selectedPartyId;
+      $('#partyselect').change(function () {
+          selectedPartyId = $(this).val();
+          console.log(selectedPartyId);
+      });
+
+      $('input').each(function () {
+          $(this).on('input', function () {
+              if ($(this).val() == '') {
+                  $(this).addClass('is-invalid');
+              } else {
+                  $(this).removeClass('is-invalid');
+              }
+          });
+      });
+
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0');
+      var yyyy = today.getFullYear();
+      today = yyyy + '-' + mm + '-' + dd;
+      $("input[name='fromdate']").val(today);
+      $("input[name='todate']").val(today);
+
+      $("#generatereport").click(function (e) {
+          e.preventDefault();
+          var isValid = true;
+
+          var fromDate = $("input[name='fromdate']").val();
+          var toDate = $("input[name='todate']").val();
+          console.log(fromDate);
+          console.log(toDate);
+          if (fromDate == '') {
+              $("input[name='fromdate']").addClass('is-invalid');
+              $("input[name='fromdate']").focus();
+              isValid = false;
+          } else {
+              $("input[name='fromdate']").removeClass('is-invalid');
+          }
+
+          if (toDate == '') {
+              $("input[name='todate']").addClass('is-invalid');
+              $("input[name='todate']").focus();
+              isValid = false;
+          } else {
+              $("input[name='todate']").removeClass('is-invalid');
+          }
+
+          if (fromDate > toDate) {
+              $("input[name='fromdate']").addClass('is-invalid');
+              $("input[name='todate']").addClass('is-invalid');
+              $("input[name='todate']").focus();
+              isValid = false;
+          } else {
+              $("input[name='fromdate']").removeClass('is-invalid');
+              $("input[name='todate']").removeClass('is-invalid');
+          }
+
+          if (isValid) {
+              $('#loader').show();
+
+              var selectedPartyType = $('#partytypeselect').find('option:selected').text().toLowerCase();
+
+              $.ajax({
+                  url: `/api/v2/reports/partyTransactions`,
+                  type: 'POST',
+                  data: JSON.stringify({
+                      orgId: orgId,
+                      partyId: selectedPartyId,
+                      partyType: selectedPartyType,
+                      startDate: fromDate,
+                      endDate: toDate
+                  }),
+                  contentType: 'application/json',
+                  success: function (response) {
+                      $('#loader').hide();
+                      $("#reportcart").empty();
+                      var items = response.data;
+                      console.log(items);
+                      for (let i = 0; i < items.length; i++) {
+                          var datetime = items[i].transaction_date;
+                          var date = moment(datetime).format('DD MMMM YYYY');
+                          var htmlData = `
+                              <tr>
+                                  <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].bill_no === '0' ? '-' : items[i].bill_no}</strong></td>
+                                  <td>${items[i].transaction_type}</td>
+                                  <td>${date}</td>
+                                  <td>${items[i].product_name}</td>
+                                  <td>${(items[i].pri_received_quantity === 0 && items[i].sec_received_quantity === 0) ? '-' : items[i].pri_received_quantity + ' : ' + items[i].sec_received_quantity}</td>
+                                  <td>${(items[i].pri_issued_quantity === 0 && items[i].sec_issued_quantity === 0) ? '-' : items[i].pri_issued_quantity + ' : ' + items[i].sec_issued_quantity}</td>
+                              </tr>`;
+                          $("#reportcart").append(htmlData);
+                      }
+                  },
+                  error: function (error) {
+                      $('#loader').hide();
+                      alert("Invalid input", error);
+                  }
+              });
+          }
+      });
+  });
+
+      </script>
+
+      <style>
+        @media (max-width: 767px) {
+
+          .card-body.d-flex .row.w-100 {
+            flex-direction: row;
+            /* Ensure row direction */
+            justify-content: start;
+            /* Center the content */
+            align-items: flex-start;
+          }
+
+          .col-6 {
+            flex: 0 0 50%;
+            /* Make each input take up 50% of the width */
+            max-width: 50%;
+
+          }
+
+          .text-center select {
+            width: 100%;
+            /* Ensure the select input takes full width */
+          }
+
+          .card-header {
+            font-size: 0.75em;
+            /* Adjust the font size as needed */
+            display: flex;
+            justify-content: flex-start;
+            /* Align content to the left */
+            align-items: flex-start;
+            padding: 10px;
+          }
+
+          .card-header input {
+            margin-right: 0.5rem;
+          }
+        }
+      </style>
+
+  </body>
+
+
+  </html>

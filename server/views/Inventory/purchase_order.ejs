@@ -1,0 +1,636 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <body>
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+                                    <h4 class="fw-bold py-3 mb-1"> Purchase Order</h4>
+                                    <hr class="mb-2">
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="card mb-4">
+                                                <h5 class="card-header">Distributor Name</h5>
+                                                <div class="card-body has-validation" id="vendorname">
+                                                    <select class="form-select" id="vendorselect"
+                                                        aria-label="Default select example">
+                                                        <option selected>Select Distributor</option>
+                                                        <%vendors.forEach(function(vendor) {%>
+                                                            <option value="<%= vendor.vendor_id %>">
+                                                                <%= vendor.vendor_name %>
+                                                            </option>
+                                                            <%});%>
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Please select a distributor.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="card mb-4 py-1">
+
+                                                <h6 class="card-header py-1" id="contact"></h6>
+                                                <h6 class="card-header py-1" id="email"></h6>
+                                                <h6 class="card-header py-1" id="dl_no"></h6>
+                                                <h6 class="card-header py-1" id="gstin"></h6>
+                                                <h6 class="card-header py-1" id="address"></h6>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <!-- Bordered Table -->
+                                    <div class="card mb-4 mx-0 px-0">
+
+                                        <form class="form-main">
+
+                                            <div class="card-body form-block mb-3">
+
+                                                <div class="row w-100 m-0 p-0">
+                                                    <div class="col-md-4 col-12 mb-md-0 mb-3 ps-md-0">
+                                                        <p class="mb-2 repeater-title fw-bold">Product</p>
+                                                        <input type="text" class="form-control mb-2"
+                                                            placeholder="Enter product name" name="productname" />
+                                                        <div class="invalid-feedback">
+                                                            Please enter product name.
+                                                        </div>
+                                                        <input type="text" class="form-control" placeholder="Brand name"
+                                                            name="brand" disabled />
+                                                    </div>
+
+                                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                                        <p class="mb-2 repeater-title">MRP</p>
+                                                        <input type="text" class="form-control px-1"
+                                                            placeholder="Enter MRP"
+                                                            onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                            name="mrp" />
+                                                        <div class="invalid-feedback">
+                                                            Please enter MRP.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                                        <div class="has-validation">
+                                                            <p class="mb-2 repeater-title">PTR</p>
+                                                            <input type="text" class="form-control px-1"
+                                                                onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                placeholder="Enter PTR" name="ptr" />
+                                                            <div class="invalid-feedback">
+                                                                Please enter PTR.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-1 col-12 mb-md-0 mb-3">
+                                                        <div class=" has-validation">
+                                                            <p class="mb-2 repeater-title">
+                                                                Quantity</p>
+                                                            <input type="text" class="form-control px-1" placeholder=""
+                                                                name="quantity"
+                                                                onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;" />
+                                                            <div class="invalid-feedback">
+                                                                Please enter quantity.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                                        <div class="has-validation">
+                                                            <p class="mb-2 repeater-title">Unit</p>
+                                                            <select class="form-select px-1" name="unitoption">
+                                                                <option selected>Select Unit</option>
+                                                                <option value="BOX">Box</option>
+                                                                <option value="PACK">Packet</option>
+                                                                <option value="STRIP">Strip</option>
+                                                                <option value="BOTTLE">Bottle</option>
+                                                                <option value="PCS">Piece</option>
+                                                            </select>
+                                                            <div class="invalid-feedback">
+                                                                Please select unit.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-1 col-12 pe-0">
+                                                        <p class="mb-2 repeater-title">Amount</p>
+                                                        <input type="text" class="form-control px-0" name="amount"
+                                                            placeholder="" min="0" readonly />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="buttonBox text-center pb-3">
+                                                <btn class="btn btn-primary" style="color: white;" id="addtocart">Add to
+                                                    Cart</btn>
+                                                <input type="reset" class="btn btn-primary" style="color: white;"
+                                                    value="Clear" />
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- PO Cart -->
+                                    <div class="card ">
+                                        <h5 class="card-header">Item Cart</h5>
+                                        <div class="card-body">
+                                            <div class="table-responsive text-nowrap">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Product name</th>
+                                                            <th>Brand name</th>
+                                                            <th>MRP</th>
+                                                            <th>PTR</th>
+                                                            <th>QTY</th>
+                                                            <th>Unit</th>
+                                                            <th>Amount</th>
+                                                            <th class="col-1">Action</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="pocart">
+
+
+                                                        <!-- <tr>
+                                                            <td>1</td>
+                                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                                                <strong>Actapro Tablet</strong>
+                                                            </td>
+                                                            <td>Sun Pharmaceutical Industries Ltd</td>
+                                                            <td>10</td>
+                                                            <td>Box</td>
+                                                            <td>
+                                                                <div class="action-btns">
+                                                                    <button type="button" class="btn p-0 mx-2"><i
+                                                                            class='bx bxs-edit'></i></button>
+                                                                    <button type="button" class="btn p-0 mx-2"><i
+                                                                            class="bx bx-trash me-1"></i></button>
+                                                                </div>
+                                                            </td>
+                                                        </tr> -->
+
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- / PO Cart -->
+
+
+                                    <!-- / Content -->
+
+
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-primary" id="submitpo">Submit</button>
+                                    </div>
+
+
+
+                                    <div class="content-backdrop fade"></div>
+                                </div>
+                                <!-- Content wrapper -->
+                            </div>
+                            <!-- / Layout page -->
+                    </div>
+
+
+
+                    <!-- Overlay -->
+                    <div class="layout-overlay layout-menu-toggle"></div>
+
+
+            </div>
+            <!-- / Layout wrapper -->
+
+
+            <%- include('../partials/footercode.ejs') %>
+                <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+                <script>
+
+                    var cartarray = [];
+                    $(document).ready(function () {
+
+                        // Validation check on input
+                        $('input').each(function () {
+                            $(this).on('input', function () {
+                                if ($(this).val() == '') {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                        });
+                        $('select').each(function () {
+                            $(this).on('input', function () {
+                                if ($(this).val() == 'default' || $(this).val() == null) {
+                                    $(this).addClass('is-invalid');
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                        });
+
+                        $("#contact").text("Contact No :");
+                        $("#email").text("Email :");
+                        $("#dl_no").text("DL No. :");
+                        $("#gstin").text("GSTIN :");
+                        $("#address").text("Address :");
+
+                        var vendorId = -1;
+                        $('#vendorselect').change(function () {
+                            var selectedVendorId = $(this).val();
+
+                            $.get(`/api/v2/distributor/${selectedVendorId}`, function (data, status) {
+                                var vendorDetails = data.data;
+                                console.log(vendorDetails);
+                                vendorId = vendorDetails.vendor_id;
+                                var number = `Contact: ${vendorDetails.vendor_contact}`
+                                var email = `Email : ${vendorDetails.vendor_email}`
+                                var dl_no = `DL No. : ${vendorDetails.vendor_dl_no_1}, ${vendorDetails.vendor_dl_no_2}`
+                                var gstin = `GSTIN : ${vendorDetails.vendor_gstin}`
+                                var address = `Address : ${vendorDetails.vendor_address}`
+                                $("#contact").text(number);
+                                $("#email").text(email);
+                                $("#dl_no").text(dl_no);
+                                $("#gstin").text(gstin);
+                                $("#address").text(address);
+                            })
+                        })
+
+                        // autocomplete functionality
+                        var productId = -1;
+                        $("input[name='productname']").autocomplete({
+                            minLength: 3,
+                            source: function (request, response) {
+                                let query = request.term;
+
+                                $.ajax({
+                                    url: `/api/autocomplete?query=${query}`,
+                                    type: 'GET',
+                                    success: function (ajaxResponse) {
+
+                                        let results = ajaxResponse.filter(item => item.med_name.toLowerCase()).slice(0, 10);
+
+                                        if (results.length === 0) {
+                                            results.push({ med_name: null }); // Add a null item for the custom message
+                                        }
+                                        console.log(results);
+                                        response(results);
+                                    },
+                                    error: function (error) {
+                                        console.log(error);
+                                    }
+                                })
+                            },
+                            select: function (event, ui) {
+                                setTimeout(function () {
+                                    console.log(ui.item);
+                                    productId = ui.item.id;
+                                    $("input[name='productname']").val(ui.item.med_name);
+                                    $("input[name='brand']").val(ui.item.mfd_mkt);
+                                }, 0)
+                            }
+                        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                            return $('<li>')
+                                .append('<div>' + item.med_name + ' (' + item.salt_composition + ')' + '</div>')
+                                .appendTo(ul);
+                        };
+                        //endof autocomplete
+
+                        //logic for calculating amount
+                        var qtyInput = $("input[name='quantity']");
+                        var ptrInput = $("input[name='ptr']");
+                        var amountInput = $("input[name='amount']");
+
+                        ptrInput.on("input", calculateTotal);
+                        qtyInput.on("input", calculateTotal);
+
+                        function calculateTotal() {
+                            var qty = parseInt(qtyInput.val()) || 0;
+                            var ptr = parseFloat(ptrInput.val()) || 0;
+
+                            totalAmt = qty * ptr;
+
+                            amountInput.val(totalAmt.toFixed(2));
+                        }
+
+                        //PTR < MRP Validation
+                        $("input[name='ptr']").on('change', function () {
+                            var ptr = parseFloat($("input[name='ptr']").val());
+                            var mrp = parseFloat($("input[name='mrp']").val());
+
+                            if (ptr >= mrp) {
+                                $("input[name='ptr']").val(null);
+                                $("input[name='ptr']").addClass('is-invalid');
+                            }
+                        });
+
+                        var setLocalData;
+                        var getLocalData;
+                        var htmlData;
+                        $("#addtocart").click(function () {
+
+                            if ($("#vendorselect").val() == 'Select Distributor') {
+                                $("#vendorselect").addClass('is-invalid');
+                                $("#vendorselect").focus();
+                                e.preventDefault();
+                            } else {
+                                $("#vendorselect").removeClass('is-invalid');
+                            }
+
+                            if ($("input[name='productname']").val() == '') {
+                                $("input[name='productname']").addClass('is-invalid');
+                                $("input[name='productname']").focus();
+                                e.preventDefault();
+                            } else {
+                                $("input[name='productname']").removeClass('is-invalid');
+                            }
+
+                            if ($("input[name='mrp']").val() == '') {
+                                $("input[name='mrp']").addClass('is-invalid');
+                                $("input[name='mrp']").focus();
+                                e.preventDefault();
+                            } else {
+                                $("input[name='mrp']").removeClass('is-invalid');
+                            }
+
+                            if ($("input[name='ptr']").val() == '') {
+                                $("input[name='ptr']").addClass('is-invalid');
+                                $("input[name='ptr']").focus();
+                                e.preventDefault();
+                            } else {
+                                $("input[name='ptr']").removeClass('is-invalid');
+                            }
+
+                            if ($("input[name='quantity']").val() == '' || $("input[name='quantity']").val() == '0') {
+                                $("input[name='quantity']").addClass('is-invalid');
+                                $("input[name='quantity']").focus();
+                                e.preventDefault();
+                            } else {
+                                $("input[name='quantity']").removeClass('is-invalid');
+                            }
+
+                            if ($("select[name='unitoption']").find('option:selected').text() == "Select Unit") {
+                                $("select[name='unitoption']").addClass('is-invalid');
+                                $("select[name='unitoption']").focus();
+                                e.preventDefault();
+                            } else {
+                                $("select[name='unitoption']").removeClass('is-invalid');
+                            }
+
+                            if (parseFloat($("input[name='ptr']").val()) > parseFloat($("input[name='mrp']").val())) {
+                                return alert("Purchase Rate can't be greater than MRP");
+                            }
+
+                            var product = $("input[name='productname']").val();
+                            var brand = $("input[name='brand']").val();
+                            var qty = $("input[name='quantity']").val();
+                            var selectedUnit = $("select[name='unitoption']").val();
+                            var ptr = $("input[name='ptr']").val();
+                            var amt = $("input[name='amount']").val();
+                            var mrp = $("input[name='mrp']").val();
+
+
+                            cartarray.push({
+                                productId: productId,
+                                productname: product,
+                                brand: brand,
+                                selectedUnit: selectedUnit,
+                                qty: qty,
+                                ptr: ptr,
+                                amt: amt,
+                                mrp: mrp,
+                                timestamp: new Date().getTime()
+                            })
+
+                            setLocalData = JSON.stringify(cartarray);
+
+                            localStorage.setItem("pocartitems", setLocalData);
+
+                            $("input[name='productname']").val("");
+                            $("input[name='brand']").val("");
+                            $("input[name='quantity']").val("");
+                            $("select[name='unitoption']").prop('selectedIndex', 0);
+                            $("input[name='ptr']").val("");
+                            $("input[name='amount']").val("");
+                            $("input[name='mrp']").val("");
+                        })
+
+
+
+                        // logic for redering cart data on addtocart click 
+                        var cartitems = [];
+                        $("#addtocart").on('click', function () {
+                            cartItems = JSON.parse(localStorage.getItem('pocartitems')) || [];
+                            renderCart(cartItems);
+                        });
+
+                        //deletefunctionality
+                        $("#pocart").on("click", ".delete-button", function () {
+                            var item = $(this).closest("tr");
+                            var item_id = item.find(".card_id").text().trim();
+                            var cartItemsinStorage = JSON.parse(localStorage.getItem('pocartitems')) || [];
+                            cartItemsinStorage.splice(item_id - 1, 1);
+                            cartarray = cartItemsinStorage;
+                            localStorage.setItem('pocartitems', JSON.stringify(cartItemsinStorage));
+                            renderCart(cartItemsinStorage);
+                        });
+                        //endofdeletefunctionality
+
+
+                        //edit functionality  
+                        $("#pocart").on("click", ".edit-button", function () {
+                            var item = $(this).closest("tr");
+                            var item_id = item.find(".card_id").text().trim();
+                            var UpdatecartItemsinStorage = JSON.parse(localStorage.getItem('pocartitems')) || [];
+                            var selectedItem = UpdatecartItemsinStorage[item_id - 1];
+                            productId = selectedItem.productId;
+                            $("input[name='productname']").val(selectedItem.productname);
+                            $("input[name='brand']").val(selectedItem.brand);
+                            $("input[name='quantity']").val(selectedItem.qty);
+                            $("select[name='unitoption']").val(selectedItem.selectedUnit);
+                            $("input[name='ptr']").val(selectedItem.ptr);
+                            $("input[name='amount']").val(selectedItem.amt);
+                            $("input[name='mrp']").val(selectedItem.mrp);
+
+                            UpdatecartItemsinStorage.splice(item_id - 1, 1);
+                            cartarray = UpdatecartItemsinStorage;
+                            localStorage.setItem('pocartitems', JSON.stringify(UpdatecartItemsinStorage));
+                            renderCart(UpdatecartItemsinStorage);
+                        })
+                        //end of edit functionality
+
+                        //rendercart functionality
+                        function renderCart(items) {
+                            $('#pocart').empty();
+
+                            for (var i = 0; i < items.length; i++) {
+                                var htmlData = `
+                                            <tr>
+                                                <td class="card_id">${i + 1}</td>
+                                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                                    <strong>${items[i].productname}</strong>
+                                                </td>
+                                                <td>${items[i].brand}</td>
+                                                <td>${items[i].mrp}</td>
+                                                <td>${items[i].ptr}</td>
+                                                <td>${items[i].qty}</td>
+                                                <td>${items[i].selectedUnit}</td>
+                                                <td>${items[i].amt}</td>
+                                                <td>
+                                                    <div class="action-btns">
+                                                        <button type="button" class="btn p-0 mx-2 edit-button"><i
+                                                                class='bx bxs-edit'></i></button>
+                                                        <button type="button" class="btn p-0 mx-2 delete-button"><i
+                                                                class="bx bx-trash me-1"></i></button>
+                                                    </div>
+                                                </td>
+                                            </tr>`
+
+                                $('#pocart').append(htmlData);
+                            }
+                        }
+                        //end of rendereing data logic
+
+                        //submit functionality
+                        $("#submitpo").click(function () {
+
+                            $('#loader').show();
+                            var poCarts = JSON.parse(localStorage.getItem('pocartitems'));
+
+                            var purchaseOrderItems = [];
+                            for (let i in poCarts) {
+                                purchaseOrderItems.push({
+                                    productId: poCarts[i].productId,
+                                    quantity: poCarts[i].qty,
+                                    unit: poCarts[i].selectedUnit,
+                                    ptr: poCarts[i].ptr,
+                                    amount: poCarts[i].amt,
+                                    mrp: poCarts[i].mrp
+                                });
+                            }
+
+                            var purchaseOrderData = {
+                                vendorId: vendorId,
+                                orgId: '<%=orgId%>',
+                                purchaseOrderItems,
+                            }
+                            /////////////////// version 1 ///////////////////////
+                            $.ajax({
+                                url: `/api/v2/purchaseOrder`,
+                                type: 'POST',
+                                data: JSON.stringify(purchaseOrderData),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    $('#loader').hide();
+                                    purchaseOrderNo = response.purchaseOrderNo;
+                                    localStorage.removeItem('pocartitems');
+                                    window.location.href = `/po_receipt/${purchaseOrderNo}`
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                    alert("Not Created", error)
+                                }
+                            })
+
+
+                            /////////////////// version 1 ///////////////////////
+                            // $.ajax({
+                            //     url: '/api/createpo/',
+                            //     method: 'POST',
+                            //     data: JSON.stringify(POdetails),
+                            //     contentType: 'application/json',
+                            //     success: function (response) {
+                            //         var poinsertid = response.result.insertId;
+                            //         console.log(poinsertid);
+                            //         var poId = response.POId;
+
+                            //         // Array to hold all AJAX requests
+                            //         var ajaxRequests = [];
+
+                            //         for (let i = 0; i < POcarts.length; i++) {
+                            //             var unit = $(`select[name="unitoption"] option[value=${POcarts[i].selectedUnit}]`).text();
+                            //             var POcartdetail = {
+                            //                 po_id_main: poId,
+                            //                 product_id: POcarts[i].productId,
+                            //                 quantity: POcarts[i].qty,
+                            //                 unit: unit,
+                            //                 ptr: POcarts[i].ptr,
+                            //                 amount: POcarts[i].amt,
+                            //                 mrp: POcarts[i].mrp
+                            //             }
+                            //             console.log('cartdetails', POcartdetail);
+
+                            //             // Push the AJAX request for creating PO to the array
+                            //             ajaxRequests.push(
+                            //                 $.ajax({
+                            //                     url: '/api/createpocarts/',
+                            //                     method: 'POST',
+                            //                     data: JSON.stringify(POcartdetail),
+                            //                     contentType: 'application/json',
+                            //                     success: function (response) {
+                            //                         console.log(response);
+                            //                     },
+                            //                     error: function (error) {
+                            //                         console.log('Error:', error);
+                            //                     }
+                            //                 })
+                            //             )
+                            //         }
+
+                            //         $.when.apply($, ajaxRequests).done(function () {
+                            //             $('#loader').hide();
+                            //             localStorage.removeItem('pocartitems');
+                            //             location.reload();
+                            //             window.location.href = `/po_receipt/${poinsertid}`
+                            //         });
+
+                            //     },
+                            //     error: function (error) {
+                            //         $('#loader').hide();
+                            //         console.log('Error:', error);
+                            //     }
+                            // });
+
+                        })
+                    })
+                </script>
+    </body>
+
+    </html>

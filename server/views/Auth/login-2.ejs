@@ -1,0 +1,688 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <head>
+        <link rel="stylesheet" href="/vendor/css/pages/page-login-2.css">
+    </head>
+
+    <body>
+        <div class="mobileview">
+            <nav>
+                <img src="/img/login-2/menu.png" alt="">
+                <img src="/img/login-2/logomobile.png" alt="">
+            </nav>
+            <div class="login-mv">
+                <div class="form">
+                    <div id="mobileLoginForm">
+                      <div class="mb-3 text-center">
+                        <h4>Welcome Back!</h4>
+                        <p>Login with your email and password</p>
+                      </div>
+                  
+                      <div class="mb-3">
+                        <label for="email1" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email1" name="email" placeholder="Enter your email" required>
+                      </div>
+                  
+                      <div class="mb-3">
+                        <label for="password1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password1" name="password" placeholder="Enter your password" required>
+                      </div>
+                  
+                      <!-- Centered Button -->
+                      <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary mb-3 px-5" id="mobileLoginButton">Login</button>
+                      </div>
+                  
+                      <div class="text-center mt-2">
+                        <p>Not registered? <a href="/signup">Sign up</a></p>
+                      </div>
+                    </div>
+                  </div>
+                  
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="left  w-50">
+                <div class="carousel slide carousel-dark" id="banner" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" data-bs-interval="8000">
+                            <img class="ms-5" src="/img/login-2/cards.png">
+                            <p class="mt-2">Change The Way Of Managing Your Store</p>
+                        </div>
+                        <div class="carousel-item text-center" data-bs-interval="8000">
+                            <p>Easy to use Interface to manage all our tasks!</p>
+                            <img src="/img/login-2/laptop.png">
+                        </div>
+                        <div class="carousel-item" data-bs-interval="8000">
+                            <p>Next Gen B2B SaaS platform for health care professionals created by IITians & IIMs</p>
+                            <img class="w-75 mb-2 ms-5" src="/img/login-2/customer.png">
+                            <img class="w-75 mb-2 ms-5" src="/img/login-2/easy.png">
+                            <img class="w-75 mb-2 ms-5" src="/img/login-2/sub.png">
+                            <img class="w-75 mb-2 ms-5" src="/img/login-2/sales.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="logo">
+                    <img src="/img/login-2/dawa logo-02 1.png" alt="">
+                </div>
+                <!-- <div class="form">
+                    <div id="mobileNumberInput">
+                        <div class="mb-3">
+                            <h4>Hello There!</h4>
+                            <p>Login via mobile or guest</p>
+                        </div>
+
+                        <div class="mb-3" id="validatemobile">
+                            <div class="d-flex justify-content-between">
+                                <p for="org_telephone" class="form-label">Mobile No.</p>
+                            </div>
+
+                            <input type="number" class="form-control" id="org_telephone" name="mobilenumber"
+                                placeholder="Enter 10-digit mobile no." autofocus>
+                            <p id="validation-message" style="display: none; color: red;">Please
+                                enter a
+                                valid
+                                10-digit number.</p>
+                        </div>
+
+                        <button id="sendOtpButton">Send OTP</button>
+
+                        <p class="or">or</p>
+                        <button id="guestLogin">Guest Login</button>
+                    </div>
+                    <div id="otpInput" style="display: none;">
+
+                        <div class="ms-0">
+                            <h4>OTP Verification!</h4>
+                            <p>We sent a verification code to your mobile. Enter the code from the
+                                mobile in the field
+                                below.</p>
+
+                        </div>
+
+                        <p class="mb-0 fw-semibold">Type your security code</p>
+                        <div class="mb-3">
+                            <label for="otp_value" class="form-label">Enter OTP</label>
+                            <input type="number" class="form-control" id="otp_value">
+                        </div>
+
+                        <button class="btn btn-primary d-grid w-100 mb-3" id="confirmOtpButton">
+                            Confirm
+                        </button>
+                        
+                        <div id="resendOption">
+                            <p class="or">or</p>
+                            <button id="resendOTP" style="display: none;">Resend OTP</button>
+                            <p class="ml-2">You can resend OTP after <span id="timer">30</span> seconds</p>    
+                        </div>
+
+                    </div>
+                </div> -->
+                <div class="form">
+                    <div id="loginForm">
+                        <div class="mb-3">
+                            <h4>Welcome Back!</h4>
+                            <p>Login with your email and password</p>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                
+                        <button class="btn btn-primary d-grid w-100 mb-3" id="loginButton">Login</button>
+                
+                        <!-- <p class="or">or</p>
+                        <button id="guestLogin">Guest Login</button> -->
+
+                        <div class="text-center mt-2">
+                            <p>Not registered? <a href="/signup">Sign up</a></p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <%- include('../partials/footercode.ejs') %>
+
+            <!-- For Desktop View -->
+            <script>
+                $(document).ready(function () {
+
+                    $('#guestLogin').click(function () {
+                        const enteredName = $('#org_name').val();
+                        if (enteredName) {
+                            window.localStorage.setItem('guestName', enteredName);
+                            window.postMessage({ type: 'guestNameChanged', value: enteredName }, '*');
+
+
+                        }
+                        $.ajax({
+                            url: `/api/auth/guestLogin`,
+                            type: 'GET',
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log('inside login', response);
+                                if (response.success === 1) {
+                                    window.location.href = response.redirect;
+                                }
+                                else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function (error) {
+                                console.log('error in ejs file', error);
+                            }
+                        })
+                    })
+                    $('#sendOtpButton').prop('disabled', true);
+                    $('#loginButton').click(function(e) {
+                            e.preventDefault();
+                            
+                            // Get input values
+                            var email = $('#email').val();
+                            var password = $('#password').val();
+                            
+                            // Basic validation
+                            if (!email && !password) {
+                                alert('Please enter the email and password!');
+                                return;
+                            }else if(!email){
+                                alert('Please enter the email!');
+                                return;
+                            }else if(!password){
+                                alert('Please enter the password!');
+                                return;
+                            }
+                            
+                            // Disable button to prevent multiple submissions
+                            $('#loginButton').prop('disabled', true);
+                            
+                            // Send authentication request
+                            $.ajax({
+                                url: '/api/auth/emailLogin',
+                                type: 'POST',
+                                data: JSON.stringify({
+                                    email: email,
+                                    password: password
+                                }),
+                                contentType: 'application/json',
+                                success: function(response) {
+                                    console.log('Login response:', response);
+                                    console.log({response})
+                                    if (response.success === 1) {
+                                        window.location.href = response.redirect;
+                                    } else {
+                                        alert(response.message || 'Login failed. Please check your credentials.');
+                                        $('#loginButton').prop('disabled', false);
+                                    }
+                                },
+                                error: function(error) {
+                                    console.log('Error during login:', error);
+                                    alert('An error occurred during login. Please try again.');
+                                    $('#loginButton').prop('disabled', false);
+                                }
+                            });
+                        });
+                        
+                        // Add Enter key handler for email login
+                        $("#password").keypress(function(event) {
+                            if (event.keyCode === 13) {
+                                $("#loginButton").click();
+                            }
+                        });
+
+                        $('#mobileLoginButton').click(function(e) {
+                            e.preventDefault();
+                            
+                            // Get input values
+                            var email = $('#email1').val();
+                            var password = $('#password1').val();
+                            
+                            // Basic validation
+                            if (!email && !password) {
+                                alert('Please enter the email and password!');
+                                return;
+                            }else if(!email){
+                                alert('Please enter the email!');
+                                return;
+                            }else if(!password){
+                                alert('Please enter the password!');
+                                return;
+                            }
+                            
+                            // Disable button to prevent multiple submissions
+                            $('#mobileLoginButton').prop('disabled', true);
+                            
+                            // Send authentication request
+                            $.ajax({
+                                url: '/api/auth/emailLogin',
+                                type: 'POST',
+                                data: JSON.stringify({
+                                    email: email,
+                                    password: password
+                                }),
+                                contentType: 'application/json',
+                                success: function(response) {
+                                    console.log('Login response:', response);
+                                    console.log({response})
+                                    if (response.success === 1) {
+                                        window.location.href = response.redirect;
+                                    } else {
+                                        alert(response.message || 'Login failed. Please check your credentials.');
+                                        $('#mobileLoginButton').prop('disabled', false);
+                                    }
+                                },
+                                error: function(error) {
+                                    console.log('Error during login:', error);
+                                    alert('An error occurred during login. Please try again.');
+                                    $('#mobileLoginButton').prop('disabled', false);
+                                }
+                            });
+                        });
+                        
+                        // Add Enter key handler for email login
+                        $("#password1").keypress(function(event) {
+                            if (event.keyCode === 13) {
+                                $("#mobileLoginButton").click();
+                            }
+                        });
+                    //validate the number
+                    function validateMobileNumber() {
+                        var mobileNumber = $('#org_telephone').val();
+
+                        if (mobileNumber.length < 10 || mobileNumber.length > 10) {
+                            $('#validation-message').show();
+                            $('#sendOtpButton').prop('disabled', true);
+                        } else {
+                            $('#validation-message').hide();
+                            $('#sendOtpButton').prop('disabled', false);
+                        }
+                    }
+
+                    function handleKeyPressForOTPbtn(event) {
+                        // Check if Enter key was pressed (key code 13)
+                        if (event.keyCode === 13) {
+                            // Trigger a click event on the submit button
+
+                            $("#sendOtpButton").click();
+                        }
+                    }
+
+                    function handleKeyPressForConfirmbtn(event) {
+                        // Check if Enter key was pressed (key code 13)
+                        if (event.keyCode === 13) {
+                            // Trigger a click event on the confirm button
+                            if (!$("#confirmOtpButton").prop("disabled")) {
+                                // Trigger a click event on the confirm button
+                                $("#confirmOtpButton").click();
+                            }
+                        }
+                    }
+
+                    $('input[name="mobilenumber"]').on("input", validateMobileNumber);
+                    $("#org_telephone").keypress(handleKeyPressForOTPbtn);
+
+                    function loginFunctionDW(mobileNumber, url) {
+                        $.ajax({
+                            url: `/api/auth/login`,
+                            type: 'POST',
+                            data: JSON.stringify({
+                                mobileNumber: mobileNumber
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+
+                                var OTPtoken = response.OTPtoken
+
+                                // Hide the mobile number input and send OTP button
+                                $("#mobileNumberInput").hide();
+                                $("#mobileNumberInput-1").hide();
+
+
+                                // Display the OTP input field and verify button
+                                $("#otpInput").show();
+                                $("#otpInput #otp_value").focus();
+
+                                $("#otp_value").keypress(handleKeyPressForConfirmbtn);
+
+                                var timeLeft = 30;
+                                var timerId = setInterval(function () {
+                                    if (timeLeft == 0) {
+                                        clearTimeout(timerId);
+                                        $('#resendOTP').show();
+                                        $('#timer').text('0');
+                                    } else {
+                                        $('#timer').text(timeLeft);
+                                        timeLeft--;
+                                    }
+                                }, 1000);
+
+                                $("#resendOTP").click(function () {
+                                    $('#resendOption').hide();
+                                    $('#resendOTP').hide();
+                                    $.ajax({
+                                        url: `/api/auth/login`,
+                                        type: 'POST',
+                                        data: JSON.stringify({
+                                            mobileNumber: mobileNumber
+                                        }),
+                                        contentType: 'application/json',
+                                        success: function (resendOTPresponse) {
+                                            OTPtoken = resendOTPresponse.OTPtoken
+                                        },
+                                    });
+                                })
+
+
+                                $("#confirmOtpButton").click(function () {
+
+                                    //$('#confirmOtpButton').prop('disabled', true);
+
+                                    var otp = $("#otp_value").val();
+
+                                    var details = {
+                                        mobileNumber: mobileNumber,
+                                        OTPtoken: OTPtoken,
+                                        otp_value: otp
+                                    };
+
+                                    $.ajax({
+                                        url: url,
+                                        type: 'POST',
+                                        data: JSON.stringify(details),
+                                        contentType: 'application/json',
+                                        success: function (response) {
+                                            console.log('inside login', response);
+                                            if (response.success === 1) {
+                                                window.location.href = response.redirect;
+                                            }
+                                            else {
+                                                alert(response.message);
+                                            }
+                                        },
+                                        error: function (error) {
+                                            console.log('error in ejs file', error);
+                                        }
+                                    })
+                                });
+                            },
+                            error: function (error) {
+                                console.log('error', error);
+                            }
+                        })
+                    }
+
+                    // Send OTP button click event handler
+                    $("#sendOtpButton").click(function () {
+                        $('#sendOtpButton').prop('disabled', true);
+
+                        // Get the mobile number entered by the user
+                        var mobileNumber = $('#org_telephone').val();
+                        console.log(mobileNumber);
+
+                        $.ajax({
+                            url: `/api/auth/chkUserRole`,
+                            type: 'POST',
+                            data: JSON.stringify({
+                                mobileNumber: mobileNumber
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log('check user role', response);
+                                if (response.role === 'employee') {
+                                    var url = `/api/auth/verifyEmpOTP`;
+                                    loginFunctionDW(mobileNumber, url);
+                                }
+                                else {
+                                    var url = `/api/auth/verifyOrgOTP`;
+                                    loginFunctionDW(mobileNumber, url);
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        })
+
+                    });
+                })
+            </script>
+
+            <!-- For Mobile View -->
+            <script>
+                $(document).ready(function () {
+
+                    $('#guestLogin1').click(function () {
+                        const enteredName = $('#org_name').val();
+                        if (enteredName) {
+                            window.localStorage.setItem('guestName', enteredName);
+                            window.postMessage({ type: 'guestNameChanged', value: enteredName }, '*');
+
+
+                        }
+                        $.ajax({
+                            url: `/api/auth/guestLogin`,
+                            type: 'GET',
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log('inside login', response);
+                                if (response.success === 1) {
+                                    window.location.href = response.redirect;
+                                }
+                                else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function (error) {
+                                console.log('error in ejs file', error);
+                            }
+                        })
+                    })
+                    $('#sendOtpButton1').prop('disabled', true);
+
+                    //validate the number
+                    function validateMobileNumber1() {
+                        console.log('object');
+                        var mobileNumber = $('#org_telephone1').val();
+
+                        if (mobileNumber.length < 10 || mobileNumber.length > 10) {
+                            $('#validation-message1').show();
+                            $('#sendOtpButton1').prop('disabled', true);
+                        } else {
+                            $('#validation-message1').hide();
+                            $('#sendOtpButton1').prop('disabled', false);
+                        }
+                    }
+
+                    function handleKeyPressForOTPbtn1(event) {
+                        // Check if Enter key was pressed (key code 13)
+                        if (event.keyCode === 13) {
+                            // Trigger a click event on the submit button
+
+                            $("#sendOtpButton1").click();
+                        }
+                    }
+
+                    function handleKeyPressForConfirmbtn1(event) {
+                        // Check if Enter key was pressed (key code 13)
+                        if (event.keyCode === 13) {
+                            // Trigger a click event on the confirm button
+                            if (!$("#confirmOtpButton1").prop("disabled")) {
+                                // Trigger a click event on the confirm button
+                                $("#confirmOtpButton1").click();
+                            }
+                        }
+                    }
+
+                    $('input[name="mobilenumber1"]').on("input", validateMobileNumber1);
+                    $("#org_telephone1").keypress(handleKeyPressForOTPbtn1);
+
+                    function loginFunctionMW(mobileNumber1, url) {
+                        $.ajax({
+                            url: `/api/auth/login`,
+                            type: 'POST',
+                            data: JSON.stringify({
+                                mobileNumber: mobileNumber1
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+
+                                var OTPtoken = response.OTPtoken;
+
+                                // Hide the mobile number input and send OTP button
+                                $("#mobileNumberInput1").hide();
+
+                                // Display the OTP input field and verify button
+                                $("#otpInput1").show();
+                                $("#otpInput1 #otp_value1").focus();
+
+                                $("#otp_value1").keypress(handleKeyPressForConfirmbtn1);
+
+                                var timeLeft = 30;
+                                var timerId = setInterval(function () {
+                                    if (timeLeft == 0) {
+                                        clearTimeout(timerId);
+                                        $('#resendOTP1').show();
+                                        $('#timer1').text('0');
+                                    } else {
+                                        $('#timer1').text(timeLeft);
+                                        timeLeft--;
+                                    }
+                                }, 1000);
+
+                                $("#resendOTP1").click(function () {
+                                    $('#resendOption1').hide();
+                                    $('#resendOTP1').hide();
+                                    $.ajax({
+                                        url: `/api/auth/login`,
+                                        type: 'POST',
+                                        data: JSON.stringify({
+                                            mobileNumber: mobileNumber1
+                                        }),
+                                        contentType: 'application/json',
+                                        success: function (resendOTPresponse) {
+                                            OTPtoken = resendOTPresponse.OTPtoken
+                                        },
+                                    });
+                                })
+
+
+                                // OTP form submission event handler
+                                $("#confirmOtpButton1").click(function () {
+
+                                    //$('#confirmOtpButton').prop('disabled', true);
+
+                                    var otp1 = $("#otp_value1").val();
+
+                                    var details = {
+                                        mobileNumber: mobileNumber1,
+                                        OTPtoken: OTPtoken,
+                                        otp_value: otp1
+                                    };
+
+                                    $.ajax({
+                                        url: url,
+                                        type: 'POST',
+                                        data: JSON.stringify(details),
+                                        contentType: 'application/json',
+                                        success: function (response) {
+                                            console.log('inside login', response);
+                                            if (response.success === 1) {
+                                                window.location.href = response.redirect;
+                                            }
+                                            else {
+                                                alert(response.message);
+                                            }
+                                        },
+                                        error: function (error) {
+                                            console.log('error in ejs file', error);
+                                        }
+                                    })
+                                });
+                            },
+                            error: function (error) {
+                                console.log('error', error);
+                            }
+                        })
+                    }
+
+
+                    // Send OTP button click event handler
+                    $("#sendOtpButton1").click(function () {
+                        $('#sendOtpButton1').prop('disabled', true);
+
+                        // Get the mobile number entered by the user
+                        var mobileNumber1 = $('#org_telephone1').val();
+                        console.log('mobileno.', mobileNumber1);
+
+                        $.ajax({
+                            url: `/api/auth/chkUserRole`,
+                            type: 'POST',
+                            data: JSON.stringify({
+                                mobileNumber: mobileNumber1
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log('check user role', response);
+                                if (response.role === 'employee') {
+                                    var url = `/api/auth/verifyEmpOTP`;
+                                    loginFunctionMW(mobileNumber1, url);
+                                }
+                                else {
+                                    var url = `/api/auth/verifyOrgOTP`;
+                                    loginFunctionMW(mobileNumber1, url);
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        })
+
+                    });
+                })
+            </script>
+
+            <style>
+                body {
+                background-color: #f8f9fa;
+                }
+            
+                .form {
+                background-color: #fff;
+                }
+            
+                @media (max-width: 576px) {
+                .form {
+                    padding: 20px 15px;
+                }
+            
+                h4 {
+                    font-size: 1.4rem;
+                }
+            
+                p {
+                    font-size: 0.95rem;
+                }
+                }
+            </style>
+  
+
+            <!-- Page JS -->
+            <script src="/js/pages-auth.js"></script>
+
+    </body>
+
+    </html>

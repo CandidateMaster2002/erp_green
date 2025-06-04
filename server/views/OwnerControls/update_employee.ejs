@@ -1,0 +1,253 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <div class="d-flex justify-content-between m-0 p-0">
+                                        <h4 class="fw-bold py-3 mb-1"> Update Employee</h4>
+                                        <a type="button" class="btn btn-icon btn-danger my-2 mx-3"
+                                            href="/employee_master">
+                                            <i class='bx bx-x bx-sm'></i>
+                                        </a>
+                                    </div>
+
+                                    <hr class="mb-4">
+
+                                    <div class="card mb-4 mx-auto col-md-8">
+
+                                        <div class="pt-4 text-center">
+                                            <h4 class="mb-0">Edit Employee Details</h4>
+                                        </div>
+
+                                        <hr>
+                                        <div class="card-body">
+
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_name">Employee
+                                                    Name<span style="font-size: 15px; color: red">*</span></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                            class="bx bx-user"></i></span>
+                                                    <input type="text" class="form-control" id="emp_name" placeholder=""
+                                                        name="emp_name" value="<%=data[0].emp_name %>">
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="mb-3">
+                                                <label class="form-label" for="emp_reg_no"> Registration No.
+                                                    <span style="font-size: 15px; color: red">*</span></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                            class="bx bx-detail"></i></span>
+                                                    <input type="text" class="form-control" id="emp_reg_no" placeholder=""
+                                                        name="emp_reg_no" value="<%=data[0].emp_reg_no %>" required>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_reg_no">Registration No.</label>
+                                                <div class="input-group">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                            class='bx bx-detail'></i></span>
+                                                    <select type="text" id="emp_reg_st" class="form-select">
+                                                        <option selected> State</option>
+                                                        <option value="AD">Andhra Pradesh</option>
+                                                        <option value="AR"> Arunachal Pradesh</option>
+                                                        <option value="AS"> Assam</option>
+                                                        <option value="BR"> Bihar</option>
+                                                        <option value="CG"> Chattisgarh</option>
+                                                        <option value="DL"> Delhi</option>
+                                                        <option value="GA"> Goa</option>
+                                                        <option value="GJ"> Gujarat</option>
+                                                        <option value="HR"> Haryana</option>
+                                                        <option value="HP"> Himachal Pradesh</option>
+                                                        <option value="JK"> Jammu and Kashmir</option>
+                                                        <option value="JH"> Jharkhand</option>
+                                                        <option value="KA"> Karnataka</option>
+                                                        <option value="KL"> Kerala</option>
+                                                        <option value="LD"> Lakshadweep Islands</option>
+                                                        <option value="MP"> Madhya Pradesh</option>
+                                                        <option value="MH"> Maharashtra</option>
+                                                        <option value="MN"> Manipur</option>
+                                                        <option value="ML"> Meghalaya</option>
+                                                        <option value="MZ"> Mizoram</option>
+                                                        <option value="NL"> Nagaland</option>
+                                                        <option value="OD"> Odisha</option>
+                                                        <option value="PY"> Pondicherry</option>
+                                                        <option value="PB"> Punjab</option>
+                                                        <option value="RJ"> Rajasthan</option>
+                                                        <option value="SK"> Sikkim</option>
+                                                        <option value="TN"> Tamil Nadu</option>
+                                                        <option value="TS"> Telangana</option>
+                                                        <option value="TR"> Tripura</option>
+                                                        <option value="UP"> Uttar Pradesh</option>
+                                                        <option value="UK"> Uttarakhand</option>
+                                                        <option value="WB"> West Bengal</option>
+                                                    </select>
+                                                    <input type="text" id="emp_reg_ct" placeholder="Zone"
+                                                        class="form-control">
+                                                    <input type="text" id="emp_reg_ln" placeholder="License No."
+                                                        class="form-control" minlength="6" maxlength="6">
+                                                </div>
+                                            </div>
+    
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_mobile">Contact
+                                                    No<span style="font-size: 15px; color: red">*</span></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                                            class="bx bx-phone"></i></span>
+                                                    <input type="text" id="emp_mobile" class="form-control phone-mask"
+                                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); if (this.value.length > 0 && !/[6-9]/.test(this.value[0])) this.value = '';"
+                                                    onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                    maxlength="10"
+                                                    placeholder="" name="emp_mobile" value="<%=data[0].emp_mobile %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_alt_mobile"> Alternet
+                                                    Contact
+                                                    No</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-phone2" class="input-group-text"><i
+                                                            class="bx bx-phone"></i></span>
+                                                    <input type="text" id="emp_alt_mobile"
+                                                        class="form-control phone-mask" placeholder=""
+                                                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); if (this.value.length > 0 && !/[6-9]/.test(this.value[0])) this.value = '';"
+                                                        onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                        maxlength="10"
+                                                        name="emp_alt_mobile" value="<%=data[0].emp_alt_mobile %>" >
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_email">Email</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                    <input type="text" id="emp_email" class="form-control"
+                                                        placeholder="" name="emp_email" value="<%=data[0].emp_email %>">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="emp_address">Address</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-message2" class="input-group-text"><i
+                                                            class="bx bx-address"></i></span>
+                                                    <textarea id="emp_address" class="form-control" placeholder=""
+                                                        name="emp_address"><%=data[0].emp_address %></textarea>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" id="updateSubmit"
+                                                class="btn btn-primary">Submit</button>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                                <!-- / Content -->
+
+                                <div class="content-backdrop fade"></div>
+                            </div>
+                            <!-- Content wrapper -->
+                    </div>
+                    <!-- / Layout page -->
+            </div>
+
+
+
+            <!-- Overlay -->
+            <div class="layout-overlay layout-menu-toggle"></div>
+
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+            <script>
+                var empId = '<%= data[0].emp_id %>'
+
+                // Split Registration No
+                var emp_reg_no = '<%= data[0].emp_reg_no %>'
+                var splitRegNo = emp_reg_no.split(/-/);
+                console.log(splitRegNo)
+                $("#emp_reg_st").val(splitRegNo[0]);
+                $("#emp_reg_ct").val(splitRegNo[1]);
+                $("#emp_reg_ln").val(splitRegNo[2]);
+
+                $("#emp_email").change(function () {
+                    var inputvalues = $(this).val();
+                    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(inputvalues)) {
+                        alert("Invalid email id");
+                    }
+                });
+
+                $("#updateSubmit").click(function () {
+
+                    if ($("#emp_name").val() == '') {
+                        return alert('Please fill "Employee Name"');
+                    }
+
+                    if ($("#emp_mobile").val().length < 10) {
+                        return alert('Please fill valid Phone number');
+                    }
+
+                    if ($("#emp_alt_mobile").val().length < 10 && $("#emp_alt_mobile").val().length > 0) {
+                        return alert('Please fill valid Alternet Phone number');
+                    }
+
+                    var emp_reg_no = $("#emp_reg_st").val().toString() + '-' + $("#emp_reg_ct").val().toString() + '-' + $("#emp_reg_ln").val().toString();
+
+                    $.ajax({
+                        url: `/api/emp/${empId}/update`,
+                        type: 'POST',
+                        data: JSON.stringify({
+                            emp_name: $("#emp_name").val(),
+                            emp_reg_no: emp_reg_no,
+                            emp_mobile: $("#emp_mobile").val(),
+                            emp_alt_mobile: $("#emp_alt_mobile").val(),
+                            emp_email: $("#emp_email").val(),
+                            emp_address: $("#emp_address").val()
+                        }),
+                        contentType: 'application/json',
+                        success: function (response) {
+                           window.location.href = "/employee_master"
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    })
+                })
+
+            </script>
+
+    </body>
+
+
+    </html>

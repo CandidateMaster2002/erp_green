@@ -1,0 +1,542 @@
+<%- include('../partials/headercode.ejs') %>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <h4 class="fw-bold py-3 mb-4">
+                                        <span class="fw-light">Update Profile</span>
+                                    </h4>
+
+                                    <!-- Header -->
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card mb-2">
+                                                <!-- <div class="user-profile-header-banner">
+                                                    <img src="/img/backgrounds/profile-banner.png" alt="Banner image"
+                                                        class="rounded-top w-100">
+                                                </div> -->
+                                                <div
+                                                    class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
+                                                    <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
+                                                        <img src="/img/avatars/1.jpg" alt="user image"
+                                                            class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img w-75">
+                                                    </div>
+                                                    <div class="flex-grow-1 mt-3 mt-sm-5">
+                                                        <div
+                                                            class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
+                                                            <div class="user-profile-info">
+                                                                <h4>
+                                                                    <%=data[0].owner_name%>
+                                                                </h4>
+                                                                <ul
+                                                                    class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+                                                                    <li class="list-inline-item fw-semibold">
+                                                                        <i class='bx bx-user'></i> Pharmacy Owner
+                                                                    </li>
+                                                                    <li class="list-inline-item fw-semibold">
+                                                                        <i class='bx bx-map'>
+                                                                        </i>
+                                                                        <%=data[0].org_city%>
+                                                                    </li>
+                                                                    <!-- <li class="list-inline-item fw-semibold">
+                                                                        <i class='bx bx-calendar-alt'></i> Joined April
+                                                                        2021
+                                                                    </li> -->
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/ Header -->
+
+                                    <!-- User Profile Content -->
+                                    <div class="row d-flex justify-content-around mt-3">
+                                        <div class="col-xl-6 col-lg-6 col-md-6  ">
+
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <h6 class="mb-0">About</h6>
+                                                    <hr>
+
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="org_name">Pharmacy
+                                                            Name</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class="bx bx-user"></i></span>
+                                                            <input type="text" class="form-control" id="org_name"
+                                                                placeholder="" value="<%=data[0].org_name%>" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="owner_name">Owner
+                                                            Name</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class="bx bx-user"></i></span>
+                                                            <input type="text" class="form-control" id="owner_name"
+                                                                placeholder="" value="<%=data[0].owner_name%>" readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="org_gstin">GSTIN</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bxs-bank'></i></span>
+                                                            <input type="text" class="form-control" id="org_gstin"
+                                                                placeholder="" value="<%=data[0].org_gstin%>">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <h6 class="mb-0">Location</h6>
+                                                    <hr>
+
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_state">State</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span class="input-group-text"><i
+                                                                    class='bx bxs-map-alt'></i></span>
+                                                            <input type="text" id="org_state" class="form-control"
+                                                                placeholder="" value="<%=data[0].org_state%>">
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_city">City</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span class="input-group-text"><i
+                                                                    class='bx bxs-city'></i></span>
+                                                            <input type="text" id="org_city" class="form-control"
+                                                                placeholder="" value="<%=data[0].org_city%>">
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_pincode">Pincode</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span class="input-group-text"><i
+                                                                    class='bx bxs-map-pin'></i></span>
+                                                            <input type="text" id="org_pincode" class="form-control"
+                                                                placeholder="" value="<%=data[0].org_pincode%>"
+                                                                readonly>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_address">Address</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-message2"
+                                                                class="input-group-text"><i
+                                                                    class="bx bx-address"></i></span>
+                                                            <textarea id="org_address"
+                                                                class="form-control"><%=data[0].org_address%></textarea>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class=" mb-4">
+
+                                                <div class="card-body">
+                                                    <div class="form-check mt-3">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="defaultCheck1" checked/>
+                                                        <label class="form-check-label" for="defaultCheck1">
+                                                            Disclaimer : Hereby I asure that data given here is
+                                                            validated by me and is genuine to my consiousness.
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6">
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <h6 class="mb-0">License</h6>
+                                                    <hr>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="org_dl_no_1">DL No 1</label>
+                                                        <div class="input-group">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-detail'></i></span>
+                                                            <input type="text" id="dl1_ft" value=""
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl1_st" placeholder="State (eg:-MH)"
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl1_ct" placeholder="City (eg:-NG)"
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl1_ln" placeholder="License No."
+                                                                class="form-control" minlength="6" maxlength="6"
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="org_dl_no_2">DL No 2</label>
+                                                        <div class="input-group">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-detail'></i></span>
+                                                            <input type="text" id="dl2_ft" value=""
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl2_st" placeholder="State (eg:-MH)"
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl2_ct" placeholder="City (eg:-NG)"
+                                                                class="form-control" readonly>
+                                                            <input type="text" id="dl2_ln" placeholder="License No."
+                                                                class="form-control" minlength="6" maxlength="6"
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="org_dl_no_3">DL No 3</label>
+                                                        <div class="input-group">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-detail'></i></span>
+                                                            <input type="text" id="dl3_ft" placeholder="Form type"
+                                                                class="form-control">
+                                                            <select id="dl3_st" placeholder="State (eg:-MH)"
+                                                                class="form-control" placeholder="State">
+                                                                <option value="" selected> State</option>
+                                                                <option value="AD">Andhra Pradesh</option>
+                                                                <option value="AR"> Arunachal Pradesh</option>
+                                                                <option value="AS"> Assam</option>
+                                                                <option value="BR"> Bihar</option>
+                                                                <option value="CG"> Chattisgarh</option>
+                                                                <option value="DL"> Delhi</option>
+                                                                <option value="GA"> Goa</option>
+                                                                <option value="GJ"> Gujarat</option>
+                                                                <option value="HR"> Haryana</option>
+                                                                <option value="HP"> Himachal Pradesh</option>
+                                                                <option value="JK"> Jammu and Kashmir</option>
+                                                                <option value="JH"> Jharkhand</option>
+                                                                <option value="KA"> Karnataka</option>
+                                                                <option value="KL"> Kerala</option>
+                                                                <option value="LD"> Lakshadweep Islands</option>
+                                                                <option value="MP"> Madhya Pradesh</option>
+                                                                <option value="MH"> Maharashtra</option>
+                                                                <option value="MN"> Manipur</option>
+                                                                <option value="ML"> Meghalaya</option>
+                                                                <option value="MZ"> Mizoram</option>
+                                                                <option value="NL"> Nagaland</option>
+                                                                <option value="OD"> Odisha</option>
+                                                                <option value="PY"> Pondicherry</option>
+                                                                <option value="PB"> Punjab</option>
+                                                                <option value="RJ"> Rajasthan</option>
+                                                                <option value="SK"> Sikkim</option>
+                                                                <option value="TN"> Tamil Nadu</option>
+                                                                <option value="TS"> Telangana</option>
+                                                                <option value="TR"> Tripura</option>
+                                                                <option value="UP"> Uttar Pradesh</option>
+                                                                <option value="UK"> Uttarakhand</option>
+                                                                <option value="WB"> West Bengal</option>
+                                                            </select>
+
+                                                            <input type="text" id="dl3_ct" placeholder="City (eg:-NG)"
+                                                                class="form-control">
+                                                            <input type="text" id="dl3_ln" placeholder="License No."
+                                                                class="form-control" minlength="6" maxlength="6">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label class="form-label" for="org_dl_no_4">DL No 4</label>
+                                                        <div class="input-group">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-detail'></i></span>
+                                                            <input type="text" id="dl4_ft" placeholder="Form type"
+                                                                class="form-control">
+                                                            <select type="text" id="dl4_st" placeholder="State (eg:-MH)"
+                                                                class="form-control">
+                                                                <option value="" selected> State</option>
+                                                                <option value="AD">Andhra Pradesh</option>
+                                                                <option value="AR"> Arunachal Pradesh</option>
+                                                                <option value="AS"> Assam</option>
+                                                                <option value="BR"> Bihar</option>
+                                                                <option value="CG"> Chattisgarh</option>
+                                                                <option value="DL"> Delhi</option>
+                                                                <option value="GA"> Goa</option>
+                                                                <option value="GJ"> Gujarat</option>
+                                                                <option value="HR"> Haryana</option>
+                                                                <option value="HP"> Himachal Pradesh</option>
+                                                                <option value="JK"> Jammu and Kashmir</option>
+                                                                <option value="JH"> Jharkhand</option>
+                                                                <option value="KA"> Karnataka</option>
+                                                                <option value="KL"> Kerala</option>
+                                                                <option value="LD"> Lakshadweep Islands</option>
+                                                                <option value="MP"> Madhya Pradesh</option>
+                                                                <option value="MH"> Maharashtra</option>
+                                                                <option value="MN"> Manipur</option>
+                                                                <option value="ML"> Meghalaya</option>
+                                                                <option value="MZ"> Mizoram</option>
+                                                                <option value="NL"> Nagaland</option>
+                                                                <option value="OD"> Odisha</option>
+                                                                <option value="PY"> Pondicherry</option>
+                                                                <option value="PB"> Punjab</option>
+                                                                <option value="RJ"> Rajasthan</option>
+                                                                <option value="SK"> Sikkim</option>
+                                                                <option value="TN"> Tamil Nadu</option>
+                                                                <option value="TS"> Telangana</option>
+                                                                <option value="TR"> Tripura</option>
+                                                                <option value="UP"> Uttar Pradesh</option>
+                                                                <option value="UK"> Uttarakhand</option>
+                                                                <option value="WB"> West Bengal</option>
+                                                            </select>
+
+                                                            <input type="text" id="dl4_ct" placeholder="City (eg:-NG)"
+                                                                class="form-control">
+                                                            <input type="text" id="dl4_ln" placeholder="License No."
+                                                                class="form-control" minlength="6" maxlength="6">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="fssai_no">FSSAI No</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-badge-check'></i></span>
+                                                            <input type="text" class="form-control" id="org_fssai_no"
+                                                                placeholder="" value="<%=data[0].org_fssai_no%>">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label" for="shop_lic">Shop
+                                                            license</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-fullname2"
+                                                                class="input-group-text"><i
+                                                                    class='bx bx-store-alt'></i></span>
+                                                            <input type="text" class="form-control" id="org_shop_lic"
+                                                                placeholder="" value="<%=data[0].org_shop_lic%>">
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="card mb-4">
+
+                                                <div class="card-body">
+                                                    <h6 class="mb-0">Contact</h6>
+                                                    <hr>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_telephone">Contact
+                                                            No</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-phone2"
+                                                                class="input-group-text"><i
+                                                                    class="bx bx-phone"></i></span>
+                                                            <input type="text" id="org_telephone"
+                                                                class="form-control px-2" readonly
+                                                                value="<%=data[0].org_telephone%>">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_alt_telephone">Alternate
+                                                            Contact
+                                                            No</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span id="basic-icon-default-phone2"
+                                                                class="input-group-text"><i
+                                                                    class="bx bx-phone"></i></span>
+                                                            <input id="org_alt_telephone" class="form-control px-2"
+                                                                placeholder="" value="<%=data[0].org_alt_telephone%>"
+                                                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                type="number" maxlength="10">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="org_email">Email</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <span class="input-group-text"><i
+                                                                    class="bx bx-envelope"></i></span>
+                                                            <input type="text" id="org_email" class="form-control"
+                                                                placeholder="" value="<%=data[0].org_email%>">
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <!-- / User Profile Content -->
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary w-25"
+                                            id="submitbtn">Update</button>
+                                    </div>
+
+                                </div>
+                                <!-- / Content -->
+
+                                <div class="content-backdrop fade"></div>
+                            </div>
+                            <!-- Content wrapper -->
+                    </div>
+                    <!-- / Layout page -->
+            </div>
+
+
+
+            <!-- Overlay -->
+            <div class="layout-overlay layout-menu-toggle"></div>
+
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+
+            <script>
+                $(document).ready(function () {
+                    var orgId = '<%= orgId %>'
+
+                    // Validation for email
+                    $("#org_email").change(function () {
+                        var inputvalues = $(this).val();
+                        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                        if (!regex.test(inputvalues)) {
+                            alert("invalid email id");
+                        }
+                    });
+
+                    // Split DL No.1
+                    var org_dl_no_1 = '<%= data[0].org_dl_no_1 %>'
+                    var splitDL1 = org_dl_no_1.split(/-/);
+                    $("#dl1_ft").val(splitDL1[0])
+                    $("#dl1_st").val(splitDL1[1]);
+                    $("#dl1_ct").val(splitDL1[2]);
+                    $("#dl1_ln").val(splitDL1[3]);
+
+                    // Split DL No.2
+                    var org_dl_no_2 = '<%= data[0].org_dl_no_2 %>'
+                    var splitDL2 = org_dl_no_2.split(/-/);
+                    $("#dl2_ft").val(splitDL1[0])
+                    $("#dl2_st").val(splitDL1[1]);
+                    $("#dl2_ct").val(splitDL1[2]);
+                    $("#dl2_ln").val(splitDL2[3]);
+
+                    // Split DL No.3
+                    var org_dl_no_3 = '<%= data[0].org_dl_no_3 %>'
+                    var splitDL3 = org_dl_no_3.split(/-/);
+                    $("#dl3_ft").val(splitDL3[0])
+                    $("#dl3_st").val(splitDL3[1]);
+                    $("#dl3_ct").val(splitDL3[2]);
+                    $("#dl3_ln").val(splitDL3[3]);
+
+                    // Split DL No.4
+                    var org_dl_no_4 = '<%= data[0].org_dl_no_4 %>'
+                    var splitDL4 = org_dl_no_4.split(/-/);
+                    $("#dl4_ft").val(splitDL4[0])
+                    $("#dl4_st").val(splitDL4[1]);
+                    $("#dl4_ct").val(splitDL4[2]);
+                    $("#dl4_ln").val(splitDL4[3]);
+
+
+                    $("#submitbtn").click(function () {
+
+                        if (!$("#defaultCheck1").prop("checked")) {
+                            return alert("Please check the disclaimer before submitting.");
+                        }
+
+                        var dl_no_1 = $("#dl1_ft").val() + '-' + $("#dl1_st").val() + '-' + $("#dl1_ct").val() + '-' + $("#dl1_ln").val();
+                        var dl_no_2 = $("#dl2_ft").val() + '-' + $("#dl2_st").val() + '-' + $("#dl2_ct").val() + '-' + $("#dl2_ln").val();
+                        var dl_no_3 = $("#dl3_ft").val() + '-' + $("#dl3_st").val() + '-' + $("#dl3_ct").val() + '-' + $("#dl3_ln").val();
+                        var dl_no_4 = $("#dl4_ft").val() + '-' + $("#dl4_st").val() + '-' + $("#dl4_ct").val() + '-' + $("#dl4_ln").val();
+
+                        $.ajax({
+                            url: `/api/org/update/?orgId=${orgId}`,
+                            type: 'POST',
+                            data: JSON.stringify({
+                                org_name: $("#org_name").val(),
+                                owner_name: $("#owner_name").val(),
+                                org_gstin: $("#org_gstin").val(),
+                                org_alt_telephone: $("#org_alt_telephone").val(),
+                                org_email: $("#org_email").val(),
+                                org_dl_no_1: dl_no_1,
+                                org_dl_no_2: dl_no_2,
+                                org_dl_no_3: dl_no_3,
+                                org_dl_no_4: dl_no_4,
+                                org_fssai_no: $("#org_fssai_no").val(),
+                                org_shop_lic: $("#org_shop_lic").val(),
+                                org_state: $("#org_state").val(),
+                                org_city: $("#org_city").val(),
+                                org_pincode: $("#org_pincode").val(),
+                                org_address: $("#org_address").val()
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                window.location.href = "/profile"
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        })
+                    })
+
+
+                })
+            </script>
+
+    </body>
+
+
+    </html>

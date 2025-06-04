@@ -1,0 +1,352 @@
+<%- include('../partials/headercode.ejs') %>
+    <!-- Atharv -->
+
+    <head>
+        <link rel="stylesheet" href="/vendor/libs/dropzone/dropzone.css">
+        <link rel="stylesheet" href="/vendor/libs/flatpickr/flatpickr.css">
+    </head>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between m-0 p-0">
+                                        <h4 class="fw-bold py-3 mb-1">MAP CSV</h4>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div class="text-center mx-2">
+                                                <a class="btn btn-success btn-responsive"
+                                                    href="/templates/csv_template_dawaai.csv" download="csv_template_dawaai.csv"
+                                                    style="color: white;"><i class='bx bxs-download me-1 align-center'></i>Template</a>
+                                            </div>
+    
+                                            <div class="text-center mx-2">
+                                                <a class="btn btn-info btn-responsive"
+                                                    onclick="document.getElementById('fileInput').click()"
+                                                    style="color: white;"><i class='bx bx-upload me-1 align-center'></i>Upload</a>
+                                                <input type="file" id="fileInput" accept=".csv" style="display:none">
+                                            </div>
+    
+                                        </div>
+
+                                    </div>
+
+                                    <h5>Preview of CSV data</h5>
+
+                                    <hr class="mb-4">
+
+                                    <div class="card" id="inventoryData">
+                                        <div class="table-responsive text-nowrap" style="min-height: 60vh;"
+                                            id="parsedDataTable">
+                                            <div class="text-center my-3">
+                                                <h5 class="fw-bold">No data to display</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Button trigger modal -->
+                                    <div class="text-center mx-2 my-3">
+                                        <a class="btn btn-primary btn-responsive" style="color: white;"
+                                            data-bs-toggle="modal" data-bs-target="#columnMappingModal">Next</a>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade " id="columnMappingModal" tabindex="-1"
+                                        aria-labelledby="columnMappingModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Map your column names
+                                                        to the corresponding inventory fields</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body container">
+                                                    <!-- Column mapping fields will be displayed here -->
+
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-center">
+                                                    <a type="button" class="btn btn-primary btn-responsive" style="color: white;">Save changes and Proceed</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                    </div>
+
+            </div>
+            <!-- / Content -->
+
+            <div class="content-backdrop fade"></div>
+        </div>
+        <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+            <script src="/vendor/libs/dropzone/dropzone.js"></script>
+            <script src="/vendor/libs/flatpickr/flatpickr.js"></script>
+
+            <style>
+                /* Custom CSS for mobile responsiveness */
+                @media (max-width: 576px) {
+                    .btn-responsive {
+                        font-size: 13px;
+                        /* Adjust the font size for mobile */
+                        padding: 5px 10px;
+                        /* Adjust padding for mobile */
+                    }
+                }
+            </style>
+
+            <script>
+                $(document).ready(function () {
+                    var orgId = "<%=orgId%>"
+
+                    function displayCSVData(parsedCSVData) {
+                        // Create a table element
+                        var table = document.createElement('table');
+                        table.setAttribute('class', 'table table-bordered h-100');
+
+                        // Check if parsedCSVData is not empty
+                        if (parsedCSVData.length > 0) {
+                            // Create the header row
+                            var thead = document.createElement('thead');
+                            var headerRow = document.createElement('tr');
+
+                            // Manually add a header for the serial number column
+                            var serialNoHeader = document.createElement('th');
+                            serialNoHeader.textContent = '#';
+                            headerRow.appendChild(serialNoHeader);
+
+                            // Use the keys from the first object as column headers
+                            Object.keys(parsedCSVData[0]).forEach(function (key) {
+                                var th = document.createElement('th');
+                                th.textContent = key;
+                                headerRow.appendChild(th);
+                            });
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+
+                            // Create the body of the table
+                            var tbody = document.createElement('tbody');
+
+                            // Add data rows
+                            parsedCSVData.forEach(function (row, index) {
+                                var tr = document.createElement('tr');
+
+                                // Create and append the serial number cell
+                                var serialTd = document.createElement('td');
+                                serialTd.textContent = index + 1;
+                                tr.appendChild(serialTd);
+
+                                Object.values(row).forEach(function (value) {
+                                    var td = document.createElement('td');
+                                    td.textContent = value;
+                                    tr.appendChild(td);
+                                });
+                                tbody.appendChild(tr);
+                            });
+                            table.appendChild(tbody);
+
+                            // Append the table to the container
+                            var container = document.getElementById('parsedDataTable');
+                            container.innerHTML = ''; // Clear previous data
+                            container.appendChild(table);
+                        } else {
+                            // Handle case where parsedCSVData is empty
+                            document.getElementById('parsedDataTable').textContent = 'No data to display.';
+                        }
+                    }
+
+
+                    function handleFileSelect() {
+                        var fileInput = document.getElementById('fileInput');
+                        if ('files' in fileInput && fileInput.files.length > 0) {
+                            sendFileToServer(fileInput.files[0]);
+                        }
+                    }
+
+                    function sendFileToServer(file) {
+                        var formData = new FormData();
+                        formData.append('file', file); // Assuming 'file' is the key your backend expects
+
+                        $.ajax({
+                            url: `/api/v2/csvUpload?orgId=${orgId}`, // Replace with your API endpoint
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            success: function (response) {
+                                var parsedCSVData = response.data.parsedCSVData;
+                                console.log('Parsed CSV data:', parsedCSVData);
+                                displayCSVData(parsedCSVData);
+
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error uploading file', error);
+                                // Handle error
+                            }
+                        });
+                    }
+                    // Add event listener to file input
+                    $('#fileInput').on('change', handleFileSelect);
+
+
+                    // Function to dynamically create and append the input groups
+                    function populateModalWithColumns(columnsData) {
+                        var modalBody = $('#columnMappingModal .modal-body');
+
+                        columnsData.systemColumns.forEach((systemColumn, index) => {
+                            const inputGroup = document.createElement('div');
+                            inputGroup.className = 'input-group pb-2';
+
+                            const labelDiv = document.createElement('div');
+                            labelDiv.className = 'col-5 px-2';
+                            inputGroup.appendChild(labelDiv);
+
+                            const label = document.createElement('label');
+                            label.className = 'col-form-label w-100 fw-bold';
+                            label.setAttribute('for', `inputGroupSelect${index}`);
+                            label.textContent = systemColumn;
+                            labelDiv.appendChild(label);
+
+                            const selectDiv = document.createElement('div');
+                            selectDiv.className = 'col-7';
+                            inputGroup.appendChild(selectDiv);
+
+                            const select = document.createElement('select');
+                            select.className = 'form-select w-100';
+                            select.id = `inputGroupSelect${index}`;
+                            // Add data-system-column attribute to store the system column name
+                            select.setAttribute('data-system-column', systemColumn);
+                            selectDiv.appendChild(select);
+
+                            // Add a default "Choose..." option
+                            const defaultOption = document.createElement('option');
+                            defaultOption.selected = true;
+                            defaultOption.textContent = 'Choose...';
+                            select.appendChild(defaultOption);
+
+                            // Populate the select with options from csvColumns
+                            columnsData.csvColumns.forEach(csvColumn => {
+                                const option = document.createElement('option');
+                                option.value = csvColumn;
+                                option.textContent = csvColumn;
+                                select.appendChild(option);
+                            });
+
+                            // Append the input group to the modal body
+                            $(modalBody).append(inputGroup);
+                        });
+                    }
+
+                    // Fetch the column mapping data from the server
+                    $('#columnMappingModal').on('show.bs.modal', function (event) {
+                        $.ajax({
+                            url: '/api/v2/displayInventoryColumns',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                columnsData = response.data;
+                                console.log('Columns:', columnsData);
+
+                                var modalBody = $('#columnMappingModal .modal-body');
+                                modalBody.empty(); // Clear existing content
+
+                                // Create and append the input groups
+                                populateModalWithColumns(columnsData);
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle any errors
+                                console.error("Error fetching data: ", error);
+                            }
+                        });
+                    });
+
+                    function collectMappings() {
+                        const mappings = {};
+                        $('#columnMappingModal .modal-body select').each(function () {
+                            const systemColumn = $(this).data('system-column');
+                            const csvColumn = $(this).val();
+                            if (csvColumn !== 'Choose...') {
+                                mappings[systemColumn] = csvColumn;
+                            }
+                        });
+                        return mappings;
+                    }
+
+                    // Save the mappings and proceed to the next step
+                    $('#columnMappingModal .modal-footer a').on('click', function () {
+                        const mappings = collectMappings();
+                        console.log('Mappings:', mappings);
+
+                        $.ajax({
+                            url: '/api/v2/mapInventoryColumns',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                columnMapping: mappings
+                            }),
+                            success: function (response) {
+                                const mappedData = response.data.mappedData;
+                                console.log('Mapped data:', mappedData);
+                                
+                                // Store the response in session storage
+                                sessionStorage.setItem('mappedData', JSON.stringify(mappedData));
+
+                                // Redirect to the next page
+                                window.location.href = '/inventory/csv/map_products';
+                                
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle any errors
+                                console.error("Error saving mappings: ", error);
+                            }
+                        });
+                    });
+
+
+                });
+
+            </script>
+
+    </body>
+
+    </html>

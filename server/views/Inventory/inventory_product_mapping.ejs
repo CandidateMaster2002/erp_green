@@ -1,0 +1,583 @@
+<%- include('../partials/headercode.ejs') %>
+    <!-- Atharv -->
+
+    <style>
+        .search-container {
+            background-color: #fff;
+
+            border-radius: 5px;
+
+        }
+
+        .search-container input {
+
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #fff;
+
+        }
+    </style>
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between m-0 p-0">
+                                        <h4 class="fw-bold py-3 mb-1">MAP CSV</h4>
+
+                                    </div>
+                                    <h5>MATCH YOUR PRODUCT WITH MASTER</h5>
+
+                                    <hr class="mb-4">
+
+                                    <div class="card" id="inventoryData">
+
+                                        <div class="card-datatable table-responsive text-nowrap"
+                                            style="min-height: 50vh;" id="mappedDataTable">
+                                            <table class="dt-select-table table table-bordered h-100">
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button trigger modal -->
+                                    <div class="text-center ms-2 my-3">
+                                        <button type="submit" class="btn btn-primary btn-responsive"
+                                            style="color: white;" id="uploadInventoryBtn">Upload Inventory</button>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade " id="addProductModal" tabindex="-1"
+                                        aria-labelledby="addProductModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg p-0">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title my-2 align-middle" id="exampleModalLabel"
+                                                        style="text-align: center;">ADD NEW PRODUCT</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body container">
+                                                    <div class="mb-4">
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-4 col-form-label">Product Name</label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        id="modalProductName"
+                                                                        placeholder="Type product name here.." required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter a product name.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-4 col-form-label">Mfg/Mkt</label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        id="modalBrandName"
+                                                                        placeholder="Product manufacturer/marketer"
+                                                                        required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter mfg/mkt details.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-4 col-form-label">Salt Comp.</label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group has-validation">
+                                                                    <input type="text" class="form-control"
+                                                                        id="modalSalt"
+                                                                        placeholder="Product salt composition" required>
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter salt composition.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Disabled temporarily -->
+                                                        <!-- <div class="row mb-3">
+                                                            <label class="col-sm-2 col-form-label"
+                                                                for="basic-icon-default-address">Unit</label>
+
+                                                            <div class="col-sm-2 text-center mx-0 p-0">
+                                                                <p class="fs-4"></p>
+                                                            </div>
+
+                                                            <div class="col-sm-4 me-0">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" id="primaryDropdown"
+                                                                        name="primary"
+                                                                        aria-label="Default select example" required>
+                                                                        <option value="default" selected>Primary
+                                                                        </option>
+                                                                        <option value="STP">STP</option>
+                                                                        <option value="AMP">AMP</option>
+                                                                        <option value="BOX">BOX</option>
+                                                                        <option value="BTL">BTL</option>
+                                                                        <option value="PCS">PCS</option>
+                                                                        <option value="TUBE">TUBE</option>
+                                                                        <option value="DROP">DROP</option>
+                                                                        <option value="DRSP">DRSP (Dry Syrup)</option>
+                                                                        <option value="E/D">E/D (Eye Drop)</option>
+                                                                        <option value="EAR/D">EAR/D (Ear Drop)</option>
+                                                                        <option value="INJ">INJ (Injection)</option>
+                                                                        <option value="INH">INH (Inhaler)</option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select primary unit.
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="col-sm-4 ms-0">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" id="secondaryDropdown"
+                                                                        name="secondary" required>
+                                                                        <option value="default" selected>Secondary
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select secondary unit.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label class="col-sm-4 col-form-label"
+                                                                for="category">Category</label>
+                                                            <div class="col-sm-8">
+                                                                <div class="input-group has-validation">
+                                                                    <select class="form-select" name="category"
+                                                                        id="categorySelect" required>
+                                                                        <option value="default" selected>Select
+                                                                            Category
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback">
+                                                                        Please select category.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+
+                                                        <div class="text-center mx-2 my-4">
+                                                            <a class="btn btn-primary btn-responsive" id="addProductBtn"
+                                                                style="color: white;">Add</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <!-- / Content -->
+
+                    <div class="content-backdrop fade"></div>
+            </div>
+            <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+
+            <style>
+                /* Custom CSS for mobile responsiveness */
+                @media (max-width: 576px) {
+                    .btn-responsive {
+                        font-size: 13px;
+                        /* Adjust the font size for mobile */
+                        padding: 5px 10px;
+                        /* Adjust padding for mobile */
+                    }
+                }
+            </style>
+
+            <script>
+                $(document).ready(function () {
+                    var orgId = "<%=orgId%>";
+
+                    function displayMappedData() {
+                        // Retrieve and parse mappedData from session storage
+                        var mappedData = JSON.parse(sessionStorage.getItem('mappedData') || '[]');
+
+                        // Create a table element
+                        var table = document.createElement('table');
+                        table.setAttribute('class', 'table table-bordered h-100');
+
+                        if (mappedData.length > 0) {
+                            // Create the header row
+                            var thead = document.createElement('thead');
+                            var headerRow = document.createElement('tr');
+
+                            // Add a header for the "Mapped Product" column
+                            var mappedProductHeader = document.createElement('th');
+                            mappedProductHeader.textContent = 'Master Product';
+                            headerRow.appendChild(mappedProductHeader);
+
+                            // Use the keys from the first object as column headers (excluding the first key if it's used for mapping)
+                            Object.keys(mappedData[0]).forEach(function (key) {
+                                var th = document.createElement('th');
+                                th.textContent = key;
+                                headerRow.appendChild(th);
+                            });
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+
+                            // Create the body of the table
+                            var tbody = document.createElement('tbody');
+
+                            // Add data rows
+                            mappedData.forEach(function (row, index) {
+                                var tr = document.createElement('tr');
+                                tr.setAttribute('data-row-index', index);
+
+                                // Create and append the "Mapped Product" input field
+                                var mappedProductTd = document.createElement('td');
+                                mappedProductTd.setAttribute('class', 'p-1')
+
+                                var inputParent = document.createElement('div');
+                                inputParent.setAttribute('class', 'input-group has-validation');
+
+                                var input = document.createElement('input');
+                                input.setAttribute('type', 'text');
+                                input.setAttribute('class', 'form-control');
+                                input.setAttribute('placeholder', 'Search product...');
+                                input.setAttribute('name', 'productname')
+                                input.setAttribute('data-product-id', ''); // Custom attribute to identify the row
+                                input.setAttribute('required', '');
+
+                                inputParent.appendChild(input);
+                                mappedProductTd.appendChild(inputParent);
+                                tr.appendChild(mappedProductTd);
+
+                                Object.values(row).forEach(function (value) {
+                                    var td = document.createElement('td');
+                                    td.textContent = value;
+                                    tr.appendChild(td);
+                                });
+                                tbody.appendChild(tr);
+                            });
+                            table.appendChild(tbody);
+
+                            // Append the table to the container
+                            var container = document.getElementById('mappedDataTable');
+                            container.innerHTML = ''; // Clear previous data
+                            container.appendChild(table);
+
+                            initializeAutocomplete();
+
+                        } else {
+                            // Handle case where mappedData is empty
+                            document.getElementById('parsedDataTable').textContent = 'No data to display.';
+                        }
+                    }
+
+                    function initializeAutocomplete() {
+                        $("input[name='productname']").each(function () {
+                            $(this).autocomplete({
+                                minLength: 2,
+                                source: function (request, response) {
+                                    let query = request.term;
+                                    $.ajax({
+                                        url: `/api/autocomplete?query=${query}&orgId=${orgId}`,
+                                        type: 'GET',
+                                        success: function (ajaxResponse) {
+                                            // Corrected filtering logic
+                                            let results = ajaxResponse.filter(item => item.med_name.toLowerCase()).slice(0, 5);
+
+                                            // Adding the default "Add item" option
+                                            results.push({ med_name: `Add product "${query}"`, isNewItem: true });
+                                            response(results);
+                                        },
+                                        error: function (error) {
+                                            console.log(error);
+                                        }
+                                    });
+                                },
+                                select: function (event, ui) {
+                                    if (ui.item.isNewItem) {
+                                        // Handle the "Add item" case
+                                        let newItem = ui.item.med_name.replace('Add product "', '').replace('"', '');
+                                        $("#addProductModal").modal('show');
+                                        $("#addProductModal #modalProductName").val(newItem);
+                                    } else {
+                                        // Handle the selection of an existing item
+                                        $(this).val(ui.item.med_name).blur(); // Ensure the selected value is shown in the input
+
+                                        let rowIndex = $(this).closest('[data-row-index]').data('row-index');
+                                        let productId = ui.item.id;
+
+                                        // Set the value of data attribute 'product-id' equal to productId
+                                        $(this).data('product-id', productId);
+
+                                        var mappedData = JSON.parse(sessionStorage.getItem('mappedData') || '[]');
+                                        if (mappedData[rowIndex]) {
+                                            mappedData[rowIndex].productId = productId;
+                                        }
+
+                                        // Save the updated mappedData back to session storage
+                                        sessionStorage.setItem('mappedData', JSON.stringify(mappedData));
+
+                                        return false;
+                                    }
+                                }
+                            }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                                let li = $('<li>');
+                                if (item.isNewItem) {
+                                    li.css('background-color', 'rgba(105,108,255,.16)');
+                                }
+                                li.append('<div>' + item.med_name + (item.isNewItem ? '' : ' [' + item.pack_size + ']') + '</div>');
+                                return li.appendTo(ul);
+                            };
+
+                            // Remove productId field on change
+                            $(this).on('input', function () {
+                                let rowIndex = $(this).closest('[data-row-index]').data('row-index');
+
+                                // Remove product-id attribute
+                                $(this).removeData('product-id');
+
+                                var mappedData = JSON.parse(sessionStorage.getItem('mappedData') || '[]');
+                                if (mappedData[rowIndex]) {
+                                    delete mappedData[rowIndex].productId;
+                                    sessionStorage.setItem('mappedData', JSON.stringify(mappedData));
+                                }
+                            })
+                        });
+                    }
+
+                    // Call display function
+                    displayMappedData();
+                });
+            </script>
+
+            <script>
+                $(document).ready(function () {
+                    // Listen for the modal to be shown
+                    $('#addProductModal').on('shown.bs.modal', function () {
+                        function validateModalInputs() {
+                            var isValid = true;
+                            $('#addProductModal input[required]').each(function () {
+                                if ($(this).val() === '') {
+                                    $(this).addClass('is-invalid');
+                                    isValid = false;
+                                } else {
+                                    $(this).removeClass('is-invalid');
+                                }
+                            });
+                            return isValid;
+                        }
+
+                        // Attach validation logic to the 'Add' button within the modal
+                        $('#addProductModal #addProductBtn').click(function (e) {
+                            e.preventDefault();
+                            if (validateModalInputs()) {
+                                // Proceed with form submission or further logic here
+                                const productData =  {
+                                    medName: $('#modalProductName').val(),
+                                    mfdMkt: $('#modalBrandName').val(),
+                                    salt: $('#modalSalt').val()
+                                }
+
+                                // Add the new product to the master database
+                                $.ajax({
+                                    url: `/api/v2/master/product/add-product?orgId=<%=orgId%>`,
+                                    type: 'POST',
+                                    data: JSON.stringify({productData}),
+                                    contentType: 'application/json',
+                                    success: function (response) {
+                                        // Close the modal
+                                        $('#addProductModal').modal('hide');
+
+                                        // Display a success message
+                                        alert('Product added successfully!');
+
+                                        // Refresh the autocomplete dropdown
+                                        initializeAutocomplete();
+                                    },
+                                    error: function (error) {
+                                        console.log(error);
+                                        alert('Error in adding product');
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+            </script>
+
+            <script>
+                $(document).ready(function () {
+                    var orgId = "<%=orgId%>";
+
+                    // Hide validation messages on input
+                    $('input').each(function () {
+                        $(this).on('input', function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+                    });
+
+                    $("#uploadInventoryBtn").click(function (e) {
+
+                        // Retrieve mappedData from session storage
+                        const mappedData = JSON.parse(sessionStorage.getItem('mappedData') || '[]');
+
+                        // Validations
+                        e.preventDefault();
+                        var isValid = true;
+                        $('input:required:not(.modal input)').each(function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                                $(this).focus();
+                                isValid = false;
+                            }
+                            // Check if the input has a 'data-product-id' attribute with a non-empty value
+                            else if (typeof $(this).data('product-id') === 'undefined' || $(this).data('product-id') == '') {
+                                $(this).addClass('is-invalid');
+                                $(this).focus();
+                                isValid = false;
+                            }
+                            else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+
+                        if (isValid) {
+
+                            $('#loader').show();
+
+                            /////////////////// version 2 ///////////////////////
+                            $.ajax({
+                                url: `/api/v2/uploadInventory?orgId=${orgId}`,
+                                type: 'POST',
+                                data: JSON.stringify({
+                                    mappedProducts: mappedData
+                                }),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    $('#loader').hide();
+                                    window.location.href = '/product_stock'
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                    console.log(error);
+                                    alert('Error in adding inventory');
+                                }
+                            })
+                        }
+                    })
+                })
+            </script>
+
+            <script>
+                // Fetch categories from the API using jQuery
+                $.get("/api/v2/all-category", function (response) {
+                    // Get the select element
+                    var categorySelect = $("#categorySelect");
+
+                    // Populate the dropdown with options
+                    $.each(response.data, function (index, category) {
+                        categorySelect.append($('<option>', {
+                            value: category.category_id,
+                            text: category.category_name
+                        }));
+                    });
+                }).fail(function (error) {
+                    console.error("Error fetching categories:", error);
+                });
+
+                var secondaryOptions = {
+                    STP: ['TAB', 'CAP'],
+                    AMP: ['AMP', 'PCS'],
+                    BOX: ['BOX', 'TAB', 'CAP', 'PCS', 'BTL', 'TUBE', 'DROP', 'DRSP', 'E/D', 'EAR/D', 'INJ', 'INH'],
+                    BTL: ['BTL', 'PCS', 'TAB', 'CAP'],
+                    TUBE: ['TUBE', 'PCS'],
+                    DROP: ['DROP', 'PCS'],
+                    DRSP: ['DRSP', 'PCS'],
+                    "E/D": ['E/D', 'PCS'],
+                    "EAR/D": ['EAR/D', 'PCS'],
+                    INJ: ['INJ', 'PCS'],
+                    INH: ['INH', 'PCS'],
+                    PCS: ['PCS']
+                };
+
+                function populateSecondaryDropdown() {
+                    // Clear existing options in the secondary dropdown
+                    $('#secondaryDropdown').html('<option selected disabled>Select Secondary</option>');
+
+                    // Get the selected value from the primary dropdown
+                    var selectedValue = $('#primaryDropdown').val();
+
+                    // Populate the secondary dropdown with options based on the selected value
+                    if (selectedValue in secondaryOptions) {
+                        $.each(secondaryOptions[selectedValue], function (index, option) {
+                            $('#secondaryDropdown').append('<option value="' + option + '">' + option + '</option>');
+                        });
+                    }
+                }
+
+                // Event listener for changes in the primary dropdown
+                $('#primaryDropdown').change(populateSecondaryDropdown);
+            </script>
+
+
+    </body>
+
+    </html>

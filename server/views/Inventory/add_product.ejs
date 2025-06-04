@@ -1,0 +1,816 @@
+<%- include('../partials/headercode.ejs') %>
+    <!-- Atharv -->
+
+    <body>
+
+        <!-- Layout wrapper -->
+        <div class="layout-wrapper layout-content-navbar  ">
+            <div class="layout-container">
+
+                <!-- sidebar imported -->
+                <%- include('../partials/sidebar.ejs') %>
+
+                    <!-- Layout container -->
+                    <div class="layout-page">
+
+                        <!-- navbar imported -->
+                        <%- include('../partials/navbar.ejs') %>
+
+                            <!-- Content wrapper -->
+                            <div class="content-wrapper">
+
+                                <!-- Content -->
+
+                                <div class="container-xxl flex-grow-1 container-p-y">
+
+                                    <!-- Loader GIF -->
+                                    <div id="loader"
+                                        style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                                        <div class="spinner-border spinner-border-lg text-primary" role="status"
+                                            style="position: absolute; top: 50%; left: 50%;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="d-flex justify-content-between m-0 p-0">
+                                        <h4 class="fw-bold py-3 mb-1"> Add Product To Inventory</h4>
+                                        <a type="button" class="btn btn-icon btn-danger my-2 mx-3"
+                                            href="/product_stock">
+                                            <i class='bx bx-x bx-sm'></i>
+                                        </a>
+                                    </div>
+                                    <hr class="mb-4">
+
+                                    <form class="myForm">
+                                        <div class="card mb-4 mx-auto col-md-10">
+
+                                            <div class="card-body ">
+
+                                                <div class="row mb-3">
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="basic-icon-default-fullname">Product Name</label>
+                                                    <div class="col-sm-10">
+                                                        <div class="input-group has-validation">
+                                                            <input type="text" class="form-control" id="medicinename"
+                                                                placeholder="Type product name here.."
+                                                                name="productname" required>
+                                                            <div class="invalid-feedback">
+                                                                Please select a product.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="basic-icon-default-fullname">Mfg/Mkt</label>
+                                                    <div class="col-sm-10">
+                                                        <div class="input-group input-group-merge">
+                                                            <input type="text" class="form-control" id="brand"
+                                                                placeholder="Product manufacturer/marketer"
+                                                                name="brand">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="basic-icon-default-fullname">Salt Comp.</label>
+                                                    <div class="col-sm-10">
+                                                        <div class="input-group input-group-merge">
+                                                            <input type="text" class="form-control" id="salt"
+                                                                placeholder="Product salt composition" name="salt">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="basic-icon-default-address">Unit</label>
+                                                    <div class="col-sm-4 me-0">
+                                                        <div class="input-group has-validation">
+                                                            <select class="form-select" id="primaryDropdown"
+                                                                name="primary" aria-label="Default select example"
+                                                                required>
+                                                                <option value="default" selected>Primary</option>
+                                                                <option value="STP">STP</option>
+                                                                <option value="AMP">AMP</option>
+                                                                <option value="BOX">BOX</option>
+                                                                <option value="BTL">BTL</option>
+                                                                <option value="PCS">PCS</option>
+                                                                <option value="TUBE">TUBE</option>
+                                                                <option value="DROP">DROP</option>
+                                                                <option value="DRSP">DRSP (Dry Syrup)</option>
+                                                                <option value="E/D">E/D (Eye Drop)</option>
+                                                                <option value="EAR/D">EAR/D (Ear Drop)</option>
+                                                                <option value="INJ">INJ (Injection)</option>
+                                                                <option value="INH">INH (Inhaler)</option>
+                                                            </select>
+                                                            <div class="invalid-feedback">
+                                                                Please select primary unit.
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="col-sm-2 text-center mx-0 p-0">
+                                                        <p class="fs-4"></p>
+                                                    </div>
+
+                                                    <div class="col-sm-4 ms-0">
+                                                        <div class="input-group has-validation">
+                                                            <select class="form-select" id="secondaryDropdown"
+                                                                name="secondary" required>
+                                                                <option value="default" selected>Secondary
+                                                                </option>
+                                                            </select>
+                                                            <div class="invalid-feedback">
+                                                                Please select secondary unit.
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="row mb-3">
+                                                    <label class="col-sm-2 col-form-label">HSN Code</label>
+                                                    <div class="col-sm-4">
+                                                        <div class="input-group has-validation">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Eg- 30049047" id="hsn" name="hsn"
+                                                                onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                maxlength="8" minlength="4" required>
+                                                            <div class="invalid-feedback">
+                                                                Please enter HSN code.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="basic-icon-default-companyname">GST (%)</label>
+                                                    <div class="col-sm-4">
+                                                        <div class="input-group has-validation">
+                                                            <select class="form-select" name="gst" id="gst" required>
+                                                                <option value="default" selected>Select GST %</option>
+                                                                <option value="0">0%</option>
+                                                                <option value="5">5%</option>
+                                                                <option value="12">12%</option>
+                                                                <option value="18">18%</option>
+                                                            </select>
+                                                            <div class="invalid-feedback">
+                                                                Please select GST.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="row mb-3">
+
+                                                    <label class="col-sm-2 col-form-label"
+                                                        for="category">Category</label>
+                                                    <div class="col-sm-4">
+                                                        <div class="input-group has-validation">
+                                                            <select class="form-select" name="category"
+                                                                id="categorySelect" required>
+                                                                <option value="default" selected>Select Category
+                                                                </option>
+                                                                 <!-- <option value="12" selected>Others
+                                                                </option> -->
+                                                            </select>
+                                                            <div class="invalid-feedback">
+                                                                Please select category.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="col-sm-2 col-form-label">Reorder Level</label>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="input-group has-validation">
+                                                            <input type="text" class="form-control"
+                                                                onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                                id="threshold" placeholder="Minimum stock quantity"
+                                                                name="threshold" required>
+                                                            <div class="invalid-feedback">
+                                                                Please enter reorder level.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </form>
+
+                                    <div class="card mb-4 mx-auto col-md-10">
+
+                                        <div class="card-body ">
+                                            <h4 class="fs-5">Batch Details</h4>
+                                            <hr>
+
+                                            <div class="row mb-3">
+
+
+                                                <label class="col-sm-2 col-form-label "
+                                                    for="basic-icon-default-companyname">Batch No.</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" class="form-control"
+                                                            placeholder="Eg- B6AEW8852" id="batchname" required />
+                                                        <div class="invalid-feedback">
+                                                            Please enter batch number.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-2 col-form-label"
+                                                    for="basic-icon-default-address">Exp Date</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group has-validation">
+                                                        <input class="form-control expiry-date-mask" type="text"
+                                                            name="addexp" placeholder="MM/YY" required />
+                                                        <div class="invalid-feedback">
+                                                            Please enter valid expiry date.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label"
+                                                    for="basic-icon-default-companyname">Conversion</label>
+
+                                                <div class="col-sm-4">
+                                                    <div class="input-group has-validation">
+                                                        <span class="input-group-text" id="primarypopulate"></span>
+                                                        <span class="input-group-text">=</span>
+                                                        <input type="text" class="form-control rounded-0"
+                                                            onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode)) || parseInt(this.value + String.fromCharCode(event.charCode)) > 500 || parseInt(this.value + String.fromCharCode(event.charCode)) < 1) return false;"
+                                                            id="conversion" placeholder="Enter conversion" required />
+                                                        <span class="input-group-text" id="secondarypopulate"></span>
+                                                        <div class="invalid-feedback">
+                                                            Please enter conversion.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-2 col-form-label"
+                                                    for="basic-icon-default-companyname">Quantity</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" class="form-control" name="addqty"
+                                                            id="addqty" placeholder="Enter quantity"
+                                                            onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode)) || parseInt(this.value + String.fromCharCode(event.charCode)) > 999) return false;"
+                                                            required />
+                                                        <span class="input-group-text" id="getprimaryunit"></span>
+                                                        <div class="invalid-feedback">
+                                                            Please enter quantity.
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">MRP</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" class="form-control" name="addmrp" id="price"
+                                                            onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                            placeholder="Enter MRP Rate" required />
+                                                        <div class="invalid-feedback">
+                                                            Please enter MRP.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-2 col-form-label"
+                                                    for="basic-icon-default-companyname">PTR</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group  has-validation">
+                                                        <input type="text" class="form-control" name="addpur"
+                                                            onkeypress="javascript: if (!/[0-9.]/.test(String.fromCharCode(event.charCode))) return false;"
+                                                            id="addpur" placeholder="Enter Purchase rate" required />
+                                                        <div class="invalid-feedback">
+                                                            Please enter PTR.
+                                                        </div>
+                                                    </div>
+                                                    <div style="font-size: smaller; color:blue; margin-top: 5px; display: none;"
+                                                        id="r_margin">
+                                                        Retailer Margin: <span id="retailer_margin">20</span>%
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label" for="free_scheme">Free</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-companyname2"
+                                                            class="input-group-text"></span>
+                                                        <input type="text" class="form-control" name="free_scheme"
+                                                            id="free_scheme">
+                                                    </div>
+                                                </div>
+
+                                                <label class="col-sm-2 col-form-label ps-4"
+                                                    for="bulk_discount">Discount(%)</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-companyname2"
+                                                            class="input-group-text"></span>
+                                                        <input type="text" class="form-control" name="bulk_discount"
+                                                            id="bulk_discount">
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+                                            <!-- <div class="row mb-3">
+
+                                                <label class="col-sm-2 col-form-label"
+                                                    for="basic-icon-default-email">Shelf Label</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group input-group-merge">
+                                                        <input type="text" id="basic-icon-default-email"
+                                                            class="form-control" placeholder="" name="addshelf">
+                                                    </div>
+                                                </div>
+
+                                            </div> -->
+
+                                            <!-- <div class="row justify-content-end">
+                                                <div class="col-sm-10">
+                                                    <button type="submit" class="btn btn-primary"
+                                                        id="submitbatch">Add</button>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="col-sm-12 text-center">
+                                                <button type="submit" class="btn btn-primary"
+                                                    id="submitbatch">Add</button>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- / Content -->
+
+                                <div class="content-backdrop fade"></div>
+                            </div>
+                            <!-- Content wrapper -->
+                    </div>
+                    <!-- / Layout page -->
+            </div>
+
+
+
+            <!-- Overlay -->
+            <div class="layout-overlay layout-menu-toggle"></div>
+
+
+        </div>
+        <!-- / Layout wrapper -->
+
+        <%- include('../partials/footercode.ejs') %>
+            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+            <script>
+                var productId;
+                var orgID = '<%= orgId %>';
+                var inventoryId;
+
+                $(document).ready(function () {
+
+                    // Hide validation messages on input
+                    $('input').each(function () {
+                        $(this).on('input', function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+                    });
+                    $('select:required').each(function () {
+                        $(this).on('input', function () {
+                            if ($(this).val() == 'default' || $(this).val() == null) {
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+                    });
+
+                    // Formatted expiry date input
+                    var cleave = new Cleave('.expiry-date-mask', {
+                        date: true,
+                        datePattern: ['m', 'y']
+                    });
+
+                    // autopopulate product
+                    $("input[name='productname']").autocomplete({
+                        minLength: 2,
+                        source: function (request, response) {
+
+                            let query = request.term;
+                            console.log(query);
+
+                            $.ajax({
+                                url: `/api/autocomplete?query=${query}&orgId=${orgID}`,
+                                type: 'GET',
+                                success: function (ajaxResponse) {
+                                    // console.log(ajaxResponse);
+
+                                    let results = ajaxResponse.filter(item => item.med_name.toLowerCase()).slice(0, 10);
+
+                                    if (results.length === 0) {
+                                        results.push({ med_name: null }); // Add a null item for the custom message
+                                    }
+                                    console.log(results);
+                                    response(results);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            })
+
+                        },
+                        select: function (event, ui) {
+                            productId = ui.item.id;
+                            $.get(`/api/v2/check-inventory?productId=${productId}&orgId=${orgID}`, function (data, status) {
+                                console.log('got this data from inventory', data);
+                                if (data.data.length == 1) {
+                                    var items = data.data[0];
+                                    inventoryId = items.inventory_id;
+
+                                    $("select[name = 'gst']").val(items.gst).prop('disabled', true);
+                                    $("#hsn").val(items.hsn).prop('disabled', true);
+                                    $("select[name='primary']").val(items.primary_unit).prop('disabled', true);
+                                    populateSecondaryDropdown();
+                                    $("select[name='secondary']").val(items.secondary_unit).prop('disabled', true);
+                                    $("input[name='threshold']").val(items.threshold).prop('disabled', true);
+                                    $("select[name='category']").val(items.category_id).prop('disabled', true);
+
+                                    var primaryUnit = $("select[name='primary']").val();
+                                    var secondaryUnit = $("select[name='secondary']").val();
+                                    $("#primarypopulate").text(`1 ${primaryUnit}`);
+                                    $("#secondarypopulate").text(`${secondaryUnit}`);
+
+                                    // Remove validations if autopopulated
+                                    $('input:required').each(function () {
+                                        if ($(this).val() != '') {
+                                            $(this).removeClass('is-invalid');
+                                        }
+                                    });
+
+                                    $('select:required').each(function () {
+                                        if ($(this).val() != 'default' || $(this).val() != null) {
+                                            $(this).removeClass('is-invalid');
+                                        }
+                                    });
+                                }
+                            })
+
+                            setTimeout(function () {
+                                console.log(ui.item);
+                                productId = ui.item.id;
+                                $("input[name='productname']").val(ui.item.med_name);
+                                $("input[name='brand']").val(ui.item.mfd_mkt).prop('disabled', true);
+                                $("input[name='salt']").val(ui.item.salt_composition).prop('disabled', true);
+                                $("input[name='threshold']").val(1);
+                                $("select[name='category']").val(3);
+
+                                // Remove validations for autopopulated fields
+                                $('input:required').each(function () {
+                                    if ($(this).val() != '') {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+
+                                $('select:required').each(function () {
+                                    if ($(this).val() != 'default' || $(this).val() != null) {
+                                        $(this).removeClass('is-invalid');
+                                    }
+                                });
+                            }, 0)
+                        }
+                    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+
+                        if (item.med_name) {
+
+                            return $('<li>')
+                                .append('<div>' + item.med_name + ' [' + item.pack_size + ']' + '</div>')
+                                .appendTo(ul);
+                        }
+                        else {
+                            return $('<li>').append('<div>No matching products found</div>').appendTo(ul);
+                        }
+                    };
+
+                    //  Clear input fields on product name change
+                    $("input[name='productname']").on('input', function () {
+                        productId = undefined;
+                        inventoryId = undefined;
+                        $("select[name = 'gst']").val('default').prop('disabled', false);;
+                        $("#hsn").val('').prop('disabled', false);;
+                        $("select[name='primary']").val('default').prop('disabled', false);;
+                        $("select[name='secondary']").val('default').prop('disabled', false);;
+                        $("input[name='threshold']").val("").prop('disabled', false);;
+                        $("#brand").val('').prop('disabled', false);
+                        $("#salt").val('').prop('disabled', false);
+                        $("select[name='category']").val('default').prop('disabled', false);
+                    })
+
+                    //HSN-GST autocomplete
+                    $("input[name='hsn']").autocomplete({
+                        minLength: 3,
+                        source: function (request, response) {
+                            let query = request.term;
+
+                            $.ajax({
+                                url: `/api/v2/search-hsn-gst?query=${query}`,
+                                type: 'GET',
+                                success: function (ajaxResponse) {
+                                    let results = ajaxResponse['data'].filter(item => item.hsn_code);
+
+                                    if (results.length === 0) {
+                                        results.push({ hsn_code: null }); // Add a null item for the custom message
+                                    }
+                                    console.log(results);
+                                    response(results);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            })
+                        },
+                        select: function (event, ui) {
+                            setTimeout(function () {
+                                console.log(ui.item);
+                                $("input[name='hsn']").val(ui.item.hsn_code);
+                                $("select[name='gst']").val(ui.item.gst_rate);
+
+                                // Remove validations for autopopulated gst field
+                                if ($("select[name='gst']").val() != 'default' || $("select[name='gst']").val() != null) {
+                                    $("select[name='gst']").removeClass('is-invalid');
+                                }
+                            }, 0)
+                        }
+
+                    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                        if (item.hsn_code) {
+                            return $('<li>')
+                                .append('<div>' + item.hsn_code + '</div>')
+                                .appendTo(ul);
+                        }
+                    }
+
+
+                    // Fetch categories from the API using jQuery
+                    $.get("/api/v2/all-category", function (response) {
+                        // Get the select element
+                        var categorySelect = $("#categorySelect");
+
+                        // Populate the dropdown with options
+                        $.each(response.data, function (index, category) {
+                            categorySelect.append($('<option>', {
+                                value: category.category_id,
+                                text: category.category_name
+                            }));
+                        });
+                    }).fail(function (error) {
+                        console.error("Error fetching categories:", error);
+                    });
+
+                    var secondaryOptions = {
+                        STP: ['TAB', 'CAP'],
+                        AMP: ['AMP', 'PCS'],
+                        BOX: ['BOX', 'TAB', 'CAP', 'PCS', 'BTL', 'TUBE', 'DROP', 'DRSP', 'E/D', 'EAR/D', 'INJ', 'INH'],
+                        BTL: ['BTL', 'PCS', 'TAB', 'CAP'],
+                        TUBE: ['TUBE', 'PCS'],
+                        DROP: ['DROP', 'PCS'],
+                        DRSP: ['DRSP', 'PCS'],
+                        "E/D": ['E/D', 'PCS'],
+                        "EAR/D": ['EAR/D', 'PCS'],
+                        INJ: ['INJ', 'PCS'],
+                        INH: ['INH', 'PCS'],
+                        PCS: ['PCS']
+                    };
+
+                    function populateSecondaryDropdown() {
+                        // Clear existing options in the secondary dropdown
+                        $('#secondaryDropdown').html('<option selected disabled>Select Secondary</option>');
+
+                        // Get the selected value from the primary dropdown
+                        var selectedValue = $('#primaryDropdown').val();
+
+                        // Populate the secondary dropdown with options based on the selected value
+                        if (selectedValue in secondaryOptions) {
+                            $.each(secondaryOptions[selectedValue], function (index, option) {
+                                $('#secondaryDropdown').append('<option value="' + option + '">' + option + '</option>');
+                            });
+                        }
+                    }
+
+                    // Event listener for changes in the primary dropdown
+                    $('#primaryDropdown').change(populateSecondaryDropdown);
+
+
+                    //changes in stp and tabs
+                    $("select[name='primary'], select[name='secondary']").on("change", function () {
+                        var primaryUnit = $("select[name='primary']").val();
+                        var secondaryUnit = $("select[name='secondary']").val();
+
+                        $("#primarypopulate").text(`1 ${primaryUnit}`);
+                        $("#secondarypopulate").text(`${secondaryUnit}`);
+                        $("#getprimaryunit").text(primaryUnit);
+                    })
+
+                    // Expiry date validation
+                    $("[name='addexp']").on('change', function () {
+                        var input = $(this);
+                        var exp_date = input.val();
+
+                        var year = parseInt(exp_date.split('/')[1], 10);
+                        year = year < 70 ? 2000 + year : 1900 + year;
+                        var expiryDate = new Date(year, exp_date.split('/')[0] - 1);
+
+                        // Get the current year and month
+                        var today = new Date();
+                        var currentYear = today.getFullYear();
+                        var currentMonth = today.getMonth();
+
+                        if (expiryDate.getFullYear() < currentYear ||
+                            (expiryDate.getFullYear() === currentYear && expiryDate.getMonth() < currentMonth) ||
+                            expiryDate.getFullYear() > currentYear + 10) {
+                            $("[name='addexp']").val(null);
+                            $("[name='addexp']").addClass('is-invalid');
+                        } else {
+                            $(".invalid-feedback").hide();
+                        }
+                    });
+
+                    //PTR < MRP Validation
+                    $("input[name='addpur']").on('change', function () {
+                        var ptr = parseFloat($("input[name='addpur']").val());
+                        var mrp = parseFloat($("input[name='addmrp']").val());
+
+                        if (ptr >= mrp) {
+                            $("input[name='addpur']").val(null);
+                            $("input[name='addpur']").addClass('is-invalid');
+                        } else {
+                            $(".invalid-feedback").hide();
+                        }
+                    });
+
+                    // Calculate PTR
+                    function calcuatePTR(mrp, gst, retailerMargin) {
+                        return (mrp - (mrp * (retailerMargin / 100))) / (1 + (gst / 100));
+                    }
+
+                    $("select[name='gst']").on("change", function () {
+                        $("input[name='addmrp']").val(0)
+
+                        var mrp = parseFloat($("input[name='addmrp']").val());
+                        var gst = parseFloat($("select[name='gst']").val());
+                        var retailerMargin = parseFloat($("#retailer_margin").text());
+
+                        var ptr = calcuatePTR(mrp, gst, retailerMargin);
+
+                        $("input[name='addpur']").val(ptr.toFixed(2))
+                    });
+
+                    $("input[name='addmrp']").on("keyup", function () {
+                        $("#r_margin").show();
+
+                        var mrp = parseFloat($("input[name='addmrp']").val());
+                        var gst = parseFloat($("select[name='gst']").val());
+                        var retailerMargin = parseFloat($("#retailer_margin").text());
+
+                        var ptr = calcuatePTR(mrp, gst, retailerMargin);
+
+                        $("input[name='addpur']").val(ptr.toFixed(2))
+                    });
+
+
+                    //submit process after adding batch
+                    $("#submitbatch").click(function (e) {
+
+                        // Validations
+                        e.preventDefault();
+                        var isValid = true;
+                        $('input:required').each(function () {
+                            if ($(this).val() == '') {
+                                $(this).addClass('is-invalid');
+                                $(this).focus();
+                                isValid = false;
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+
+                        $('select:required').each(function () {
+                            if ($(this).val() == 'default' || $(this).val() == null) {
+                                $(this).addClass('is-invalid');
+                                isValid = false;
+                            } else {
+                                $(this).removeClass('is-invalid');
+                            }
+                        });
+
+                        if (parseInt($("#addqty").val()) == 0) {
+                            $("#addqty").addClass('is-invalid');
+                            $("#addqty").focus();
+                            isValid = false;
+                        } else {
+                            $("#addqty").removeClass('is-invalid');
+                        }
+
+                        if (parseFloat($("#price").val()) == 0) {
+                            $("#price").addClass('is-invalid');
+                            $("#price").focus();
+                            isValid = false;
+                        } else {
+                            $("#price").removeClass('is-invalid');
+                        }
+
+                        if (isValid) {
+
+                            $('#loader').show();
+
+                            /////////////////// version 2 ///////////////////////
+
+                            // Convert expdate to yyyy-mm-dd format
+                            var expDate = $("[name='addexp']").val();
+                            var year = parseInt(expDate.split('/')[1], 10);
+                            year = year < 70 ? 2000 + year : 1900 + year;
+                            var firstDayOfNextMonth = new Date(year, expDate.split('/')[0]);
+                            firstDayOfNextMonth.setDate(firstDayOfNextMonth.getDate() - 1);
+                            var expDate = firstDayOfNextMonth.toISOString().slice(0, 10);
+
+
+                            var productData = {
+                                productId: productId,
+                                medName: $("input[name='productname']").val(),
+                                mfdMkt: $("input[name='brand']").val(),
+                                salt: $("input[name='salt']").val(),
+                            }
+                            var inventoryData = {
+                                inventoryId: inventoryId,
+                                categoryId: $("select[name='category']").val(),
+                                gst: $("select[name='gst']").val(),
+                                hsn: $("input[name='hsn']").val(),
+                                primaryUnit: $("select[name='primary']").val(),
+                                secondaryUnit: $("select[name='secondary']").val(),
+                                threshold: $("input[name='threshold']").val()
+                            }
+                            var batchData = {
+                                batchName: $("#batchname").val(),
+                                expDate: expDate,
+                                conversion: $("#conversion").val(),
+                                quantity: parseFloat($("input[name='addqty']").val()),
+                                ptr: $("input[name='addpur']").val(),
+                                mrp: $("input[name='addmrp']").val(),
+                                free: 0,
+                                bulkDiscount: 0,
+                                basePrice: $("input[name='addpur']").val(),
+                            }
+                        
+                            $.ajax({
+                                url: `/api/v2/onboard-product-inventory?orgId=${orgID}`,
+                                type: 'POST',
+                                data: JSON.stringify({ productData, inventoryData, batchData }),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    $('#loader').hide();
+                                    window.location.href = '/product_stock'
+                                },
+                                error: function (error) {
+                                    $('#loader').hide();
+                                    console.log(error);
+                                    alert('Error in adding batch');
+                                }
+                            })
+
+                        }
+
+                    })
+
+
+                })
+            </script>
+
+    </body>
+
+    </html>

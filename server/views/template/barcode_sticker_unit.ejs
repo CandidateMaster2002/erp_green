@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker</title>
+    <style>
+        .sticker {
+            width: 35mm;
+            height: 18mm;
+            border: 1px solid black;
+            padding: 2mm;
+            font-family: Arial, sans-serif;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .text {
+            font-size: 3mm;
+            text-align: left;
+            margin-bottom: 2mm;
+        }
+
+        .qr-code {
+            width: 10mm;
+            height: 10mm;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .rotated-text {
+            position: absolute;
+            right: 50%;
+            top: 0%;
+            transform: translateY(50%) rotate(270deg);
+            transform-origin: right top;
+            font-size: 3mm;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .rotated-text .price {
+            font-weight: bold;
+        }
+
+        .rotated-text .batch,
+        .rotated-text .expiry {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="sticker">
+        <div class="text">Miofree A 4 Tablet</div>
+        <div class="qr-code">
+            <img src="https://chart.googleapis.com/chart?cht=qr&chl=ExampleText&chs=100x100&chld=L|0" alt="QR Code">
+        </div>
+        <div class="rotated-text">
+            <span class="batch">45454</span>
+            <span class="expiry">03/26</span>
+            <span class="price">₹234.50</span>
+        </div>
+    </div>
+</body>
+</html>

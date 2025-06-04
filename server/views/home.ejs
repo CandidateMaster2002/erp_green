@@ -1,0 +1,1014 @@
+<%- include('./partials/headercode.ejs') %>
+  <!-- Atharv -->
+
+  <body>
+    <!-- Layout wrapper -->
+    <div id="loaderpage"></div>
+
+
+
+    <!-- style="filter: blur(3px);" -->
+    <div class="layout-wrapper layout-content-navbar loaderstyles">
+      <div class="layout-container">
+
+        <!-- sidebar imported -->
+        <%- include('./partials/sidebar.ejs') %>
+
+          <!-- Layout container -->
+          <div class="layout-page">
+
+            <!-- navbar imported -->
+            <%- include('./partials/navbar.ejs') %>
+
+
+              <!-- Content wrapper -->
+              <div class="content-wrapper">
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+
+                  <div class="row">
+
+                    <a class="col-xs-6 col-sm-6 col-lg-3 mb-3" href="/sale_invoice">
+                      <div class="card card-border-shadow-primary h-100">
+                        <div class="card-body py-3">
+                          <div class="d-flex align-items-center mb-2 pb-1">
+                            <div class="avatar me-2">
+                              <span class="avatar-initial rounded bg-label-primary"><i
+                                  class='bx bx-cart-alt'></i></span>
+                            </div>
+                            <h4 class="ms-1 mb-0">Sales Invoice</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+
+                    <a class="col-xs-6 col-sm-6 col-lg-3 mb-3" href="/grn">
+                      <div class="card card-border-shadow-info h-100">
+                        <div class="card-body py-3">
+                          <div class="d-flex align-items-center mb-2 pb-1">
+                            <div class="avatar me-2">
+                              <span class="avatar-initial rounded bg-label-info"><i class="bx bx-time-five"></i></span>
+                            </div>
+                            <h4 class="ms-1 mb-0">Purchase Bill</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+
+                    <a class="col-xs-6 col-sm-6 col-lg-3 mb-3" href="/sale_return_invoice">
+                      <div class="card card-border-shadow-warning h-100">
+                        <div class="card-body py-3">
+                          <div class="d-flex align-items-center mb-2 pb-1">
+                            <div class="avatar me-2">
+                              <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-error"></i></span>
+                            </div>
+                            <h4 class="ms-1 mb-0">Sales Return</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    
+                    <a class="col-xs-6 col-sm-6 col-lg-3 mb-3" href="/product_stock">
+                      <div class="card card-border-shadow-danger h-100">
+                        <div class="card-body py-3">
+                          <div class="d-flex align-items-center mb-2 pb-1">
+                            <div class="avatar me-2">
+                              <span class="avatar-initial rounded bg-label-danger"><i class="bx bx-box"></i></span>
+                            </div>
+                            <h4 class="ms-1 mb-0">Inventory</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+
+                  </div>
+
+
+                  <div class="row">
+                    <div class="col-lg-8 mb-4 order-0">
+                      <div class="card">
+                        <div class="d-flex align-items-end row">
+                          <div class="col-sm-7">
+                            <div class="card-body">
+                              <h4 class="card-title text-primary">
+                                Congratulations! <span id="congratsowner"></span> 🎉
+                              </h4>
+                              <p class="mb-4">
+                                You have done <span class="fw-bold" id="salesgrowth"></span> more
+                                sales today over yesterday as of now.
+                              </p>
+
+                              <!-- <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a> -->
+                            </div>
+                          </div>
+                          <div class="col-sm-5 text-center text-sm-left">
+                            <div class="card-body pb-0 px-0 px-md-4">
+                              <img src="/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User"
+                                data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                                data-app-light-img="illustrations/man-with-laptop-light.html" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 order-1">
+                      <div class="row">
+                        <div class="col-lg-6 col-md-12 col-6 mb-4">
+                          <a href="/sale_entry_report?filter=currentFY" class="card-link" style="color: #697a8d;">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                  <div class="avatar flex-shrink-0">
+                                    <img src="/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded" />
+                                  </div>
+                                </div>
+                                <span class="d-block mb-1">Sales Invoices</span>
+                                <h3 class="card-title text-nowrap mb-1" id="totalorders"></h3>
+                                <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small> -->
+                              </div>
+                            </div>  
+                          </a>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12 col-6 mb-4">
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                  <img src="/img/icons/unicons/chart-success.png" alt="chart success" class="rounded" />
+                                </div>
+                              </div>
+                              <span class="fw-semibold d-block mb-1">Total Sales</span>
+                              <h3 class="card-title mb-2" id="totalrevenue"></h3>
+                              <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small> -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Total Revenue -->
+                    <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+                      <div class="card">
+                        <div class="row row-bordered g-0">
+                          <div class="col-md-8">
+                            <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
+                            <!-- <div id="totalRevenueChart" class="px-2"></div> -->
+                            <canvas id="myChart"></canvas>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="card-body">
+                              <div class="text-center">
+                                <div class="dropdown">
+                                  <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                    id="growthReportId" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    Check Growth Status
+                                  </button>
+                                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
+                                    <button class="dropdown-item" id="perdaygrowth">Per Day</button>
+                                    <button class="dropdown-item" id="permonthgrowth">Per Month</button>
+                                    <button class="dropdown-item" id="peryeargrowth">Per Year</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- <div id="growthChart"></div> -->
+                            <div id="companygrowthchart"></div>
+                            <div class="text-center fw-semibold pt-3 mb-2" id="textgrowthstatus">
+
+                            </div>
+
+                            <!-- <div class="d-flex px-xxl-4 px-lg-2 p-4 gap-xxl-3 gap-lg-1 gap-3 justify-content-between">
+                              <div class="d-flex">
+                                <div class="me-2">
+                                  <span class="badge bg-label-primary p-2"><i
+                                      class="bx bx-dollar text-primary"></i></span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                  <small>2022</small>
+                                  <h6 class="mb-0">₹32.5k</h6>
+                                </div>
+                              </div>
+                              <div class="d-flex">
+                                <div class="me-2">
+                                  <span class="badge bg-label-info p-2"><i class="bx bx-wallet text-info"></i></span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                  <small>2021</small>
+                                  <h6 class="mb-0">₹41.2k</h6>
+                                </div>
+                              </div>
+                            </div> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/ Total Revenue -->
+                    <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
+                      <div class="row">
+                        <div class="col-6 mb-4">
+                          <a href="/grn_report?filter=currentFY" class="card-link" style="color: #697a8d;">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between">
+                                  <div class="avatar flex-shrink-0">
+                                    <img src="/img/icons/unicons/cc-primary.png" class="rounded" />
+                                  </div>
+                                </div>
+                                <span class="d-block mb-1">Purchase Bills
+                                </span>
+                                <h3 class="card-title mb-2" id="purchaseordersmade"></h3>
+                                <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.14%</small> -->
+                              </div>
+                            </div>  
+                          </a>
+                        </div>
+
+                        <div class="col-6 mb-4">
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                  <img src="/img/icons/unicons/cc-warning.png" alt="Credit Card" class="rounded" />
+                                </div>
+                              </div>
+                              <span class="fw-semibold d-block mb-1">Total Purchase</span>
+                              <h3 class="card-title text-nowrap mb-2" id="inventorycost"></h3>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-12 mb-4">
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
+                                <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                                  <div class="card-title">
+                                    <h5 class="text-nowrap mb-2">Profile Report</h5>
+                                    <span class="badge bg-label-warning rounded-pill" id="yearreport"></span>
+                                  </div>
+                                  <div class="mt-sm-auto">
+                                    <!-- <small class="text-success text-nowrap fw-semibold"><i class="bx bx-chevron-up"></i>
+                                      68.2%</small> -->
+                                    <h3 class="mb-0" id="yearrevenue"></h3>
+                                  </div>
+                                </div>
+                                <!-- <div id="profileReportChart"></div> -->
+                                <div id="profileReport"></div>
+                                <!-- <div style="width: 180px; height:100px;">
+                                  <canvas id="profileReport" ></canvas>
+                                </div> -->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <!-- !! Disabled Temporarily !! -->
+                    <!-- Order Statistics -->
+                    <!-- <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+                      <div class="card h-100">
+                        <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                          <div class="card-title mb-0">
+                            <h5 class="m-0 me-2">Order Statistics</h5>
+                            <small class="text-muted" id="orderstatisticssales"></small>
+                          </div>
+                          
+                        </div>
+                        <div class="card-body">
+                          <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-column align-items-center gap-1">
+                              <h2 class="mb-2" id="totalorderstatistics"></h2>
+                              <span>Total Orders</span>
+                            </div>
+                            
+                            <div id="orderstatisticschart"></div>
+
+                          </div>
+
+                          <ul class="p-0 m-0" id="orderstatisticsunit">
+                          
+                          </ul>
+
+                        </div>
+                      </div>
+                    </div> -->
+                    <!--/ Order Statistics -->
+
+                    <!-- !! Disabled Temporarily !! -->
+                    <!-- Expense Overview -->
+                    <!-- <div class="col-md-6 col-lg-8 order-1 mb-4">
+                      <div class="card h-100">
+                        
+                        <div class="card-body px-0">
+                          <div class="tab-content p-0">
+                            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                            </div>
+                            <div id="profitreport"></div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div> -->
+                    <!--/ Expense Overview -->
+
+                  </div>
+                </div>
+                <!-- / Content -->
+
+                <div class="content-backdrop fade"></div>
+              </div>
+              <!-- Content wrapper -->
+          </div>
+          <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+
+    <!-- / Layout wrapper -->
+
+    <%- include('./partials/footercode.ejs') %>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        var reload = true;
+
+        $(document).ready(function () {
+
+          var result;
+          const ctx = $("#myChart");
+          $.get(`/api/totalsumfromsales?org=<%=orgId%>`, function (sales, status) {
+            console.log('sales', sales);
+
+            $.get(`/api/totalsumfrompurchase?org=<%=orgId%>`, function (purchase, status) {
+              console.log('purchase', purchase);
+
+              //const data = [{x: 'Jan', net: 100, cogs: 50, gm: 50}, {x: 'Feb', net: 120, cogs: 55, gm: 75}];
+              const cfg = {
+                type: 'bar',
+
+                data: {
+                  labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                  datasets: [
+                    {
+                      label: 'Total Sales',
+                      borderRadius: 100,
+                      borderSkipped: 'middle',
+                      borderWidth: 0,
+                      backgroundColor: 'rgba(105, 108, 255, 0.85)',
+                      //barThickness: 10,
+                      barPercentage: 0.8, // Adjust the bar width
+                      categoryPercentage: 0.5,
+                      barSpacing: 20,
+                      data: sales.results,
+                      parsing: {
+                        yAxisKey: 'total'
+                      },
+
+                    },
+                    {
+                      label: 'Total Purchase',
+                      borderRadius: 100,
+                      borderSkipped: 'middle',
+                      borderWidth: 0,
+                      backgroundColor: "rgba(3, 195, 236, 0.85)",
+                      //barThickness: 10,
+                      barPercentage: 0.8, // Adjust the bar width
+                      categoryPercentage: 0.5,
+                      barSpacing: 200,
+                      data: purchase.results,
+                      parsing: {
+                        yAxisKey: 'total'
+                      }
+                    },
+                  ]
+                },
+                options: {
+                  scales: {
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                      ticks: {
+                        color: 'rgba(0, 0, 0, 0.5)',
+                        font: {
+                          family: 'Comic Sans MS', // Specify the font family
+                          size: 11,
+                          weight: "bold" // Specify the font size
+                          // Specify the font weight
+                        }  // Adjust the opacity of the x-axis labels
+                      },
+                    },
+                    y: {
+                      border: {
+                        display: false
+                      },
+                      ticks: {
+                        color: 'rgba(0, 0, 0, 0.5)',
+                        font: {
+                          family: 'Comic Sans MS', // Specify the font family
+                          size: 11, // Specify the font size
+                          // Specify the font weight
+                        }
+                      },
+                      grid: {
+                        display: true,
+                        color: "rgba(0, 0, 0, 0.05)",
+
+                      }
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                      labels: {
+                        font: {
+                          family: 'Comic Sans MS', // Specify the font family for the legend labels
+                          size: 12, // Specify the font size for the legend labels
+                          //weight: 'bold' // Specify the font weight for the legend labels
+                        }
+                      }
+                    },
+
+                    beforeDraw: function (chart) {
+                      const ctx = chart.ctx;
+                      ctx.font = 'bold 16px Arial'; // Customize the font for the chart title
+                      ctx.fillStyle = 'black'; // Customize the color of the chart title
+                      ctx.fillText('Monthly Sales', chart.width / 2, 30); // Customize the position of the chart title
+                    }
+                  },
+                },
+
+
+              };
+              new Chart(ctx, cfg);
+            })
+
+            //profile report
+            var profileReport = {
+              series: [
+                {
+                  name: "Sales",
+                  data: sales.results.map(function (datas) {
+                    return datas.total;
+                  })
+                }
+              ],
+              chart: {
+                height: 100,
+                type: 'line',
+                zoom: {
+                  enabled: false
+                },
+                toolbar: {
+                  show: false
+                },
+              },
+              dataLabels: {
+                enabled: false
+              },
+              stroke: {
+                curve: 'smooth',
+                colors: ['#fcba03'],
+                width: 5, // Adjust the line width as per your preference
+                dashArray: 0, // Remove any dashes in the line
+                lineCap: 'round',
+              },
+              grid: {
+                show: false
+              },
+
+              xaxis: {
+                categories: sales.results.map(function (datas) {
+                  return datas.x;
+                }),
+                labels: {
+                  show: false
+                },
+                axisBorder: {
+                  show: false
+                },
+                axisTicks: {
+                  show: false
+                },
+                grid: {
+                  show: false,
+                }
+              },
+
+              yaxis: {
+                labels: {
+                  show: false
+                },
+                axisBorder: {
+                  show: false
+                },
+                axisTicks: {
+                  show: false
+                },
+                grid: {
+                  show: false,
+                }
+              }
+            };
+
+            var profileChart = new ApexCharts(document.querySelector('#profileReport'), profileReport);
+            profileChart.render();
+
+          })
+
+          //growthchartfeature  
+          // day feature
+          var chart;
+          $.get(`/api/salesmadeprevday?org=<%=orgId%>`, function (data, status) {
+            let dayGrowth = data.results;
+
+            $("#textgrowthstatus").text(`${dayGrowth}% More Sales Today`);
+            $("#salesgrowth").text(`${dayGrowth}%`);
+
+
+            var options = {
+              chart: {
+                height: 240,
+                type: "radialBar",
+              },
+              series: [dayGrowth],
+              colors: ["#20E647"],
+              plotOptions: {
+                radialBar: {
+                  hollow: {
+                    margin: 0,
+                    size: "60%",
+                    background: "#0a0d52"
+                  },
+                  track: {
+                    dropShadow: {
+                      enabled: true,
+                      top: 10,
+                      left: 10,
+                      blur: 10,
+                      opacity: 0.2
+                    }
+                  },
+                  dataLabels: {
+                    name: {
+                      offsetY: -10,
+                      color: "#fff",
+                      fontSize: "18px"
+                    },
+                    value: {
+                      color: "#fff",
+                      fontSize: "30px",
+                      show: true
+                    }
+                  }
+                }
+              },
+              fill: {
+                type: "gradient",
+                gradient: {
+                  shade: "dark",
+                  type: "vertical",
+                  gradientToColors: ["#329ddb"],
+                  stops: [0, 100]
+                }
+              },
+              stroke: {
+                lineCap: "round"
+              },
+              labels: ["Growth"]
+            };
+            chart = new ApexCharts(document.querySelector("#companygrowthchart"), options);
+            chart.render();
+          })
+
+          // click function for day growth
+          $("#perdaygrowth").click(function () {
+            $.get(`/api/salesmadeprevday?org=<%=orgId%>`, function (data, status) {
+              let dayGrowth = data.results;
+
+              $("#textgrowthstatus").text(`${dayGrowth}% More Sales Today`);
+
+              var options = {
+                chart: {
+                  height: 240,
+                  type: "radialBar",
+                },
+                series: [dayGrowth],
+                colors: ["#20E647"],
+                plotOptions: {
+                  radialBar: {
+                    hollow: {
+                      margin: 0,
+                      size: "60%",
+                      background: "#0a0d52"
+                    },
+                    track: {
+                      dropShadow: {
+                        enabled: true,
+                        top: 10,
+                        left: 10,
+                        blur: 10,
+                        opacity: 0.2
+                      }
+                    },
+                    dataLabels: {
+                      name: {
+                        offsetY: -10,
+                        color: "#fff",
+                        fontSize: "18px"
+                      },
+                      value: {
+                        color: "#fff",
+                        fontSize: "30px",
+                        show: true
+                      }
+                    }
+                  }
+                },
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "dark",
+                    type: "vertical",
+                    gradientToColors: ["#329ddb"],
+                    stops: [0, 100]
+                  }
+                },
+                stroke: {
+                  lineCap: "round"
+                },
+                labels: ["Growth"]
+              };
+              chart.destroy();
+              chart = new ApexCharts(document.querySelector("#companygrowthchart"), options);
+              chart.render();
+
+
+            })
+          })
+
+          //click fucntion for month growth
+          $("#permonthgrowth").click(function () {
+            $.get(`/api/salesmadeprevmonth?org=<%=orgId%>`, function (data, status) {
+
+              const monthGrowth = data.results;
+
+              $("#textgrowthstatus").text(`${monthGrowth}% More Sales this Month`);
+
+              var options = {
+                chart: {
+                  height: 240,
+                  type: "radialBar",
+                },
+                series: [monthGrowth],
+                colors: ["#20E647"],
+                plotOptions: {
+                  radialBar: {
+                    hollow: {
+                      margin: 0,
+                      size: "60%",
+                      background: "#0a0d52"
+                    },
+                    track: {
+                      dropShadow: {
+                        enabled: true,
+                        top: 10,
+                        left: 10,
+                        blur: 10,
+                        opacity: 0.2
+                      }
+                    },
+                    dataLabels: {
+                      name: {
+                        offsetY: -10,
+                        color: "#fff",
+                        fontSize: "18px"
+                      },
+                      value: {
+                        color: "#fff",
+                        fontSize: "30px",
+                        show: true
+                      }
+                    }
+                  }
+                },
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "dark",
+                    type: "vertical",
+                    gradientToColors: ["#329ddb"],
+                    stops: [0, 100]
+                  }
+                },
+                stroke: {
+                  lineCap: "round"
+                },
+                labels: ["Growth"]
+              };
+              chart.destroy();
+              chart = new ApexCharts(document.querySelector("#companygrowthchart"), options);
+              chart.render();
+
+
+            })
+          })
+
+          //click function for year growth
+          $("#peryeargrowth").click(function () {
+            $.get(`/api/salesmadeprevyear?org=<%=orgId%>`, function (data, status) {
+              const yearGrowth = data.results;
+
+              $("#textgrowthstatus").text(`${yearGrowth}% More Sales This Year`)
+              var options = {
+                chart: {
+                  height: 240,
+                  type: "radialBar",
+                },
+                series: [yearGrowth],
+                colors: ["#20E647"],
+                plotOptions: {
+                  radialBar: {
+                    hollow: {
+                      margin: 0,
+                      size: "60%",
+                      background: "#0a0d52"
+                    },
+                    track: {
+                      dropShadow: {
+                        enabled: true,
+                        top: 10,
+                        left: 10,
+                        blur: 10,
+                        opacity: 0.2
+                      }
+                    },
+                    dataLabels: {
+                      name: {
+                        offsetY: -10,
+                        color: "#fff",
+                        fontSize: "18px"
+                      },
+                      value: {
+                        color: "#fff",
+                        fontSize: "30px",
+                        show: true
+                      }
+                    }
+                  }
+                },
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "dark",
+                    type: "vertical",
+                    gradientToColors: ["#329ddb"],
+                    stops: [0, 100]
+                  }
+                },
+                stroke: {
+                  lineCap: "round"
+                },
+                labels: ["Growth"]
+              };
+              chart.destroy();
+              chart = new ApexCharts(document.querySelector("#companygrowthchart"), options);
+              chart.render();
+
+
+            })
+          })
+
+          //end of growthstatus
+
+
+          // Total purchase amount
+          $.get('/api/v2/purchaseEntry/total?orgId=<%=orgId%>', function (data, status) {
+            var revenue = Math.round(data.data[0].total_purchase);
+            var formatedRevenue = (revenue.toLocaleString());
+            $("#inventorycost").text(`₹${formatedRevenue}`);
+          })
+
+          // Total Purchase bills
+          $.get('/api/v2/purchaseEntry/totalEntries?orgId=<%=orgId%>', function (data, status) {
+            var orders = data.data[0].row_count;
+            var forders = (orders.toLocaleString());
+            $("#purchaseordersmade").text(forders);
+          })
+
+          var check = JSON.parse(localStorage.getItem('name'));
+          var storedName = window.localStorage.getItem('guestName');
+
+          if (check == null) {
+            console.log('no items found');
+            $("#congratsowner").text(``);
+            localStorage.setItem("name", JSON.stringify({
+              pharmacyName: "<%= name %>",
+
+              number: "<%= number %>",
+
+              pharmaId: "<%= pharmacyId %>",
+              address: `<%=address%>`,
+              dl1: "<%=dl1%>",
+              dl2: "<%=dl2%>"
+            })
+            );
+          }
+
+          else if (storedName != null) {
+            reload = false
+            console.log('name found');
+            if (reload) {
+
+              location.reload();
+
+            }
+            $('#congratsowner').text(storedName);
+
+          }
+          else {
+
+            $("#congratsowner").text(`<%=ownerName%>`);
+            console.log('item is found');
+          }
+
+
+          // Total Sale Amount
+          $.get('/api/v2/saleEntry/total?orgId=<%=orgId%>', function (data, status) {
+            var revenue = Math.round(data.data[0].total_sale);
+            var formatedRevenue = (revenue.toLocaleString());
+            $("#totalrevenue").text(`₹${formatedRevenue}`);
+          })
+
+          // Total Sale Invoices
+          $.get('/api/v2/saleEntry/totalEntries?orgId=<%=orgId%>', function (data, status) {
+            var orders = data.data[0].row_count;
+            var forders = (orders.toLocaleString());
+            $("#totalorders").text(forders);
+          })
+
+          //orderstatistics
+          $.get(`/api/getorderstatistics?org=<%=orgId%>`, function (data, status) {
+            var items = data.results;
+            var pridataset = [];
+            var totalqty;
+            for (let i = 0; i < 3; i++) {
+              var unit = items[i].primary_unit;
+              var qty = items[i].pri;
+              totalqty += items[i].pri + items[i].sec;
+
+              pridataset.push({ unit, qty });
+
+              unit = items[i].secondary_unit;
+              qty = items[i].sec;
+
+              pridataset.push({ unit, qty });
+
+
+              var htmlData = `
+                <li class="d-flex mb-4 pb-1">
+                  <div class="avatar flex-shrink-0 me-3">
+                    <span class="avatar-initial rounded bg-label-primary"><i
+                        class='bx bx-mobile-alt'></i></span>
+                  </div>
+                  <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="me-2">
+                      <h6 class="mb-0">${items[i].primary_unit} : ${items[i].secondary_unit}</h6>
+
+                    </div>
+                    <div class="user-progress">
+                      <small class="fw-semibold">${items[i].pri} : ${items[i].sec}</small>
+                    </div>
+                  </div>
+                </li>
+            `
+
+              $("#orderstatisticsunit").append(htmlData);
+            }
+
+            var orderStatistics = {
+              series: pridataset.map(function (data, index) {
+                return parseInt(data.qty);
+
+              }),
+              labels: pridataset.map(function (data, index) {
+                return data.unit;
+              }),
+              chart: {
+                width: 200,
+                type: 'donut',
+              },
+              plotOptions: {
+                pie: {
+                  startAngle: -90,
+                  endAngle: 270,
+                  donut: {
+                    labels: {
+                      show: true,
+                      name: {
+                        show: true
+                      },
+                      value: {
+                        show: true
+                      },
+                    }
+                  }
+                }
+              },
+              dataLabels: {
+                enabled: false
+              },
+
+              fill: {
+                type: 'gradient',
+              },
+              legend: {
+                show: false
+              },
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    width: 200
+                  },
+                  legend: {
+                    display: false,
+                    position: 'bottom'
+                  }
+                }
+              }]
+            };
+
+            var orderStatisticsChart = new ApexCharts(document.querySelector("#orderstatisticschart"), orderStatistics);
+            orderStatisticsChart.render();
+
+          })
+
+          // profit returns
+          $.get('/api/getprofitinhome', function (data, status) {
+            var items = data.result;
+
+            var profitReport = {
+              series: [{
+                name: 'Revenue',
+                data: items.map(function (revenue) {
+                  return parseFloat(revenue.mrp);
+                })
+              },
+              {
+                name: 'Profit',
+                data: items.map(function (revenue) {
+                  return parseFloat(revenue.mrp) - parseFloat(revenue.purchaserate);
+                })
+              }],
+              chart: {
+                height: 350,
+                type: 'area'
+              },
+              dataLabels: {
+                enabled: false
+              },
+              stroke: {
+                curve: 'smooth'
+              },
+              xaxis: {
+                type: 'datetime',
+                categories: items.map(function (revenue) {
+                  return revenue.date;
+                })
+              },
+              yaxis: {
+                labels: {
+                  formatter: function (value) {
+                    return '₹' + value.toFixed(0);
+                  }
+                }
+              },
+              tooltip: {
+                x: {
+                  format: 'dd/MM/yy HH:mm'
+                },
+              },
+            };
+
+            var profit = new ApexCharts(document.querySelector("#profitreport"), profitReport);
+            profit.render();
+          })
+
+
+        })
+
+      </script>
+
+  </body>
+
+  </html>

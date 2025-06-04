@@ -1,0 +1,527 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <style>
+        .frame1 {
+            width: 46.875rem;
+            height: 39rem;
+            background: #FFF;
+        }
+
+        .container {
+            position: relative;
+            width: 44.2365rem;
+            height: 35.97663rem;
+            flex-shrink: 0;
+            border: 0.2px solid #1E1E1E;
+        }
+
+        .shop-name {
+            position: relative;
+            display: flex;
+            width: 16.20863rem;
+            height: 1.2455rem;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            /* top: 0.05rem;
+            left: 0.98rem; */
+
+            color: #1E1E1E;
+            font-size: 1.25rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .logo-container {
+            display: flex;
+            width: 7.625rem;
+            height: 3.5rem;
+            gap: 0.13638rem;
+            flex-shrink: 0;
+
+            color: #00ACC1;
+        }
+
+        .shop-info {
+            margin-top: 0.48rem;
+            width: 34.413rem;
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1rem;
+        }
+
+        .shop-info-child1 {
+            display: flex;
+            width: 12.21775rem;
+            height: 2.80238rem;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .shop-info-child2 {
+            width: 13.933rem;
+            height: 2.86188rem;
+            flex-shrink: 0;
+        }
+
+        .customer-details {
+            width: 11.61225rem;
+            height: 3.89913rem;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+        }
+
+        .customer-details p {
+            display: flex;
+            width: 11.61225rem;
+            height: 0.78725rem;
+            flex-direction: column;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+            margin-bottom: 0;
+        }
+
+        .receipt-type {
+            display: flex;
+            width: 8.40925rem;
+            height: 1.2455rem;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 1.25rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .receipt-details {
+            width: 17.61225rem;
+            height: 2.77413rem;
+            flex-shrink: 0;
+
+            color: #1E1E1E;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        .receipt-details p {
+            display: flex;
+            width: 11.61225rem;
+            height: 0.78725rem;
+            flex-direction: column;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+            margin-bottom: 0;
+        }
+
+        .cart-table {
+            position: relative;
+            left: -1rem;
+            width: 44.23000rem;
+            height: 14.56863rem;
+            border: 0.05rem solid #1E1E1E;
+
+            margin-top: 0.75rem;
+        }
+
+        .cart-table thead th {
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            margin: auto;
+
+            border: 0.05rem solid #1E1E1E;
+        }
+
+        .cart-table tbody td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-top: none !important;
+
+            color: #000;
+            font-size: 0.625rem;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .footer-1 {
+            position: relative;
+            left: -1rem;
+            top: -0.05rem;
+            width: 28.9rem;
+            height: 10.15rem;
+            border: 0.05rem solid #1E1E1E;
+
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+        }
+
+        .receipt-msg {
+            border-bottom: 0.05rem solid #1E1E1E;
+            height: 1.76rem;
+            font-weight: 300;
+            line-height: normal;
+        }
+
+        .receipt-tnc {
+            font-weight: 600;
+            line-height: normal;
+            text-decoration-line: underline;
+            margin-left: 0.34rem;
+            margin-top: 0.47rem;
+
+            height: 5.95rem;
+        }
+
+        .receipt-sign{
+            border-top: 0.05rem solid #1E1E1E;
+            width: 9.03875rem;
+            font-weight: 600;
+            line-height: normal;
+            text-align: center;
+
+            margin-left: auto;
+            margin-bottom: 1rem;
+        }
+
+        .footer-2{
+            width: 13.25rem;
+            height: 10.15rem;
+
+            color: #000;
+            font-size: 0.75rem;
+            font-family: Poppins;
+            font-style: normal;
+        }
+        .cart-summary{
+            height: 7.32rem;
+            border-bottom: 0.05rem solid #1E1E1E; 
+        }
+        .cart-summary .label{
+            font-weight: 600;
+        }
+        .cart-total{
+            font-size: 1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="d-flex justify-content-between">
+        <div class="p-2 m-3">
+            <button class="btn-border" onclick="CreatePDFfromHTML()">Download</button>
+        </div>
+        <div class="p-2 m-3">
+            <button class="btn btn-border" onclick="history.back()"> Back </button>
+        </div>
+        <!-- <div class="p-2 m-3">
+            <a class="btn btn-border" href='/'>Back</a>
+        </div> -->
+    </div>
+
+    <div class="frame1">
+        <div class="container" id="html-content">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="shop-name" id="orgname">
+                        
+                    </div>
+                    <div class="shop-info d-flex justify-content-between">
+                        <div class="shop-info-child1" id="shopaddress">
+                            
+                        </div>
+                        <div class="shop-info-child2">
+                            <p class="my-0" id="gstin">GSTIN:</p>
+                            <p class="my-0" id="dlno">D.L.no.:</p>
+                            <p class="my-0" id="flno">F.L. no.:</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="logo-container">
+                    <img src="/images/logo.svg"></img>
+                </div>
+            </div>
+            <hr class="px-0">
+            <div class="d-flex justify-content-between">
+                <div class="customer-details">
+                    <p class="fw-bold" id="customername">
+                        Patient name: 
+                    </p>
+                    <p id="customermobile">
+                        Mobile:
+                    </p>
+                    <p id="shippingadd">
+                        Shipping Address: 
+                    </p>
+                    <p id="doctorname">
+                        Dr name: 
+                    </p>
+
+                </div>
+                <div class="receipt-type">
+                    Return Invoice
+                </div>
+                <div class="receipt-details">
+                    <p id="orderdate">
+                        Date:
+                    </p>
+                    <span id="salesinvoiceno" >
+                        Invoice no.:
+                    </span>
+                    <span id="returninvoiceno">
+                        Return Invoice no.:
+                    </span>                
+
+                </div>
+
+            </div>
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th style="width: 2.27rem;">S.N.</th>
+                        <th style="width: 11.29rem;">Item</th>
+                        <th style="width: 3.1rem;">QTY</th>
+                        <th style="width: 4.59rem;">HSN</th>
+                        <th style="width: 4.4rem;">Batch</th>
+                        <th style="width: 3.25rem;">Exp.</th>
+                        <th style="width: 3.62rem;">MRP(₹)</th>
+                        <th style="width: 3.61rem;">GST%</th>
+                        <th style="width: 3.91rem;">Discount%</th>
+                        <th style="width: 4.2rem;">Total(₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="cartitems">
+                    <!-- <tr>
+                        <td style="width: 2.27rem; height: 1rem;">1</td>
+                        <td style="width: 11.29rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.1rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.59rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.4rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.25rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.62rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.61rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.91rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.2rem; height: 1rem;">wyx</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 2.27rem; height: 1rem;">1</td>
+                        <td style="width: 11.29rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.1rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.59rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.4rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.25rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.62rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.61rem; height: 1rem;">wyx</td>
+                        <td style="width: 3.91rem; height: 1rem;">wyx</td>
+                        <td style="width: 4.2rem; height: 1rem;">wyx</td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td style="width: 2.27rem;">3</td>
+                        <td style="width: 11.29rem;">wyx</td>
+                        <td style="width: 3.1rem;">wyx</td>
+                        <td style="width: 4.59rem;">wyx</td>
+                        <td style="width: 4.4rem;">wyx</td>
+                        <td style="width: 3.25rem;">wyx</td>
+                        <td style="width: 3.62rem;">wyx</td>
+                        <td style="width: 3.61rem;">wyx</td>
+                        <td style="width: 3.91rem;">wyx</td>
+                        <td style="width: 4.2rem;">wyx</td>
+                    </tr> -->
+
+                </tbody>
+            </table>
+            <div class="d-flex flex-row">
+                <div class="footer-1">
+                    <div class="receipt-msg">
+                        <p>
+                            “GET WELL SOON”
+                        </p>
+                    </div>
+                    <div class="receipt-info">
+                        <div class="receipt-tnc">
+                            <p>Terms & Conditions</p>
+                        </div>
+                        <div class="receipt-sign">
+                            Authorised Signature
+                        </div>
+
+                    </div>
+                </div>
+                <div class="footer-2">
+                    <div class="cart-summary">
+                        <div class="d-flex justify-content-between">
+                            <div class="label">
+                                Subtotal(₹):
+                            </div>
+                            <div id="subtotal">
+                               
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="cart-total">
+                        <div class="d-flex justify-content-between my-2">
+                            <div>
+                                Return Amount(₹):
+                            </div>
+                            <div id="returnamount"> 
+                                
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var id = '<%=id%>';
+
+            var todayDate = new Date();
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = todayDate.toLocaleDateString('en-US', options);
+            $("#orderdate").text(`Date: ${formattedDate}`);
+
+            $.get(`/api/org/<%=orgId%>`, function(data, status){
+                var org = data.data
+                var orgName = org.org_name;
+                var orgNumber = org.org_telephone;
+                var orgAdd = org.org_address;
+
+                $("#orgname").html(`${orgName}`);
+
+                $("#shopaddress").html(`
+                    ${data.data.org_address}</br>
+                    ${data.data.org_city}( ${data.data.org_state} ), ${data.data.org_pincode}</br>
+                    ${data.data.org_telephone}
+                `)
+
+                $("#gstin").text(`GSTIN: ${org.org_gstin}`);
+                $("#dlno").text(`D.L.no.: ${org.org_dl_no_1}, ${org.org_dl_no_2}`)
+                $("#flno").text(`F.L. no.: ${org.org_fssai_no}`)
+            })
+
+            $.get(`/api/getinvoiceorder?id=${id}`, function(data, status){
+                console.log(data);
+                var customer = data.result[0]; 
+              
+                var customerName = customer.cust_name;
+                var customerNumber = customer.cust_telephone;
+                var customerAdd = customer.cust_address;
+
+                $("#customername").text(`Patient Name: ${customerName}`);
+                $("#customermobile").text(`Mobile: ${customerNumber}`);
+
+                $("#shippingadd").text(`Shipping Address: ${customerAdd}`);
+                $("#shippedcustomerdetails .shippedcustomernumber").html(`${customerNumber} <br> `);
+                $("#salesinvoiceno").text(`Invoice no: ${customer.invoice_id_main}`);
+                $("#returninvoiceno").text(`Return Invoice no: ${customer.return_invoice_id}`);
+                $("#subtotal").text(customer.return_subtotal);
+                $("#returnamount").text(customer.return_amount);
+             
+                $("#doctorname").text(`Dr name: ${customer.doctor_name}`)
+
+                var items = data.result;
+
+                for (var i = 0; i < items.length; i++) {
+                    var datetime = items[i].exp_date; 
+                    console.log(datetime);
+                    var date = moment(datetime).format('DD-MM-YY');
+
+                    cartHtml = `
+                    <tr>
+                        <td style="width: 2.27rem; height: 1rem;">${i+1}</td>
+                        <td style="width: 11.29rem; height: 1rem;">${items[i].med_name}</td>
+                        <td style="width: 3.1rem; height: 1rem;">${items[i].return_pri_qty}:${items[i].return_sec_qty}</td>
+                        <td style="width: 4.59rem; height: 1rem;">${items[i].hsn}</td>
+                        <td style="width: 4.4rem; height: 1rem;">${items[i].batch_name}</td>
+                        <td style="width: 3.25rem; height: 1rem;">${date}</td>
+                        <td style="width: 3.62rem; height: 1rem;">${items[i].return_mrp}</td>
+                        <td style="width: 3.61rem; height: 1rem;">${items[i].gst}</td>
+                        <td style="width: 3.91rem; height: 1rem;">${items[i].unit_discount}</td>
+                        <td style="width: 4.2rem; height: 1rem;">${items[i].return_total_cart}</td>
+                    </tr>`
+
+                    $("#cartitems").append(cartHtml);
+                }
+
+
+
+            })
+
+            
+        })
+    </script>
+
+    <script>
+        //Create PDf from HTML...
+        function CreatePDFfromHTML() {
+            var HTML_Width = $("#html-content").width();
+            var HTML_Height = $("#html-content").height();
+            var top_left_margin = 15;
+            var PDF_Width = HTML_Width + (top_left_margin * 2);
+            var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+            var canvas_image_width = HTML_Width;
+            var canvas_image_height = HTML_Height;
+
+            var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+            html2canvas($("#html-content")[0]).then(function (canvas) {
+                var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+                pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+                for (var i = 1; i <= totalPDFPages; i++) {
+                    pdf.addPage(PDF_Width, PDF_Height);
+                    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+                }
+                pdf.save("invoice.pdf");
+                $("#html-content").hide();
+            });
+        }
+    </script>
+</body>
+
+</html>

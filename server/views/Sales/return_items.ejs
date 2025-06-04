@@ -1,0 +1,805 @@
+<%- include('../partials/headercode.ejs') %>
+
+  <body>
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar  ">
+      <div class="layout-container">
+
+        <!-- sidebar imported -->
+        <%- include('../partials/sidebar.ejs') %>
+
+
+          <!-- Layout container -->
+          <div class="layout-page">
+
+            <!-- navbar imported -->
+            <%- include('../partials/navbar.ejs') %>
+
+              <!-- Content wrapper -->
+              <div class="content-wrapper">
+
+
+                <!-- Content -->
+
+                <div class="container-xxl flex-grow-1 container-p-y">
+                  <h4 class="fw-bold py-3 mb-1"> Create Return Invoice</h4>
+                  <hr class="mb-4">
+
+                  <!-- Loader GIF -->
+                  <div id="loader"
+                    style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                    <div class="spinner-border spinner-border-lg text-primary" role="status"
+                      style="position: absolute; top: 50%; left: 50%;">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+
+                  <!-- Return Items Form -->
+                  <form>
+                    <div class="card mb-4">
+                      <div class=" row">
+
+                        <div class="col-md-6">
+                          <div class="mb-4" id="custcart">
+
+                            <h5 class="card-header pb-3 text-decoration-underline">Customer Details</h5>
+                            <h6 class="card-header py-2" id="customername"></h6>
+                            <h6 class="card-header py-2" id="customernumber"></h6>
+
+                          </div>
+                        </div>
+
+                        <div class="col-md-6">
+                          <div class="mb-4">
+
+                            <h5 class="card-header pb-3 text-decoration-underline">Order Details</h5>
+                            <h6 class="card-header py-2" id="saleinvoiceid"></h6>
+                            <h6 class="card-header py-2" id="date"></h6>
+                            <h6 class="card-header py-2" id="time"></h6>
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </form>
+
+                  <hr class="mb-4">
+                </div>
+
+
+                <div class="row mx-3">
+                  <h4 class="fw-bold mb-4">Return Items</h4>
+
+                  <!-- Bordered Table -->
+                  <div class="bordered-table card mb-4 mx-0">
+
+                    <form class="form-main">
+
+                      <div class="card-body form-block mb-3">
+
+                        <div class="row w-100 m-0 p-0">
+                          <div class="col-md-4 col-12 mb-md-0 mb-3 ps-md-0">
+                            <p class="mb-2 repeater-title fw-bold">Item</p>
+                            <input type="text" class="form-control mb-2" id="medicinename" placeholder="Product Name"
+                              required />
+                            <div class="invalid-feedback">
+                              Please enter product name.
+                            </div>
+                            <input type="text" class="form-control" id="brand" placeholder="Brand Name" disabled />
+                          </div>
+
+                          <div class="col-md-2 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">Batch & Expiry</p>
+                            <div class="mb-2" id="batchdroporinput">
+                              <input type="text" class="form-control" id="batch" placeholder="" disabled />
+                            </div>
+                            <input class="form-control" type="date" id="expdate" disabled />
+                          </div>
+                          <div class="col-md-1 col-6 mb-md-0 mb-3">
+                            <div>
+                              <p class="mb-2 repeater-title" id="primaryunitname">P.Unit<span></span></p>
+                              <input type="text" class="form-control px-1" id="pUnit" min="0"
+                                onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;" />
+                              <div class="invalid-feedback">
+                                Please enter quantity.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-1 col-6 mb-md-0 mb-3" id="sUnit_input">
+                            <div>
+                              <p class="mb-2 repeater-title" id="secondaryunitname">S.Unit<span></span></p>
+                              <input type="text" class="form-control px-1" id="sUnit" min="0"
+                                onkeypress="javascript: if (!/[0-9]/.test(String.fromCharCode(event.charCode))) return false;" />
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">MRP / P.Unit</p>
+                            <input type="number" class="form-control px-1" id="price" placeholder="" min="0" disabled />
+                          </div>
+                          <div class="col-md-1 col-12 mb-md-0 mb-3" style="display: none;" id="gst_input">
+                            <p class="mb-2 repeater-title">GST%</p>
+                            <input type="number" class="form-control px-1" id="gst" placeholder="" min="0" disabled />
+                          </div>
+                          <div class="col-md-1 col-12 mb-md-0 mb-3">
+                            <p class="mb-2 repeater-title">Disc%</p>
+                            <input type="number" class="form-control px-1" id="discount" placeholder="" min="0"
+                              disabled />
+                          </div>
+
+
+                          <div class="col-md-1 col-6 pe-0">
+                            <p class="mb-2 repeater-title">Total</p>
+                            <input type="text" class="form-control px-0" id="total" placeholder="" min="0" readonly
+                              disabled />
+                            <div style="font-size: smaller;"></div>
+                          </div>
+                        </div>
+
+                      </div>
+
+
+                      <div class="buttonBox text-center pb-3">
+                        <btn class="btn btn-primary" style="color: white;" id="addtoreturncart">Add to
+                          Return Cart</btn>
+                        <input type="reset" class="btn btn-primary" style="color: white;" value="Clear" />
+                      </div>
+                    </form>
+
+                  </div>
+
+                  <!--/ Bordered Table -->
+
+
+                  <!-- Product Cart -->
+                  <div class="card mx-0">
+                    <h5 class="card-header">Return Cart</h5>
+                    <div class="card-body">
+                      <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="col-1">#</th>
+                              <th class="col-7">Product name</th>
+                              <th class="col-1" id="priqtycart">PQty</th>
+                              <th class="col-1" id="secqtycart">SQty</th>
+                              <th class="col-1">MRP</th>
+                              <th class="col-1">Disc %</th>
+                              <th class="col-1">Total</th>
+                              <th class="col-1">Action</th>
+
+                            </tr>
+                          </thead>
+                          <tbody id="cart">
+                            <!-- <tr>
+                              <td>1</td>
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Calpol 1000mg
+                                  Tablet</strong></td>
+                              <td>3</td>
+                              <td>35</td>
+                              <td>5</td>
+                              <td>-115</td>
+                              <td>
+                                <div class="action-btns">
+                                  <button type="button" class="btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                                  <button type="button" class="btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                                </div>
+                              </td>
+                            </tr> -->
+
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- / Product Cart -->
+                </div>
+
+                <hr>
+
+                <div class="mx-3">
+                  <h4 class="fw-bold py-3 mb-4">Return Summary</h4>
+
+                  <div class="row d-flex justify-content-evenly">
+
+
+
+                    <div class="col-md-4">
+                      <div class="card mb-4">
+                        <h5 class="card-header">Subtotal</h5>
+                        <div class="card-body">
+                          <div>
+                            <input type="text" class="form-control" id="returnsubtotal" disabled />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!-- <div class="col-md-4">
+                      <div class="card mb-4">
+                        <h5 class="card-header">Prev. Discount (%)</h5>
+                        <div class="card-body">
+                          <div>
+
+                            <input type="text" class="form-control" id="defaultFormControlInput"
+                              aria-describedby="defaultFormControlHelp" />
+
+                          </div>
+                        </div>
+                      </div>
+                    </div> -->
+
+
+                    <div class="col-md-4">
+                      <div class="card mb-4">
+                        <h5 class="card-header">Return Amount</h5>
+                        <div class="card-body">
+                          <div>
+                            <input type="text" class="form-control" id="returnamount" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                <!-- / Content -->
+
+                <div class="text-center mb-4">
+                  <!-- <a href="/invoice_template"> -->
+                  <div class="btn btn-primary px-5" id="submitreturn">Submit</div>
+                  <!-- </a> -->
+                </div>
+
+                <div class="content-backdrop fade"></div>
+              </div>
+              <!-- Content wrapper -->
+          </div>
+          <!-- / Layout page -->
+      </div>
+
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+
+    </div>
+    <!-- / Layout wrapper -->
+
+    <%- include('../partials/footercode.ejs') %>
+
+      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+      <script>
+        $(document).ready(function () {
+          // Validation check on input
+          $('input').each(function () {
+            $(this).on('input', function () {
+              if ($(this).val() == '') {
+                $(this).addClass('is-invalid');
+              } else {
+                $(this).removeClass('is-invalid');
+              }
+            });
+          });
+          $('select').each(function () {
+            $(this).on('input', function () {
+              if ($(this).val() == 'default' || $(this).val() == null) {
+                $(this).addClass('is-invalid');
+              } else {
+                $(this).removeClass('is-invalid');
+              }
+            });
+          });
+
+          $("#brand").prop('readonly', true);
+          $("#batch").prop('readonly', true);
+          $("#expdate").prop('readonly', true);
+          $("#pUnit").prop('readonly', true);
+          $("#sUnit").prop('readonly', true);
+          $("#discount").prop('readonly', true);
+          $("#price").prop('readonly', true);
+
+          var cartarray = [];
+
+          var returnItem = { id: "<%= id %>" };
+
+          //getting all details of customer
+          $.get(`/api/searchinvoice?invoiceid=${returnItem.id}&org=<%= orgId %>`, function (data, status) {
+            console.log(data.result);
+            var customerId = data.result[0].customer_id;
+            console.log(customerId);
+
+            $.get(`/api/custdetails/${customerId}`, function (data, status) {
+              var customer = data.data;
+
+              var customerName = customer.cust_name;
+              var customerNumber = customer.cust_telephone;
+              var salesId = `${returnItem.id}`;
+              var datetime = customer.sales_created_date;
+              var date = moment(datetime).format('DD MMMM YYYY');
+              var time = moment(datetime).utcOffset('+05:30');
+              time = time.format('hh:mm A');
+
+              $("#customername").text(`Customer Name: ${customerName}`);
+              $("#customernumber").text(`Customer No: ${customerNumber}`);
+              $("#saleinvoiceid").text(`Sale Invoice No: ${salesId}`);
+              $("#date").text(`Date: ${date}`);
+              $("#time").text(`Time: ${time}`);
+
+            })
+          })
+          //end of the details logic
+
+          //rendering return cart logic
+
+          var product = [];
+          var productId = -1;
+          var priceMed = -1;
+          var primaryUnit;
+          var secondaryUnit;
+          var conversion;
+          var hsn;
+          var gst;
+          var prevQty;
+          var saledPrimaryQty;
+          var saledSecondaryQty;
+          var batchIdReturned;
+          console.log('main invoice id', returnItem.id);
+
+          $("#medicinename").autocomplete({
+            source: function (request, response) {
+              $.get(`/api/cartmainid/${returnItem.id}`, function (data, status) {
+                console.log('inside search', data.data);
+                let searchTerm = request.term;
+                let results = data.data.filter(item => item.med_name.toLowerCase().includes(searchTerm.toLowerCase()));
+                response(results);
+              })
+            },
+            select: function (event, ui) {
+              setTimeout(function () {
+                console.log('ui.item', ui.item);
+                productId = ui.item.product_id;
+                $.get(`/api/getbatchfrombatchid?id=${ui.item.batch_id}`, function (data, status) {
+
+                  console.log('batch data', data.data);
+
+                  $("#pUnit").prop('readonly', false);
+                  $("#sUnit").prop('readonly', false);
+
+                  primaryUnit = data.data[0].primary_unit;
+                  secondaryUnit = data.data[0].secondary_unit;
+                  conversion = data.data[0].conversion;
+                  batchIdReturned = data.data[0].batch_id;
+
+
+                  //populate expiry date
+                  var date = new Date(data.data[0].exp_date);
+                  $("#expdate").val(date.toISOString().split('T')[0]);
+                  //populate shelf label, batch name
+                  $("#shelflabel").val(data.data[0].shelf_label);
+                  $("#batch").val(data.data[0].batch_name);
+                  //populate mrp
+                  priceMed = data.data[0].mrp;
+                  $("#price").val(priceMed);
+                  //poulate medname, brand, primary, sec
+                  $("#medicinename").val(ui.item.med_name);
+                  $('#brand').val(ui.item.mfd_mkt);
+                  $("#pUnit").val(ui.item.saled_pri_qty_cart - ui.item.return_pri_qty);
+                  saledPrimaryQty = ui.item.saled_pri_qty_cart - ui.item.return_pri_qty;
+                  $("#sUnit").val(ui.item.saled_sec_qty_cart - ui.item.return_sec_qty);
+                  saledSecondaryQty = ui.item.saled_sec_qty_cart - ui.item.return_sec_qty;
+                  $("#discount").val(ui.item.unit_discount);
+                  hsn = ui.item.hsn;
+                  gst = ui.item.gst;
+                  calculateTotal();
+                })
+              }, 0)
+            }
+          }).data('ui-autocomplete')._renderItem = function (ul, item) {
+            return $('<li>')
+              .append('<div>' + item.med_name + ' [' + item.batch_name + '] ' + '</div>')
+              .appendTo(ul);
+          };
+
+          // On input medicine name clear all the fields
+          $("#medicinename").on('input', function () {
+            $("#brand").val("");
+            $("#pUnit").val("").prop('readonly', true);
+            $("#sUnit").val("").prop('readonly', true);
+            $("#price").val("").prop('readonly', true);
+            $("#discount").val("").prop('readonly', true);
+            $("#total").val("").prop('readonly', true);
+            $("#shelflabel").val("");
+            $("#batchdroporinput").empty();
+            $("#batchdroporinput").append(`<input type="text" class="form-control" id="batch" placeholder="" />`)
+            $("#batch").prop('readonly', true);
+            $("#expdate").val("").prop('readonly', true);
+          })
+
+          // -ve inputs for inline item cant be entered
+          $('#pUnit').on('keypress', function (e) {
+            if (e.which == 45) {
+              return false;
+            }
+          });
+          $('#sUnit').on('keypress', function (e) {
+            if (e.which == 45) {
+              return false;
+            }
+          });
+
+          //logic for calculating total
+          var priQty = $("#pUnit");
+          var secQty = $("#sUnit");
+          var priceInput = $("#price");
+          var discInput = $("#discount");
+          var totalInput = $("#total");
+
+          priQty.on("input", calculateTotal);
+          secQty.on("input", calculateTotal);
+          discInput.on("input", calculateTotal);
+
+          function calculateTotal() {
+            var primaryqty = parseInt(priQty.val()) || 0;
+            var secondaryqty = parseInt(secQty.val()) || 0;
+            var price = parseFloat(priceInput.val()) || 0;
+            var discount = parseFloat(discInput.val()) || 0;
+            discount = discount / 100;
+
+            var totalQtyBeforeDisc = primaryqty * price + secondaryqty * price / conversion;
+            var totalQtyAfterDisc = totalQtyBeforeDisc - (totalQtyBeforeDisc * discount);
+
+            totalInput.val(totalQtyAfterDisc.toFixed(2));
+          }
+
+
+          //add to cart logic
+          var setLocalData;
+          var getLocalData;
+          var htmlData;
+          $("#addtoreturncart").click(function (e) {
+            e.preventDefault();
+            var isValid = true;
+            $('input:required').each(function () {
+              if ($(this).val() == '') {
+                $(this).addClass('is-invalid');
+                isValid = false;
+              } else {
+                $(this).removeClass('is-invalid');
+                isValid = true;
+              }
+            });
+
+            if ($("#pUnit").val() == '') {
+              $("#pUnit").addClass('is-invalid');
+              $("#pUnit").focus();
+              isValid = false;
+            } else {
+              $("#pUnit").removeClass('is-invalid');
+            }
+
+            if ($("#pUnit").val() == 0 && $("#sUnit").val() == 0) {
+              $("#pUnit").addClass('is-invalid');
+              $("#pUnit").focus();
+              isValid = false;
+            } else {
+              $("#pUnit").removeClass('is-invalid');
+            }
+
+            if (isValid) {
+
+              var products = $("#medicinename").val();
+              var brand = $("#brand").val();
+              var priQty = parseFloat($("#pUnit").val()) || 0;
+              var secQty = parseFloat($("#sUnit").val()) || 0;
+              var mrp = parseFloat($("#price").val());
+              var disc = parseFloat($("#discount").val());
+              var total = parseFloat($("#total").val());
+              var shelflabel = $("#shelflabel").val();
+              var batch = $("#batch").val();
+              var exp = $("#expdate").val();
+
+              if (priQty > saledPrimaryQty) {
+                return alert("CANT ADD QUANTITY GREATER THAN SALED");
+              }
+              if (secQty > saledSecondaryQty) {
+                return alert("CANT ADD QUANTITY GREATER THAN SALED");
+              }
+              if (!products) {
+                return alert("PLEASE ADD THE RETURNED PRODUCT");
+              }
+
+              // Check if batchId already exists in the cart
+              var batchExists = cartarray.some(function (item) {
+                return item.batchIdReturned === batchIdReturned;
+              });
+
+
+              if (!batchExists) {
+                cartarray.push({
+                  productId: productId,
+                  productname: products,
+                  brand: brand,
+                  shelflabel: shelflabel,
+                  batch: batch,
+                  batchIdReturned: batchIdReturned,
+                  conversion: conversion,
+                  hsn: hsn,
+                  gst: gst,
+                  expdate: exp,
+                  priQty: priQty,
+                  secQty: secQty,
+                  mrp: mrp,
+                  disc: disc,
+                  total: total,
+                  timestamp: new Date().getTime()
+                })
+
+                setLocalData = JSON.stringify(cartarray);
+                localStorage.setItem("returncartitems", setLocalData);
+              } else {
+                alert("This batch already added to return cart")
+              }
+
+              $("#medicinename").val("");
+              $("#brand").val("");
+              $("#pUnit").val("");
+              $("#sUnit").val("");
+              $("#price").val("");
+              $("#discount").val("");
+              $("#total").val("");
+              $("#shelflabel").val("");
+              $("#batch").val("");
+              $("#expdate").val("");
+            }
+          });
+
+          // logic for redering cart data on addtocart click 
+          $("#addtoreturncart").on('click', function () {
+            cartItems = JSON.parse(localStorage.getItem('returncartitems')) || [];
+            renderCart(cartItems);
+            getSubTotal();
+          });
+
+          //deletefunctionality
+          $("#cart").on("click", ".delete-button", function () {
+            var item = $(this).closest("tr");
+            var item_id = item.find(".card_id").text().trim();
+            var cartItemsinStorage = JSON.parse(localStorage.getItem('returncartitems')) || [];
+            cartItemsinStorage.splice(item_id - 1, 1);
+            cartarray = cartItemsinStorage;
+            localStorage.setItem('returncartitems', JSON.stringify(cartItemsinStorage));
+            renderCart(cartItemsinStorage);
+          });
+          //endofdeletefunctionality
+
+
+          //edit functionality  
+          $("#cart").on("click", ".edit-button", function () {
+            var item = $(this).closest("tr");
+            var item_id = item.find(".card_id").text().trim();
+            var UpdatecartItemsinStorage = JSON.parse(localStorage.getItem('returncartitems')) || [];
+            var selectedItem = UpdatecartItemsinStorage[item_id - 1];
+
+            $("#medicinename").val(selectedItem.productname);
+            $("#brand").val(selectedItem.brand);
+            $("#pUnit").val(selectedItem.priQty);
+            $("#sUnit").val(selectedItem.secQty);
+            $("#price").val(selectedItem.mrp);
+            $("#discount").val(selectedItem.disc);
+            $("#total").val(selectedItem.total);
+            $("#batch").val(selectedItem.batch);
+            $("#shelflabel").val(selectedItem.shelflabel);
+            $("#expdate").val(selectedItem.expdate);
+
+            productId = selectedItem.productId;
+            batchIdReturned = selectedItem.batchIdReturned;
+            conversion = selectedItem.conversion;
+
+            UpdatecartItemsinStorage.splice(item_id - 1, 1);
+            cartarray = UpdatecartItemsinStorage;
+            localStorage.setItem('returncartitems', JSON.stringify(UpdatecartItemsinStorage));
+            renderCart(UpdatecartItemsinStorage);
+
+          })
+          //end of edit functionality
+
+          //rendercart functionality
+          function renderCart(items) {
+            $('#cart').empty();
+
+            for (var i = 0; i < items.length; i++) {
+              htmlData = `
+                          <tr>
+                            <td class="card_id">${i + 1}</td>
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${items[i].productname}</strong></td>
+                            <td>${items[i].priQty}</td>
+                            <td>${items[i].secQty}</td>
+                            <td>${items[i].mrp}</td>
+                            <td>${items[i].disc}</td>
+                            <td>-${items[i].total}</td>
+                            <td>
+                              <div class="action-btns">
+                                <button type="button" id="edit-button" class="edit-button btn p-0 mx-2"><i class='bx bxs-edit'></i></button>
+                                <button type="button" class="delete-button btn p-0 mx-2"><i class="bx bx-trash me-1"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                          `
+              $('#cart').append(htmlData);
+            }
+          }
+          //end of rendereing data logic
+
+          //getting the subtotal when theres change in local storage
+          //var getAllData = JSON.parse(localStorage.getItem("returncartitems")) || [];
+          //getSubTotal();
+          $("#cart").on("click", ".delete-button, .edit-button", function () {
+            getSubTotal();
+          })
+
+          function getSubTotal() {
+
+            var subtotal = 0;
+            getAllData = JSON.parse(localStorage.getItem("returncartitems")) || [];
+
+            if (getAllData.length != 0) {
+
+              for (let i = 0; i < getAllData.length; i++) {
+                subtotal = subtotal + parseFloat(getAllData[i].total);
+              }
+
+              $("#returnsubtotal").val(`-${subtotal.toFixed(2)}`);
+              $("#returnamount").val(subtotal.toFixed(0));
+            }
+            else if (getAllData.length == 0) {
+              $("#returnsubtotal").val(0);
+              $("#returnamount").val(0);
+            }
+          }
+
+
+          $('#additionaldiscount').on("input", function () {
+
+            var getSubTotalValue = $("#subtotal").val()
+            var discountInput = $(this).val();
+            var discountprice = getSubTotalValue - discountInput;
+            $("#finalamount").val(discountprice.toFixed(0));
+
+          })
+          //allchanges done for footer total;
+
+          var org = "<%= orgId %>";
+          $("#submitreturn").click(function () {
+
+            $('#loader').show();
+
+            if ($("#returnamount").val() == "" || 0) {
+              return alert("NO ITEMS");
+            }
+            var returnReason = $("#returnreason").val();
+
+            var returnDetails = {
+              sales_invoice_id: returnItem.id,
+              org_id: org,
+              return_subtotal: $("#returnsubtotal").val(),
+              return_amount: $("#returnamount").val(),
+              reason: returnReason
+            }
+            $.ajax({
+              url: `/api/return/`,
+              type: 'POST',
+              data: JSON.stringify(returnDetails),
+              contentType: 'application/json',
+              success: function (response) {
+                var returninsertid = response.results.insertId;
+                var returnInvoiceId = response.return_invoice_id;
+                var localCartStored = JSON.parse(localStorage.getItem('returncartitems'));
+
+                // Array to hold all AJAX requests
+                var ajaxRequests = [];
+
+                for (let i = 0; i < localCartStored.length; i++) {
+
+                  // Push each AJAX request into the array
+                  ajaxRequests.push(
+                    $.ajax({
+                      url: `/api/updatebatchwhenreturn/`,
+                      type: 'POST',
+                      data: JSON.stringify({
+                        batch_id: localCartStored[i].batchIdReturned,
+                        org_id: org,
+                        return_pri_qty: localCartStored[i].priQty,
+                        return_sec_qty: localCartStored[i].secQty
+                      }),
+                      contentType: 'application/json',
+                      success: function (response) {
+                        console.log(response);
+                      },
+                      error: function (error) {
+                        console.log('error in updateing batch', error);
+                      }
+                    })
+                  );
+
+                  // Push each AJAX request into the array
+                  ajaxRequests.push(
+                    $.ajax({
+                      url: `/api/updatecartitems?sales_invoice_id=${returnItem.id}&product_id=${localCartStored[i].productId}&batch=${localCartStored[i].batchIdReturned}`,
+                      type: 'POST',
+                      data: JSON.stringify({
+                        return_pri_qty: localCartStored[i].priQty,
+                        return_sec_qty: localCartStored[i].secQty,
+                      }),
+                      contentType: 'application/json',
+                      success: function (response) {
+                        console.log(response);
+                      },
+                      error: function (error) {
+                        console.log(error);
+                      }
+                    })
+                  );
+
+                  // Push each AJAX request into the array
+                  ajaxRequests.push(
+                    $.ajax({
+                      url: `/api/returncartitem/`,
+                      type: 'POST',
+                      data: JSON.stringify({
+                        return_id: returninsertid,
+                        return_invoice_id: returnInvoiceId,
+                        main_invoice_id: returnItem.id,
+                        batch_id: localCartStored[i].batchIdReturned,
+                        product_id: localCartStored[i].productId,
+                        product_name: localCartStored[i].productname,
+                        batch_name: localCartStored[i].batch,
+                        conversion: localCartStored[i].conversion,
+                        hsn: localCartStored[i].hsn,
+                        gst: localCartStored[i].gst,
+                        exp_date: localCartStored[i].expdate,
+                        return_pri_qty: localCartStored[i].priQty,
+                        return_sec_qty: localCartStored[i].secQty,
+                        return_dis: localCartStored[i].disc,
+                        return_mrp: localCartStored[i].mrp,
+                        return_total: localCartStored[i].total,
+                      }),
+                      contentType: 'application/json',
+                      success: function (response) {
+                        console.log(response);
+                      },
+                      error: function (error) {
+                        console.log(error);
+                      }
+                    })
+                  )
+
+                }
+
+                // Use $.when.apply() to wait for all AJAX requests to complete
+                $.when.apply($, ajaxRequests).done(function () {
+                  $('#loader').hide();
+                  localStorage.removeItem('returncartitems');
+                  window.location.href = `/return_receipt/${returninsertid}`;
+                });
+
+              },
+              error: function (error) {
+                $('#loader').hide();
+                console.log(error);
+              }
+            })
+          })
+        })
+
+      </script>
+
+  </body>
+
+  </html>
