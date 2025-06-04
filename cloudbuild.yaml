@@ -1,6 +1,6 @@
 steps:
 - name: node:18.17.0
-  entrypoint: npm
+  entrypoint: yarn
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
 timeout: "1600s"
