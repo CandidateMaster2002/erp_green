@@ -1,15 +1,15 @@
-const { es } = require('../config/elasticsearch');
+const { typesenseClient } = require('../config/elasticsearch');
 
 module.exports = {
   createProductMYSQL: async (connection, data, orgId) => {
     const [results] = await connection.query(
       `insert into sample(
-                    med_name,
-                    mfd_mkt,
-                    salt_composition,
-                    added_by,
-                    is_verified)
-                    values(?,?,?,?,?)`,
+        med_name,
+        mfd_mkt,
+        salt_composition,
+        added_by,
+        is_verified)
+        values(?,?,?,?,?)`,
       [
         data.medName,
         data.mfdMkt,
@@ -21,21 +21,22 @@ module.exports = {
     return results.insertId;
   },
 
+  // Rewritten for Typesense
   createProductES: async (data, productId, orgId) => {
-    const body = {
-      id: productId,
+    const document = {
+      id: productId.toString(), // Typesense requires ID as string
       med_name: data.medName,
       mfd_mkt: data.mfdMkt,
       salt_composition: data.salt,
       added_by: orgId,
       is_verified: false,
     };
-    const result = await es.index({
-      index: 'product_search_index_v2',
-      body,
-    });
+
+    const result = await typesenseClient
+      .collections('product_search_index_v2')
+      .documents()
+      .create(document);
 
     return result;
   },
-
 };
