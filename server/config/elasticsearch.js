@@ -1,18 +1,18 @@
-const { Client } = require('@elastic/elasticsearch');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const Typesense = require('typesense');
 
-const elasticsearchConfig = {
-  node: process.env.ES_NODE,
-  auth: {
-    username: process.env.ES_USER,
-    password: process.env.ES_PASS,
-  },
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
-
-const es = new Client(elasticsearchConfig);
+const typesenseClient = new Typesense.Client({
+  nodes: [
+    {
+      host: process.env.TYPESENSE_HOST, // from your .env
+      port: parseInt(process.env.TYPESENSE_PORT, 10),
+      protocol: process.env.TYPESENSE_PROTOCOL,
+    },
+  ],
+  apiKey: process.env.TYPESENSE_API_KEY,
+  connectionTimeoutSeconds: 2,
+});
 
 module.exports = {
-  es,
+  typesenseClient,
 };
