@@ -298,7 +298,12 @@ module.exports = async (app) => {
   });
 
   app.get('/add_product', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Inventory/add_product', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/add_product', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'inventory',
+    });
   });
 
   app.get('/product_batch/:id', checkAuth, fetchOrgId, accessControl, (req, res) => {
