@@ -9,6 +9,8 @@ const productMasterModel = require('../v2models/productMasterModel');
 const expiryInventoryRepository = require('../v2repositories/expiryInventoryRepository');
 const saltAlternativeRepository = require('../v2repositories/saltAlternativeRepository');
 require('dotenv').config();
+// Import the dummy inventory data
+const { dummyInventory } = require('./dummyInventoryData');
 
 module.exports = {
   createBatch: async (batchData) => {
@@ -82,10 +84,54 @@ module.exports = {
     });
   },
 
-  getInventory: async (orgId) => {
+  // getInventory is now renamed to getPaginatedInventory
+  // This function now handles both real database pagination and dummy data pagination
+  getPaginatedInventory: async (orgId, limit, offset) => {
+  // Determine if we should use dummy data based on an environment variable
+    if (process.env.USE_DUMMY_DATA === 'true') {
+      console.log('Using dummy inventory data for pagination in v2services.');
+      // console.log('DEBUG: Received orgId:', orgId);
+      // console.log('DEBUG: Received limit:', limit);
+      // console.log('DEBUG: Received offset:', offset);
+
+      // 1. Filter dummy data by org_id (simulating WHERE clause)
+      const filteredData = dummyInventory.filter((item) => item.org_id === orgId);
+      // console.log('DEBUG: Filtered data (by orgId) count:', filteredData.length);
+
+      // 2. Get total count *before* pagination for UI (e.g., "Page 1 of 5")
+      const totalCount = filteredData.length;
+
+      // 3. Apply LIMIT and OFFSET (simulating LIMIT/OFFSET clause)
+      const paginatedData = filteredData.slice(offset, offset + limit);
+      // console.log('DEBUG: Paginated data (after slice) count:', paginatedData.length);
+
+      // Simulate asynchronous database call with a slight delay
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            data: paginatedData,
+            totalCount,
+          });
+        }, 100); // Small delay to simulate network latency
+      });
+    }
+
+    // No else needed after return
+    console.log('Using real database for inventory pagination in v2services.');
+
+    // Original logic: Call inventoryModel for paginated data
+    // This assumes inventoryModel has a getPaginatedInventoryByOrgId or similar function
+    // You will need to ensure inventoryModel.getPaginatedInventoryByOrgId returns both data
+    // and total count
     return executeTransaction(async (connection) => {
-      const results = await inventoryModel.getInventoryByOrgId(connection, orgId);
-      return results;
+    // Assume inventoryModel.getPaginatedInventoryByOrgId returns { data: [], totalCount: number }
+      const results = await inventoryModel.getPaginatedInventoryByOrgId(
+        connection,
+        orgId,
+        limit,
+        offset,
+      );
+      return results; // This should be an object with data and totalCount
     });
   },
 
