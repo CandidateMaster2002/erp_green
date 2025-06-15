@@ -1,178 +1,292 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&display=swap');
 
+/* Ensure the body and html take full height to allow flexbox to work properly */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Raleway', sans-serif; /* Set default font */
+    box-sizing: border-box; /* Global box-sizing for consistent sizing */
+}
+
+*, *::before, *::after {
+    box-sizing: inherit; /* Inherit box-sizing for all elements */
+}
+
+/* Overall section for desktop layout */
 .section {
     display: flex;
-    justify-content: space-between;
+    height: 100vh; /* Use 100% viewport height for desktop view */
+    align-items: center; /* Vertically align items in the middle */
+    background-color: #f8f9fa; /* Light background for the overall page */
+    /* If you want left and right sections to fill space equally, you might use justify-content: center;
+       or ensure .left and .right have appropriate flex-grow values.
+       Current setup implicitly allows .right to grow with flex-grow: 1 and .left has w-50 in HTML.
+    */
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .left {
     background: #7F82FF;
     color: white;
-    height: 100dvh;
-    border-radius: 10px;
+    height: 100%; /* Take full height of .section */
+    /* border-radius: 10px; - Removed as it might conflict with full height/width layout or overall page aesthetic. */
+    display: flex; /* Use flex to center carousel content if needed */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem; /* Add some padding */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    text-align: center; /* Center text within left section */
 }
 
+/* Adjustments for carousel */
 .carousel {
-    margin: 10rem;
+    margin: 0; /* Removed fixed margin, let flexbox handle centering */
+    width: 100%; /* Take full width of its parent */
+    max-width: 600px; /* Max width for content to prevent it from getting too wide */
+    padding: 1rem; /* Add some internal padding */
 }
 
 .carousel-item p {
     color: #FFF;
     text-align: center;
     font-family: 'Raleway';
-    font-size: 28px;
+    font-size: clamp(1.5rem, 2.5vw, 28px); /* Responsive font size */
     font-style: normal;
     font-weight: 700;
-    line-height: 34px;
-    /* 121.429% */
+    /* Use clamp for line-height too, or a relative unit */
+    line-height: clamp(1.2em, 1.5vw, 1.4em); /* Relative line height for better scaling */
+    padding: 0 1rem; /* Add horizontal padding */
 }
 
+.carousel-item img {
+    max-width: 90%; /* Ensure images are responsive */
+    height: auto;
+    display: block; /* Remove extra space below image */
+    margin: 1rem auto; /* Center images */
+    border-radius: 8px; /* Add some rounded corners to images */
+} 
+
 .right {
-    border-radius: 10px;
+    /* border-radius: 10px; - Removed if it's a full-height section. */
+    /* Flexbox properties applied in HTML (d-flex flex-column align-items-center justify-content-center),
+       ensuring it takes remaining space and centers its content. */
+    flex-grow: 1; /* Allow right section to grow and take available space */
+    height: 100%; /* Take full height of .section */
+    display: flex; /* Confirming it's a flex container */
+    flex-direction: column; /* Content stacked vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    padding: 1rem; /* Add some padding around the content within .right */
+    box-sizing: border-box;
 }
 
 .logo {
-    margin-left: 13rem;
-    margin-top: 1rem;
+    margin-bottom: 2rem; /* Add some space below logo */
+    margin-top: -5rem; /* Adjust based on visual needs to pull it up slightly */
+    text-align: center; /* Ensure logo image itself is centered if it's smaller than its container */
+}
+
+.logo img {
+    max-width: 150px; /* Constrain logo size */
+    height: auto;
+    display: block; /* Remove extra space below image */
+    margin: 0 auto; /* Center the logo image itself */
 }
 
 .form {
-    width: 370px;
-    height: auto;
-    /* border: 12px; */
+    width: 90%; /* Take 90% of parent's width */
+    max-width: 400px; /* Max width to prevent it from getting too wide on large screens */
+    height: auto; /* Height adapts to content */
     padding: 40px;
-    gap: 40px;
-    /* box-shadow: 0px 0px 8px 0px #33333329; */
-    margin-right: 10rem;
-    margin-top: 3rem;
+    gap: 20px; /* Adjusted gap to be consistent */
+    box-shadow: 0px 0px 8px 0px rgba(51, 51, 51, 0.16); /* Added box shadow */
+    border-radius: 12px; /* Consistent border-radius */
+    background: #FFF; /* Added background for the form */
+    margin: 0; /* Reset fixed margins, it will be centered by parent flexbox */
+    box-sizing: border-box;
+    display: flex; /* Make form a flex container */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center content horizontally within the form */
+    text-align: center; /* Center text within the form */
+}
+
+/* Adjustments for form content centering within .form */
+.form h4,
+.form p {
+    text-align: center; /* Ensure text is centered within form */
+    margin-bottom: 1rem;
 }
 
 .form h4 {
     color: #1E1E1E;
     font-family: 'Raleway';
-    font-size: 36px;
+    font-size: clamp(1.8rem, 3vw, 36px); /* Responsive font size */
     font-style: normal;
     font-weight: 700;
-    line-height: 28px;
-    /* 77.778% */
+    line-height: clamp(1.1em, 1.5vw, 1.2em); /* Responsive line height */
+    margin-top: 0; /* Remove default h4 top margin */
 }
 
 .form p {
     color: #525252;
     font-family: 'Raleway';
-    font-size: 15px;
+    font-size: clamp(0.8rem, 1.2vw, 15px); /* Responsive font size */
     font-style: normal;
     font-weight: 700;
-    line-height: 28px;
-    /* 140% */
-    margin-top: 16px;
-    margin-bottom: 10px;
+    line-height: clamp(1.4em, 1.8vw, 1.5em); /* Responsive line height */
+    margin-top: 0.5rem; /* Adjust spacing */
+    margin-bottom: 1rem; /* Adjust spacing */
+}
+
+.form label {
+    display: block; /* Make labels block-level to ensure they are above inputs */
+    text-align: left; /* Align label text to the left */
+    width: 100%; /* Ensure label takes full width */
+    color: #525252;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
 }
 
 .form input {
-
-    gap: 10px;
-    width: 290px;
-    border-radius: 50px;
-    border-color: purple;
-    padding: 8px 16px 8px 16px;
-    border-radius: 1px solid #E6E6E6
+    width: 100%; /* Ensure inputs take full width of their container */
+    padding: 10px 16px; /* Consistent padding */
+    border-radius: 50px; /* Use proper border-radius for rounded corners */
+    border: 1px solid #E6E6E6; /* Corrected border syntax */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    margin-bottom: 1rem; /* Space below each input */
 }
 
 .form .or {
-    margin-left: 45%;
-    margin-top: 20px;
+    margin: 1rem auto; /* Center horizontally with auto margins */
+    width: fit-content; /* Only take width of content */
+    color: #525252;
+    font-size: 0.9rem;
 }
 
 .form button {
-
-    margin-top: 10px;
-    padding: 10px;
+    width: 100%; /* Ensure buttons take full width of their container */
+    margin-top: 1.5rem; /* Adjusted spacing */
+    padding: 12px; /* Slightly more padding for better touch target */
     background-color: #7F82FF;
     border-radius: 10px;
     border: none;
-    /* margin-left: 12%; */
     color: white;
-    width: 290px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
 }
 
+.form button:hover {
+    background-color: #6a6ee0; /* Darker shade on hover */
+}
+
+/* Mobile View Specific Styles */
 .mobileview {
-    display: none;
+    display: none; /* Hidden by default, shown via media query */
 }
 
 @media only screen and (max-width: 768px) {
     .section {
-        display: none;
+        display: none; /* Hide desktop layout on mobile */
     }
 
     .mobileview {
         display: block;
         margin-top: 1rem;
+        padding: 0 1rem; /* Add horizontal padding for content */
+        box-sizing: border-box;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    nav img {
+        max-height: 40px; /* Adjust logo height for mobile */
+        width: auto;
     }
 
     .login-mv {
         background-image: url("/img/login-2/mbg.png");
-        height: 550px;
-        width: 100%;
+        background-size: cover; /* Cover the area */
+        background-position: center; /* Center the background image */
         background-repeat: no-repeat;
+        height: 550px; /* Fixed height for the background image area */
+        width: 100%;
         margin-top: 1rem;
-        padding-top: 7rem;
-        padding-left: 0.5rem;
+        padding-top: 7rem; /* Keep existing padding-top for content position */
+        padding-left: 0; /* Remove fixed padding-left */
+        display: flex; /* Already set in HTML, but reiterate */
+        flex-direction: column;
+        align-items: center; /* Center form horizontally */
+        justify-content: flex-start; /* Align form to top of this container */
+        box-sizing: border-box;
     }
 
     .form {
-        padding: 15px;
-        align-items: center;
-        gap: 40px;
+        width: 90%; /* Responsive width for mobile form */
+        max-width: 350px; /* Max width for mobile form */
+        padding: 20px; /* Adjusted padding */
+        gap: 20px;
         border-radius: 12px;
         background: #FFF;
         box-shadow: 0px 0px 8px 0px rgba(51, 51, 51, 0.16);
+        margin: 0; /* Removed fixed margin-left and rely on flex centering */
+        box-sizing: border-box;
+        text-align: center; /* Center content within form */
     }
 
-    .form span {
-        color: #262626;
-        font-family: 'Raleway';
-        font-size: 20px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 28px;
-        /* 140% */
+    .form h4 {
+        font-size: clamp(1.5rem, 4vw, 24px); /* Slightly smaller for mobile */
+        line-height: clamp(1.1em, 1.5vw, 1.2em);
     }
 
     .form p {
-        color: #2B2F38;
-        font-family: 'Raleway';
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 16px;
-        margin-top: 16px;
-        margin-bottom: 10px;
-        margin-left: 1.5rem;
+        font-size: clamp(0.7rem, 2.5vw, 13px); /* Slightly smaller for mobile */
+        line-height: clamp(1.3em, 2vw, 1.4em);
+        margin-left: 0; /* Removed fixed margin-left, centered by text-align on form */
     }
 
     .form input {
-        margin-left: 1.5rem;
-        border-radius: 980px;
-        border: 1px solid #E6E6E6;
+        margin-left: 0; /* Removed fixed margin-left, w-100 from HTML is key */
+        width: 100%; /* Ensure inputs take full width */
+        border-radius: 50px; /* Consistent rounded corners */
+        border: 1px solid #E6E6E6; /* Ensure border is visible */
         background: #FFF;
-        border: none;
+        box-sizing: border-box;
     }
 
-    .form .or {
-        margin-left: 43%;
-        margin-top: 20px;
+   .form .or {
+        margin: 1rem auto; /* Removed fixed margin-left, centered by auto margins */
     }
 
     .form button {
-        margin-left: 1.5rem;
-        margin-top: 10px;
+        margin-left: 0; /* Removed fixed margin-left, w-100 from HTML is key */
+        width: 100%; /* Ensure buttons take full width */
         padding: 10px;
-        background-color: #7F82FF;
         border-radius: 10px;
-        border: none;
-        /* margin-left: 12%; */
-        color: white;
-        width: 270px;
+        font-size: 1rem;
+    }
+}
+
+/* Further adjustments for very small mobile screens if needed */
+@media only screen and (max-width: 480px) {
+    .form {
+        padding: 15px; /* Reduce padding on very small screens */
+    }
+
+    .form h4 {
+        font-size: clamp(1.2rem, 5vw, 20px);
+    }
+
+    .form p {
+        font-size: clamp(0.6rem, 2.8vw, 12px);
     }
 }

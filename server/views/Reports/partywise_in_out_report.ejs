@@ -110,170 +110,250 @@
   </div>
 
   <%- include('../partials/footercode.ejs') %>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-  <script>
-    $(document).ready(function () {
-      const orgId = '<%= orgId %>';
-      console.log("orgId:", orgId);
+ <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+ <!-- jQuery UI is not strictly needed for just dropdowns, but keeping it if other parts rely on it -->
+ <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+ <script>
+  $(document).ready(function () {
+    const orgId = '<%= orgId %>';
+    console.log("Partywise In/Out Script loaded. orgId:", orgId);
 
-      function fetchDistributors() {
-          $.ajax({
-              url: '/api/v2/get-all-distributor',
-              type: 'GET',
-              data: { org: orgId },
-              success: function(response) {
-                  var vendors = response.data;
-                  var $partySelect = $('#partyselect');
-                  $partySelect.empty();
-                  $partySelect.append('<option selected>Select Party</option>');
-                  vendors.forEach(function(vendor) {
-                      var option = `<option value="${vendor.vendor_id}">${vendor.vendor_name}</option>`;
-                      $partySelect.append(option);
-                  });
-              },
-              error: function(error) {
-                  console.error("Error fetching distributors:", error);
-                  alert("Failed to load distributors. Please try again later.");
-              }
-          });
+    // --- Initial Date Setup ---
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const currentFullYear = today.getFullYear();
+    const formattedToday = `${currentFullYear}-${mm}-${dd}`;
+    $("input[name='fromdate']").val(formattedToday);
+    $("input[name='todate']").val(formattedToday);
+
+    let selectedPartyId = null; // Initialize selected party ID
+
+    // --- Helper function for clearing/adding invalid state ---
+    function toggleInvalid(element, isValid) {
+      if (isValid) {
+        $(element).removeClass('is-invalid');
+      } else {
+        $(element).addClass('is-invalid');
+      }
+    }
+
+    // --- Functions to Fetch and Populate Party Dropdowns ---
+    function populatePartySelect(parties, type) {
+      const $partySelect = $('#partyselect');
+      $partySelect.empty();
+      $partySelect.append('<option value="" selected>Select Party</option>'); // Add default empty option
+
+      if (parties && parties.length > 0) {
+        parties.forEach(function(party) {
+          let option;
+          if (type === 'distributor') {
+            option = `<option value="${party.vendor_id}">${party.vendor_name}</option>`;
+          } else if (type === 'customer') {
+            option = `<option value="${party.customer_id}">${party.cust_name}</option>`;
+          }
+          $partySelect.append(option);
+        });
+      } else {
+        $partySelect.append('<option value="" disabled>No parties found</option>');
+      }
+      toggleInvalid($partySelect, true); // Reset validation state
+      selectedPartyId = null; // Reset selected party ID
+    }
+
+    function fetchDistributors() {
+      console.log("Fetching distributors...");
+      $.ajax({
+        url: '/api/v2/get-all-distributor', // Existing backend endpoint
+        type: 'GET',
+        data: { org: orgId },
+        success: function(response) {
+          console.log("Distributors response:", response);
+          // Assuming response.data contains the array of distributors
+          const distributors = response.data || []; 
+          populatePartySelect(distributors, 'distributor');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error("Error fetching distributors:", textStatus, errorThrown, jqXHR);
+          populatePartySelect([], 'distributor'); // Populate with empty list on error
+          toggleInvalid($('#partyselect'), false); // Indicate error visually
+          // You might want to display a user-friendly error message in the dropdown or nearby
+        }
+      });
+    }
+
+    function fetchCustomers() {
+      console.log("Fetching customers...");
+      $.ajax({
+        url: `/api/v2/org/${orgId}/customers`, // Existing backend endpoint
+        type: 'GET',
+        data: { org: orgId },
+        success: function(response) {
+          console.log("Customers response:", response);
+          // Assuming response.data contains the array of customers
+          const customers = response.data || []; 
+          populatePartySelect(customers, 'customer');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error("Error fetching customers:", textStatus, errorThrown, jqXHR);
+          populatePartySelect([], 'customer'); // Populate with empty list on error
+          toggleInvalid($('#partyselect'), false); // Indicate error visually
+          // You might want to display a user-friendly error message in the dropdown or nearby
+        }
+      });
+    }
+
+    // --- Event Listener for Party Type Selection ---
+    $('#partytypeselect').change(function () {
+      const selectedPartyType = $(this).find('option:selected').text();
+      console.log("Selected Party Type:", selectedPartyType);
+      
+      // Clear previous party selection and validation
+      $('#partyselect').empty().append('<option value="" selected>Select Party</option>');
+      selectedPartyId = null;
+      toggleInvalid($('#partyselect'), true);
+
+      if (selectedPartyType === 'Distributor') {
+        fetchDistributors();
+        toggleInvalid($('#partytypeselect'), true);
+      } else if (selectedPartyType === 'Customer') {
+        fetchCustomers();
+        toggleInvalid($('#partytypeselect'), true);
+      } else {
+        // If "Select Party Type" is chosen again
+        toggleInvalid($('#partytypeselect'), false); // Show invalid state
+      }
+    });
+
+    // --- Event Listener for Party Selection ---
+    $('#partyselect').change(function () {
+      selectedPartyId = $(this).val();
+      console.log("Selected Party ID:", selectedPartyId);
+      toggleInvalid($('#partyselect'), selectedPartyId !== ''); // Add/remove invalid class
+    });
+
+    // --- Input Validation for Date Fields (Existing) ---
+    $('input[type="date"]').on('input', function () {
+      toggleInvalid(this, $(this).val() !== '');
+    });
+
+    // --- Generate Report Button Click Handler ---
+    $("#generatereport").click(function (e) {
+      e.preventDefault();
+      let isValid = true;
+
+      const selectedPartyType = $('#partytypeselect').find('option:selected').text();
+      const fromDate = $("input[name='fromdate']").val();
+      const toDate = $("input[name='todate']").val();
+
+      // Validation checks
+      if (selectedPartyType === 'Select Party Type' || selectedPartyType === '') {
+        toggleInvalid($('#partytypeselect'), false);
+        isValid = false;
+      } else {
+        toggleInvalid($('#partytypeselect'), true);
       }
 
-      function fetchCustomers() {
-          $.ajax({
-              url: `/api/v2/org/${orgId}/customers`,
-              type: 'GET',
-              data: { org: orgId },
-              success: function(response) {
-                  var customers = response.data;
-                  var $partySelect = $('#partyselect');
-                  $partySelect.empty();
-                  $partySelect.append('<option selected>Select Party</option>');
-                  customers.forEach(function(customer) {
-                      var option = `<option value="${customer.customer_id}">${customer.cust_name}</option>`;
-                      $partySelect.append(option);
-                  });
-              },
-              error: function(error) {
-                  console.error("Error fetching customers:", error);
-                  alert("Failed to load customers. Please try again later.");
-              }
-          });
+      if (!selectedPartyId || selectedPartyId === '') {
+        toggleInvalid($('#partyselect'), false);
+        isValid = false;
+      } else {
+        toggleInvalid($('#partyselect'), true);
       }
 
-      $('#partytypeselect').change(function () {
-          var selectedPartyType = $(this).find('option:selected').text();
-          if (selectedPartyType === 'Distributor') {
-              fetchDistributors();
-          } else if (selectedPartyType === 'Customer') {
-              fetchCustomers();
-          }
-      });
+      if (fromDate === '') {
+        toggleInvalid($("input[name='fromdate']"), false);
+        isValid = false;
+      } else {
+        toggleInvalid($("input[name='fromdate']"), true);
+      }
 
-      var selectedPartyId;
-      $('#partyselect').change(function () {
-          selectedPartyId = $(this).val();
-          console.log(selectedPartyId);
-      });
+      if (toDate === '') {
+        toggleInvalid($("input[name='todate']"), false);
+        isValid = false;
+      } else {
+        toggleInvalid($("input[name='todate']"), true);
+      }
 
-      $('input').each(function () {
-          $(this).on('input', function () {
-              if ($(this).val() == '') {
-                  $(this).addClass('is-invalid');
-              } else {
-                  $(this).removeClass('is-invalid');
+      if (fromDate > toDate) {
+        toggleInvalid($("input[name='fromdate']"), false);
+        toggleInvalid($("input[name='todate']"), false);
+        isValid = false;
+      }
+
+      if (isValid) {
+        $('#loader').show();
+        $("#reportcart").empty(); // Clear previous report content
+
+        $.ajax({
+          url: `/api/v2/reports/partyTransactions`, // Endpoint to get partywise transactions
+          type: 'POST',
+          data: JSON.stringify({
+            orgId: orgId,
+            partyId: selectedPartyId,
+            partyType: selectedPartyType.toLowerCase(), // Ensure lowercase for backend consistency
+            startDate: fromDate,
+            endDate: toDate
+          }),
+          contentType: 'application/json',
+          success: function (response) {
+            $('#loader').hide();
+            console.log("Party Transactions Report Response:", response);
+
+            // --- CRITICAL: Robust data access based on expected backend nesting ---
+            // This handles the deep nesting like { data: { data: { data: { data: [...] } } } }
+            let items = null;
+            if (response.data && response.data.data && response.data.data.data && response.data.data.data.data && Array.isArray(response.data.data.data.data.data)) {
+                items = response.data.data.data.data.data;
+            } else if (response.data && response.data.data && response.data.data.data && Array.isArray(response.data.data.data)) {
+                items = response.data.data.data;
+            } else if (response.data && Array.isArray(response.data)) { // Fallback if data is directly under .data
+                items = response.data;
+            } else if (Array.isArray(response)) { // Fallback if response is directly an array
+                items = response;
+            }
+
+            if (items && items.length > 0) {
+              for (let i = 0; i < items.length; i++) {
+                const billNo = items[i].bill_no || '-';
+                const transactionType = items[i].transaction_type || '-';
+                const transactionDate = moment(items[i].transaction_date).format('DD MMMM YYYY') || '-'; // Corrected format string
+                const productName = items[i].product_name || '-';
+                
+                const priReceived = items[i].pri_received_quantity || 0;
+                const secReceived = items[i].sec_received_quantity || 0;
+                const receivedQty = (priReceived === 0 && secReceived === 0) ? '-' : `${priReceived} : ${secReceived}`;
+                
+                const priIssued = items[i].pri_issued_quantity || 0;
+                const secIssued = items[i].sec_issued_quantity || 0;
+                const issuedQty = (priIssued === 0 && secIssued === 0) ? '-' : `${priIssued} : ${secIssued}`;
+
+                const htmlData = `
+                  <tr>
+                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${billNo}</strong></td>
+                    <td>${transactionType}</td>
+                    <td>${transactionDate}</td>
+                    <td>${productName}</td>
+                    <td>${receivedQty}</td>
+                    <td>${issuedQty}</td>
+                  </tr>`;
+                $("#reportcart").append(htmlData);
               }
-          });
-      });
-
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0');
-      var yyyy = today.getFullYear();
-      today = yyyy + '-' + mm + '-' + dd;
-      $("input[name='fromdate']").val(today);
-      $("input[name='todate']").val(today);
-
-      $("#generatereport").click(function (e) {
-          e.preventDefault();
-          var isValid = true;
-
-          var fromDate = $("input[name='fromdate']").val();
-          var toDate = $("input[name='todate']").val();
-          console.log(fromDate);
-          console.log(toDate);
-          if (fromDate == '') {
-              $("input[name='fromdate']").addClass('is-invalid');
-              $("input[name='fromdate']").focus();
-              isValid = false;
-          } else {
-              $("input[name='fromdate']").removeClass('is-invalid');
+            } else {
+              $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">No transactions found for the selected party and date range.</td></tr>');
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            $('#loader').hide();
+            console.error("AJAX Error for Party Transactions Report:", textStatus, errorThrown, jqXHR);
+            $("#reportcart").empty().append('<tr><td colspan="6" class="text-center text-danger">Error loading report. Please try again.</td></tr>');
           }
-
-          if (toDate == '') {
-              $("input[name='todate']").addClass('is-invalid');
-              $("input[name='todate']").focus();
-              isValid = false;
-          } else {
-              $("input[name='todate']").removeClass('is-invalid');
-          }
-
-          if (fromDate > toDate) {
-              $("input[name='fromdate']").addClass('is-invalid');
-              $("input[name='todate']").addClass('is-invalid');
-              $("input[name='todate']").focus();
-              isValid = false;
-          } else {
-              $("input[name='fromdate']").removeClass('is-invalid');
-              $("input[name='todate']").removeClass('is-invalid');
-          }
-
-          if (isValid) {
-              $('#loader').show();
-
-              var selectedPartyType = $('#partytypeselect').find('option:selected').text().toLowerCase();
-
-              $.ajax({
-                  url: `/api/v2/reports/partyTransactions`,
-                  type: 'POST',
-                  data: JSON.stringify({
-                      orgId: orgId,
-                      partyId: selectedPartyId,
-                      partyType: selectedPartyType,
-                      startDate: fromDate,
-                      endDate: toDate
-                  }),
-                  contentType: 'application/json',
-                  success: function (response) {
-                      $('#loader').hide();
-                      $("#reportcart").empty();
-                      var items = response.data;
-                      console.log(items);
-                      for (let i = 0; i < items.length; i++) {
-                          var datetime = items[i].transaction_date;
-                          var date = moment(datetime).format('DD MMMM YYYY');
-                          var htmlData = `
-                              <tr>
-                                  <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].bill_no === '0' ? '-' : items[i].bill_no}</strong></td>
-                                  <td>${items[i].transaction_type}</td>
-                                  <td>${date}</td>
-                                  <td>${items[i].product_name}</td>
-                                  <td>${(items[i].pri_received_quantity === 0 && items[i].sec_received_quantity === 0) ? '-' : items[i].pri_received_quantity + ' : ' + items[i].sec_received_quantity}</td>
-                                  <td>${(items[i].pri_issued_quantity === 0 && items[i].sec_issued_quantity === 0) ? '-' : items[i].pri_issued_quantity + ' : ' + items[i].sec_issued_quantity}</td>
-                              </tr>`;
-                          $("#reportcart").append(htmlData);
-                      }
-                  },
-                  error: function (error) {
-                      $('#loader').hide();
-                      alert("Invalid input", error);
-                  }
-              });
-          }
-      });
+        });
+      }
+    });
   });
+ </script>
 
-      </script>
 
       <style>
         @media (max-width: 767px) {
@@ -314,7 +394,5 @@
         }
       </style>
 
-  </body>
-
-
-  </html>
+</body>
+</html>

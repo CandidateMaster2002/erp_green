@@ -550,7 +550,12 @@ module.exports = async (app) => {
   });
 
   app.get('/grn/csv/upload', checkAuth, fetchOrgId, (req, res) => {
-    res.render('Purchase/purchase_bill_upload', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Purchase/purchase_bill_upload', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'grn',
+    });
   });
 
   app.get('/grn/csv/map_products', checkAuth, fetchOrgId, (req, res) => {
