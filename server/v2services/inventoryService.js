@@ -7,8 +7,87 @@ const hsnGstModel = require('../v2models/hsnGstModel');
 const inventoryModel = require('../v2models/inventoryModel');
 const productMasterModel = require('../v2models/productMasterModel');
 const expiryInventoryRepository = require('../v2repositories/expiryInventoryRepository');
-const saltAlternativeRepository = require('../v2repositories/saltAlternativeRepository');
+// const saltAlternativeRepository = require('../v2repositories/saltAlternativeRepository');
 require('dotenv').config();
+// Import the dummy inventory data
+const { dummyInventory } = require('./dummyInventoryData');
+
+// --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR ALTERNATIVE REPORT ---
+
+// Function: generateDummyAlternativeProduct - START
+/**
+ * Generates a single dummy alternative product item.
+ * @param {string} baseProductId - The ID of the product for which alternatives are sought.
+ * @param {string} orgId - The organization ID.
+ * @param {string} saltComposition - The salt composition to use for the alternatives.
+ * @param {number} index - A unique index for the alternative product.
+ * @returns {object} A dummy alternative product item object.
+ */
+function generateDummyAlternativeProduct(baseProductId, orgId, saltComposition, index) {
+  const brands = ['PharmaCorp', 'MediGen', 'HealthPlus', 'BioLabs', 'Apex Pharma', 'NovaMed'];
+  const medNames = [
+    `${saltComposition} 10mg`,
+    `${saltComposition} Forte`,
+    `Extra Strength ${saltComposition}`,
+    `Bio ${saltComposition}`,
+    `Pure ${saltComposition}`
+  ];
+  const batchPrefix = ['BAT', 'ALT'];
+
+  const randomBrand = brands[Math.floor(Math.random() * brands.length)];
+  const randomMedName = medNames[Math.floor(Math.random() * medNames.length)];
+  const randomBatch = `${batchPrefix[Math.floor(Math.random() * batchPrefix.length)]}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const randomMRP = parseFloat((Math.random() * 500 + 100).toFixed(2)); // 100-600
+  const randomPTR = parseFloat((randomMRP * (0.6 + Math.random() * 0.2)).toFixed(2));
+  const randomPriQty = Math.floor(Math.random() * 100) + 10; // 10-110 units
+  const randomSecQty = Math.floor(Math.random() * 20) + 0; // 0-20 units
+
+  // Generate expiry date within the next 1-3 years
+  const expiryDate = new Date();
+  expiryDate.setFullYear(expiryDate.getFullYear() + Math.floor(Math.random() * 3) + 1);
+  expiryDate.setMonth(Math.floor(Math.random() * 12));
+  expiryDate.setDate(1);
+
+  return {
+    id: `ALT-${baseProductId.substring(0, 3)}-${index}-${Math.floor(Math.random() * 1000)}`, // Dummy alternative ID
+    med_name: randomMedName,
+    mfd_mkt: randomBrand, // Manufacturer/Marketing Company (Brand)
+    batch_name: randomBatch,
+    exp_date: expiryDate.toISOString(),
+    mrp: randomMRP,
+    purchase_rate: randomPTR, // Using purchase_rate as PTR
+    remPriQty: randomPriQty,
+    remSecQty: randomSecQty,
+    salt_composition: saltComposition, // Crucially, same salt composition
+    org_id: orgId
+  };
+}
+// Function: generateDummyAlternativeProduct - END
+
+// Function: generateDummySaltAlternatives - START
+/**
+ * Generates an array of dummy alternative products based on a selected product's details.
+ * @param {string} productId - The ID of the product for which alternatives are sought.
+ * @param {string} orgId - The organization ID.
+ * @returns {Array<object>} An array of dummy alternative product objects.
+ */
+function generateDummySaltAlternatives(productId, orgId) {
+  const alternatives = [];
+  const numberOfAlternatives = Math.floor(Math.random() * 5) + 3; // 3 to 7 alternatives
+
+  // For dummy data, let's assume a common salt for generated alternatives.
+  // In a real scenario, you'd fetch the salt of the baseProductId.
+  // Here, we'll just use a generic popular salt for demonstration.
+  const commonSalt = 'Paracetamol'; // Or dynamically get from dummyInventory if available
+  // A more advanced dummy might look up the baseProductId in dummyInventoryData
+  // to get its actual salt
+
+  for (let i = 0; i < numberOfAlternatives; i++) {
+    alternatives.push(generateDummyAlternativeProduct(productId, orgId, commonSalt, i + 1));
+  }
+  return alternatives;
+}
+// Function: generateDummySaltAlternatives - END
 
 module.exports = {
   createBatch: async (batchData) => {
@@ -82,10 +161,54 @@ module.exports = {
     });
   },
 
-  getInventory: async (orgId) => {
+  // getInventory is now renamed to getPaginatedInventory
+  // This function now handles both real database pagination and dummy data pagination
+  getPaginatedInventory: async (orgId, limit, offset) => {
+  // Determine if we should use dummy data based on an environment variable
+    if (process.env.USE_DUMMY_DATA === 'true') {
+      console.log('Using dummy inventory data for pagination in v2services.');
+      // console.log('DEBUG: Received orgId:', orgId);
+      // console.log('DEBUG: Received limit:', limit);
+      // console.log('DEBUG: Received offset:', offset);
+
+      // 1. Filter dummy data by org_id (simulating WHERE clause)
+      const filteredData = dummyInventory.filter((item) => item.org_id === orgId);
+      // console.log('DEBUG: Filtered data (by orgId) count:', filteredData.length);
+
+      // 2. Get total count *before* pagination for UI (e.g., "Page 1 of 5")
+      const totalCount = filteredData.length;
+
+      // 3. Apply LIMIT and OFFSET (simulating LIMIT/OFFSET clause)
+      const paginatedData = filteredData.slice(offset, offset + limit);
+      // console.log('DEBUG: Paginated data (after slice) count:', paginatedData.length);
+
+      // Simulate asynchronous database call with a slight delay
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            data: paginatedData,
+            totalCount,
+          });
+        }, 100); // Small delay to simulate network latency
+      });
+    }
+
+    // No else needed after return
+    console.log('Using real database for inventory pagination in v2services.');
+
+    // Original logic: Call inventoryModel for paginated data
+    // This assumes inventoryModel has a getPaginatedInventoryByOrgId or similar function
+    // You will need to ensure inventoryModel.getPaginatedInventoryByOrgId returns both data
+    // and total count
     return executeTransaction(async (connection) => {
-      const results = await inventoryModel.getInventoryByOrgId(connection, orgId);
-      return results;
+    // Assume inventoryModel.getPaginatedInventoryByOrgId returns { data: [], totalCount: number }
+      const results = await inventoryModel.getPaginatedInventoryByOrgId(
+        connection,
+        orgId,
+        limit,
+        offset,
+      );
+      return results; // This should be an object with data and totalCount
     });
   },
 
@@ -175,31 +298,44 @@ module.exports = {
   },
 
   getSaltAlternatives: async (orgId, productId) => {
-    return executeTransaction(async (connection) => {
-      try {
-        const apiUrl = `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}/recommend-from-inventory?orgId=${orgId}&productId=${productId}`;
+    // --- THIS FUNCTION IS NOW MODIFIED TO RETURN DUMMY DATA ---
+    // Uncomment the real database interaction and axios call if you want to switch back.
+    // return executeTransaction(async (connection) => {
+    //   try {
+    //     const apiUrl = `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}/recommend-from-inventory?orgId=${orgId}&productId=${productId}`;
+    //     const response = await axios.get(apiUrl);
+    //     const results = [];
+    //     const recommendations = response.data.recommendations;
+    //     console.log('Salt alternatives (real):', recommendations);
+    //     recommendations.forEach(async (recommendation) => {
+    //       const recommendedProductId = recommendation.product_id;
+    //       const productDetails = await saltAlternativeRepository.getNearExpiryBatch(
+    //         connection,
+    //         orgId,
+    //         recommendedProductId
+    //       );
+    //       results.push(productDetails[0]);
+    //     });
+    //     return results;
+    //   } catch (error) {
+    //     console.error('Error fetching real salt alternatives:', error);
+    //     throw error;
+    //   }
+    // });
 
-        // Make a GET request to the Flask API
-        const response = await axios.get(apiUrl);
+    try {
+      console.log(`Generating dummy data for Salt Alternatives for Product ID: ${productId}, Org ID: ${orgId}`);
 
-        const results = [];
+      const dummyAlternatives = generateDummySaltAlternatives(productId, orgId);
 
-        const recommendations = response.data.recommendations;
-        console.log('Salt alternatives:', recommendations);
-
-        recommendations.forEach(async (recommendation) => {
-          const recommendedProductId = recommendation.product_id;
-          // eslint-disable-next-line max-len
-          const productDetails = await saltAlternativeRepository.getNearExpiryBatch(connection, orgId, recommendedProductId);
-          results.push(productDetails[0]);
-        });
-
-        return results;
-      } catch (error) {
-        console.error('Error fetching salt alternatives:', error);
-        throw error;
-      }
-    });
+      // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
+      // Based on previous debugging, this is likely 4 levels deep under 'data'.
+      // The structure needs to be { data: { data: { data: { data: yourArray } } } }
+      return { data: { data: { data: { data: dummyAlternatives } } } };
+    } catch (error) {
+      console.error('Error generating dummy Salt Alternatives data:', error);
+      throw new Error('Failed to generate dummy Salt Alternatives data due to an internal error.');
+    }
   },
 
   addCustomCSVProduct: async (data, orgId) => {

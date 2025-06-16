@@ -26,7 +26,7 @@
                   <hr class="mb-4">
 
                   <div>
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="date-range-filter">
                       <div class="row align-items-center flex ">
                         <div class="col-md-2  text-center">
                           <!-- <div class="card-header mb-2">From Date</div> -->
@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="fromdate" />
+                            <input class="form-control" type="date" id="from-date-input" name="fromdate" />
                           </div>
                         </div>
                         <div class="col-md-2 text-center">
@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="todate" />
+                            <input class="form-control" type="date" id="to-date-input" name="todate" />
                           </div>
                         </div>
                       </div>
@@ -50,13 +50,16 @@
 
                     <div class="card mb-4">
                       <div class="row">
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
+                          <h5 class="card-header"><input type="radio" name="radio" value="daterange" checked> Date Range</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="monthly"> Monthly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="quarterly"> Quarterly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="yearly"> Yearly</h5>
                         </div>
                       </div>
@@ -67,7 +70,7 @@
                   </div>
 
                   <div class="text-center mb-4">
-                    <button type="button" class="btn btn-primary" id="generatereport">Generate Report</button>
+                    <button type="button" class="btn btn-primary" id="generateScheduleReport">Generate Report</button>
                   </div>
 
                   <!-- Report List -->
@@ -109,10 +112,28 @@
                           </tbody>
                         </table>
                       </div>
+                      <div class="table-footer bg-light position-sticky" style="bottom: 0;">
+                        <table class="table">
+                          <tfoot>
+                            <tr class="table-danger">
+                              <td class="h5 ps-5">Total Schedule</td>
+                              <td class="h5 text-end" id="totalSchedule"></td> 
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
                   <!-- / Report List -->
+                   <!-- NEW: Chart Section for Schedule -->
+                  <div class="card mt-4 mb-4">
+                    <h5 class="card-header">Schedule Overview Chart</h5>
+                    <div class="card-body">
+                      <canvas id="scheduleChart"></canvas> <!-- Unique ID for Schedule chart -->
+                    </div>
+                  </div>
+                  <!-- / Chart Section -->
 
 
                 </div>
@@ -136,225 +157,440 @@
     <!-- / Layout wrapper -->
 
     <%- include('../partials/footercode.ejs') %>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+      <!-- Script Start -->
       <script>
+        // Declare a global variable to hold the Chart.js instance for Schedule reports.
+        // This allows us to destroy and recreate the chart when new data is loaded.
+        let myScheduleChart;
 
+        // Function: $(document).ready - START
         $(document).ready(function () {
+          console.log("Schedule Report Script loaded and starting..."); // Debug log
 
-          // Default from date - to date
-          var today = new Date();
-          var dd = String(today.getDate()).padStart(2, '0');
-          var mm = String(today.getMonth() + 1).padStart(2, '0');
-          var yyyy = today.getFullYear();
-          today = yyyy + '-' + mm + '-' + dd;
-          $("input[name='fromdate']").val(today);
-          $("input[name='todate']").val(today);
+          // Consistently define today's date components for initial setup
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const currentFullYear = today.getFullYear();
 
-
-          $('input[name="radio"][value="monthly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-  
-                          <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="selectmonth" aria-label="Default select example">
-                                    <option selected value="">Please Select</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="month-selectyear" aria-label="Default select example">
-                                    <option selected value="">Please Select</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                </select>
-                            </div>
-                        </div>    
-                    </div>
-                `);
+          // Function: populateYearDropdown - START
+          // Helper function to populate year dropdowns dynamically
+          function populateYearDropdown(selectorId) {
+            const dynamicCurrentYear = new Date().getFullYear();
+            $(selectorId).empty().append('<option selected value="">Please Select</option>');
+            for (let i = -5; i <= 5; i++) { // Populate years from 5 years ago to 5 years from now
+              const year = dynamicCurrentYear + i;
+              $(selectorId).append(`<option value="${year}">${year}</option>`);
             }
-          });
+            $(selectorId).val(dynamicCurrentYear); // Set current year as default selected
+          }
+          // Function: populateYearDropdown - END
 
-          $('input[name="radio"][value="quarterly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
+          // Function: getXAxisLabel - START
+          // Helper function to determine the appropriate X-axis label based on the selected filter type
+          function getXAxisLabel(filterType) {
+            if (filterType === 'monthly' || filterType === 'daterange') return 'Date';
+            if (filterType === 'quarterly') return 'Quarter / Year';
+            if (filterType === 'yearly') return 'Month / Year';
+            return 'Period';
+          }
+          // Function: getXAxisLabel - END
 
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-              <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 col-12  text-center mb-2">
-                            <select class="form-select" id="selectquarter" aria-label="Default select example">
-                                <option selected>Please Select</option>
-                                <option value="1">April-June</option>
-                                <option value="2">July-Sept</option>
-                                <option value="3">Oct-Dec</option>
-                                <option value="4">Jan-March</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-12 text-center mb-2">
-                            <select class="form-select" id="quarter-selectyear" aria-label="Default select example" >
-                                <option selected value="">Please Select</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                `);
+          // Function: renderScheduleChart - START
+          /**
+           * Renders or updates the Schedule Report chart based on the provided data.
+           * Aggregates data by the relevant period and draws a Chart.js graph.
+           * For Schedule Report, we will chart 'Total Primary Quantity Sold'.
+           * @param {Array<Object>} scheduleItems - The array of Schedule report items.
+           * @param {string} filterType - The type of filter applied ('daterange', 'monthly', 'quarterly', 'yearly').
+           */
+          function renderScheduleChart(scheduleItems, filterType) {
+            const ctx = document.getElementById('scheduleChart'); // Ensure your HTML has <canvas id="scheduleChart"></canvas>
+
+            if (!ctx) {
+              console.error("ERROR: Canvas element with ID 'scheduleChart' not found!");
+              return;
             }
 
-          });
-
-          $('input[name="radio"][value="yearly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body ">
-                        <div class="col-md-12 text-center mb-2">
-                            <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;">
-                                <option selected value="">Please Select</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-                `);
+            // Destroy any existing chart instance before drawing a new one
+            if (myScheduleChart) {
+              myScheduleChart.destroy();
+              // console.log("Existing Schedule chart destroyed."); // Debug log
             }
-          });
 
+            // If no items, clear chart and return
+            if (!scheduleItems || scheduleItems.length === 0) {
+              myScheduleChart = null;
+              console.log("No Schedule items to render chart."); // Debug log
+              return;
+            }
 
-          $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
+            // --- Data Aggregation for Chart ---
+            let aggregatedData = {};
+            let chartType = 'bar'; // Default chart type
+
+            scheduleItems.forEach(item => {
+              let key;
+              const itemDate = moment(item.cart_created_date); // Use 'cart_created_date' for Schedule items
+
+              // Ensure saled_pri_qty_cart exists and is a number
+              const primaryQty = parseFloat(item.saled_pri_qty_cart || 0);
+
+              // Determine aggregation key and chart type based on filter
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                key = itemDate.format('YYYY-MM-DD');
+                chartType = 'line'; // Line chart for daily trends
+              } else if (filterType === 'quarterly') {
+                const year = itemDate.year();
+                const month = itemDate.month() + 1;
+                let quarter;
+                // Assuming April-March financial year
+                if (month >= 4 && month <= 6) { quarter = 'Q1'; }
+                else if (month >= 7 && month <= 9) { quarter = 'Q2'; }
+                else if (month >= 10 && month <= 12) { quarter = 'Q3'; }
+                else { quarter = 'Q4'; }
+                key = `${year} ${quarter}`;
+                chartType = 'bar'; // Bar chart for quarterly sums
+              } else if (filterType === 'yearly') {
+                key = itemDate.format('YYYY-MM'); // Aggregate by month for yearly view
+                chartType = 'line'; // Line chart for monthly trends within a year
+              } else {
+                key = itemDate.format('YYYY-MM-DD'); // Fallback to daily if filter type is unknown
+                chartType = 'line';
+              }
+
+              if (!aggregatedData[key]) {
+                aggregatedData[key] = 0;
+              }
+              aggregatedData[key] += primaryQty; // Aggregate primary quantity
+            });
+
+            const sortedKeys = Object.keys(aggregatedData).sort();
+
+            const labels = sortedKeys.map(key => {
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                return moment(key).format('MMM D,YYYY'); // e.g., Jan 1, 2024
+              } else if (filterType === 'yearly') {
+                return moment(key).format('MMM Moreau'); // e.g., Jan 2024
+              }
+              return key; // For quarterly, return as '2024 Q1'
+            });
+
+            const dataValues = sortedKeys.map(key => aggregatedData[key].toFixed(2));
+
+            // --- Chart.js Configuration and Initialization ---
+            myScheduleChart = new Chart(ctx, {
+              type: chartType,
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Total Primary Quantity Sold',
+                  data: dataValues,
+                  // Use a distinct color for Schedule charts (e.g., a shade of green or lime)
+                  backgroundColor: chartType === 'bar' ? 'rgba(100, 200, 100, 0.8)' : 'rgba(100, 200, 100, 0.4)', // Green
+                  borderColor: 'rgba(100, 200, 100, 1)',
+                  borderWidth: 1,
+                  fill: chartType === 'line' ? true : false,
+                  tension: chartType === 'line' ? 0.4 : 0
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `Schedule Report Overview: ${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`
+                  },
+                  legend: {
+                    display: true,
+                    position: 'top'
+                  }
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: getXAxisLabel(filterType)
+                    }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: 'Primary Quantity'
+                    }
+                  }
+                }
+              }
+            });
+            // console.log("Schedule chart initialization attempt complete."); // Debug log
+          }
+          // Function: renderScheduleChart - END
+
+          // --- Initial setup for default date range and filter display on page load ---
+          // Set initial dates for the 'From Date' and 'To Date' inputs to today
+          $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+          $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+
+          // Hide the dynamic dropdown container initially and show date range filter
+          $("#dropdown").empty();
+          $('#date-range-filter').show(); // Assuming your HTML has this ID for the date range card
+          $('input[name="radio"][value="daterange"]').prop('checked', true); // Set Date Range as default checked
+
+          // Handle URL parameter for 'currentFY' (Current Financial Year) - if applicable for Schedule Reports
+          var urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.get('filter') == 'currentFY') {
+            const fyCurrentYear = new Date().getFullYear();
+            const fyCurrentMonth = new Date().getMonth();
+
+            let fyStartYear;
+            let fyEndYear;
+
+            if (fyCurrentMonth < 3) { // If the current month is before April (Jan, Feb, Mar)
+              fyStartYear = fyCurrentYear - 1; // FY starts last year
+              fyEndYear = currentFullYear;
+            } else { // If the current month is April or later
+              fyStartYear = currentFullYear; // FY starts this year
+              fyEndYear = currentFullYear + 1;
+            }
+
+            const fyStartDate = `${fyStartYear}-04-01`; // April 1st
+            const fyEndDate = `${fyEndYear}-03-31`; // March 31st of next calendar year
+
+            $("#from-date-input").val(fyStartDate);
+            $("#to-date-input").val(fyEndDate);
+
+            $('input[name="radio"][value="daterange"]').prop('checked', true); // Ensure daterange is selected
+            $('#date-range-filter').show(); // Ensure date inputs are visible
+            $("#dropdown").empty(); // Clear any dynamically added dropdowns
+
+            // Automatically generate report for FY if URL param is present
+            generateScheduleReport();
+          }
+
+          // Event Handler: $('input[name="radio"]').on('click') - START
+          // Unified event handler for all radio button clicks
           $('input[name="radio"]').on('click', function () {
-            var value = $(this).val();
+            console.log("Radio button clicked. Value:", $(this).val()); // Debug log
+            const selectedValue = $(this).val();
 
-            // Hide the card-body elements of all dropdowns
+            // Hide all potential filter sections first, clear table and total
+            $('#date-range-filter').hide(); // Hide date range inputs
+            $("#dropdown").empty(); // Clear dynamic dropdowns
+            $("#reportcart").empty(); // Clear report table
+            // No total field for Schedule Report, so no reset needed here.
 
-            $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
-            // Show the corresponding dropdown's card-body based on the selected radio button
+            // Destroy the chart when the filter type changes
+            if (myScheduleChart) {
+              myScheduleChart.destroy();
+              myScheduleChart = null;
+              console.log("Existing Schedule chart destroyed."); // Debug log
+            }
 
+            // Show appropriate filter inputs and populate dropdowns based on selected radio button
+            if (selectedValue === 'daterange') {
+              $('#date-range-filter').show();
+              // Reset date inputs to today's date if switching back to daterange
+              $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+              $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+            } else if (selectedValue === 'monthly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectmonth" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                                  <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                                  <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                                  <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="month-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#month-selectyear');
+              $('#selectmonth').val(new Date().getMonth() + 1); // Set current month as default
+            } else if (selectedValue === 'quarterly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectquarter" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">April-June (Q1)</option>
+                                  <option value="2">July-Sept (Q2)</option>
+                                  <option value="3">Oct-Dec (Q3)</option>
+                                  <option value="4">Jan-March (Q4)</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="quarter-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#quarter-selectyear');
+              // Set default quarter based on current month for FY (April-March)
+              const currentMonth = new Date().getMonth() + 1;
+              if (currentMonth >= 4 && currentMonth <= 6) $('#selectquarter').val('1');
+              else if (currentMonth >= 7 && currentMonth <= 9) $('#selectquarter').val('2');
+              else if (currentMonth >= 10 && currentMonth <= 12) $('#selectquarter').val('3');
+              else if (currentMonth >= 1 && currentMonth <= 3) $('#selectquarter').val('4');
+            } else if (selectedValue === 'yearly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="col-md-12 text-center mb-2">
+                          <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;"></select>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#selectyear');
+            }
+            // REMOVED: No automatic generateScheduleReport() call here.
+            // Data will only load when the "Generate Report" button is explicitly clicked.
           });
+          // Event Handler: $('input[name="radio"]').on('click') - END
 
-          $(document).on('change', '#selectmonth, #month-selectyear', function () {
-            var month = $("#selectmonth").val();
-            var year = $("#month-selectyear").val();
+          // Event Handler: Delegated change listeners for dynamic dropdowns - START
+          // These listeners will only fire on change, but will NOT automatically trigger report generation.
+          // The user must click the "Generate Report" button.
+          $(document).on('change', '#selectmonth, #month-selectyear, #selectquarter, #quarter-selectyear, #selectyear, #from-date-input, #to-date-input', function () {
+            console.log("Dropdown or date input changed. User needs to click 'Generate Report'.");
+            // No action here as per requirement for explicit button click
+          });
+          // Event Handler: Delegated change listeners for dynamic dropdowns - END
 
-            $.get(`/api/v2/saledCategory?orgId=<%=orgId%>&month=${month}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
+          // Function: generateScheduleReport - START
+          // Main function to generate the Schedule report based on selected filters
+          function generateScheduleReport() {
+            console.log("generateScheduleReport function called."); // Debug log
+            let apiUrl = `/api/v2/saledCategory?orgId=<%=orgId%>`; // API endpoint for Schedule Report
+            const selectedFilterType = $('input[name="radio"]:checked').val();
+            console.log("Selected Filter Type for Schedule Report:", selectedFilterType); // Debug log
 
-              for (let i = 0; i < items.length; i++) {
+            if (!selectedFilterType) {
+              console.warn("No filter type selected for Schedule Report.");
+              return;
+            }
 
-                var datetime = items[i].cart_created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
+            // Build the API URL based on the selected filter type and its inputs
+            if (selectedFilterType === 'daterange') {
+              const fromDate = $("#from-date-input").val();
+              const toDate = $("#to-date-input").val();
+              // console.log("Date Range for Schedule Report: From", fromDate, "To", toDate); // Debug log
+              if (!fromDate || !toDate) {
+                console.warn("Dates missing for daterange filter in Schedule report.");
+                $("#reportcart").empty().append('<tr><td colspan="7" class="text-center">Please select both From Date and To Date.</td></tr>');
+                // No total field for Schedule Report, so no reset needed here.
+                if (myScheduleChart) { myScheduleChart.destroy(); myScheduleChart = null; }
+                return;
+              }
+              apiUrl += `&startDate=${fromDate}&endDate=${toDate}`;
+            } else if (selectedFilterType === 'monthly') {
+              const month = $('#selectmonth').val();
+              const year = $('#month-selectyear').val();
+              if (!month || !year) {
+                console.warn("Month or Year missing for monthly filter in Schedule report.");
+                $("#reportcart").empty().append('<tr><td colspan="7" class="text-center">Please select a Month and Year.</td></tr>');
+                // No total field for Schedule Report, so no reset needed here.
+                if (myScheduleChart) { myScheduleChart.destroy(); myScheduleChart = null; }
+                return;
+              }
+              apiUrl += `&month=${month}&year=${year}`;
+            } else if (selectedFilterType === 'quarterly') {
+              const quarter = $('#selectquarter').val();
+              const year = $('#quarter-selectyear').val();
+              if (!quarter || !year) {
+                console.warn("Quarter or Year missing for quarterly filter in Schedule report.");
+                $("#reportcart").empty().append('<tr><td colspan="7" class="text-center">Please select a Quarter and Year.</td></tr>');
+                // No total field for Schedule Report, so no reset needed here.
+                if (myScheduleChart) { myScheduleChart.destroy(); myScheduleChart = null; }
+                return;
+              }
+              apiUrl += `&quarter=${quarter}&year=${year}`;
+            } else if (selectedFilterType === 'yearly') {
+              const year = $('#selectyear').val();
+              if (!year) {
+                console.warn("Year missing for yearly filter in Schedule report.");
+                $("#reportcart").empty().append('<tr><td colspan="7" class="text-center">Please select a Year.</td></tr>');
+                // No total field for Schedule Report, so no reset needed here.
+                if (myScheduleChart) { myScheduleChart.destroy(); myScheduleChart = null; }
+                return;
+              }
+              apiUrl += `&year=${year}`;
+            }
 
-                var expiry = items[i].exp_date;
-                var expiryDate = moment(expiry).format('MM/YYYY');
+            console.log("API URL for Schedule Report to be called:", apiUrl); // Debug log
+            // Perform the AJAX GET request to the constructed API URL
+            $.get(apiUrl, function (data, status) {
+              console.log("AJAX Success for Schedule Report! Data:", data, "Status:", status);
+              $("#reportcart").empty(); // Clear existing report data
 
-                var htmlData = `
-                      <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].product_name}</strong></td>
-                        <td>${items[i].batch_name}</td>
-                        <td>${expiryDate}</td>
-                        <td>${items[i].saled_pri_qty_cart} : ${items[i].saled_sec_qty_cart}</td>
-                        <td>${items[i].cust_name}</td>
-                        <td>${date}</td>
-                        <td>
-                          <div class="action-btns">
-                            <a type="button" class="btn p-0 mx-2" href='/sale_receipt/${items[i].order_id}'><i class='bx bx-link-external'></i></a>
-                          </div>         
-                        </td>
-                      </tr>`
-                $("#reportcart").append(htmlData);
+              // --- NEW CONSOLE LOGS FOR DEBUGGING (USING JSON.stringify) ---
+              // These logs will help us confirm the exact nesting if issues persist
+              console.log("DEBUG SCHEDULE: Type of data:", typeof data);
+              console.log("DEBUG SCHEDULE: Raw content of data (STRINGIFIED):", JSON.stringify(data, null, 2));
+              if (data.data) {
+                console.log("DEBUG SCHEDULE: Type of data.data:", typeof data.data);
+                console.log("DEBUG SCHEDULE: Is data.data an Array?", Array.isArray(data.data));
+                console.log("DEBUG SCHEDULE: Raw content of data.data (STRINGIFIED):", JSON.stringify(data.data, null, 2));
+              }
+              if (data.data && data.data.data) {
+                console.log("DEBUG SCHEDULE: Type of data.data.data:", typeof data.data.data);
+                console.log("DEBUG SCHEDULE: Is data.data.data an Array?", Array.isArray(data.data.data));
+                console.log("DEBUG SCHEDULE: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
+              }
+              if (data.data && data.data.data && data.data.data.data) {
+                console.log("DEBUG SCHEDULE: Type of data.data.data.data:", typeof data.data.data.data);
+                console.log("DEBUG SCHEDULE: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
+                console.log("DEBUG SCHEDULE: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
+              }
+              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
+                console.log("DEBUG SCHEDULE: Type of data.data.data.data.data:", typeof data.data.data.data.data);
+                console.log("DEBUG SCHEDULE: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
+                console.log("DEBUG SCHEDULE: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
+              }
+              // --- END NEW CONSOLE LOGS ---
+
+              // --- CRITICAL: Attempt to access the data array based on common nesting patterns ---
+              // Based on Credit/Debit, assuming 5 levels deep initially from outer 'data' if 'success' is at root,
+              // or 4 levels deep if the data object itself is the root response.
+              let items = null;
+              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.data && Array.isArray(data.data.data.data.data.data) && data.data.data.data.data.data.length > 0) {
+                  items = data.data.data.data.data.data;
+              } else if (data.data && data.data.data && data.data.data.data && Array.isArray(data.data.data.data) && data.data.data.data.length > 0) {
+                  // Fallback for 4 levels deep (e.g., if the outer 'success' is not always present, or if 'data' is duplicated less)
+                  items = data.data.data.data;
+              }
+              // Add a check if 'data' from API is directly an array (less likely given your backend pattern, but good for robustness)
+              else if (Array.isArray(data) && data.length > 0) {
+                  items = data;
               }
 
-            })
-          })
 
-          $(document).on('change', '#selectquarter, #quarter-selectyear', function () {
-            var quarter = $("#selectquarter").val();
-            var year = $("#quarter-selectyear").val();
+              if (items && items.length > 0) {
+                console.log("Schedule Report Items for table and chart (from determined path):", items);
+                console.log("Number of items:", items.length);
 
-            $.get(`/api/v2/saledCategory?orgId=<%=orgId%>&quarter=${quarter}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
+                for (let i = 0; i < items.length; i++) {
+                  var datetime = items[i].cart_created_date;
+                  var date = moment(datetime).format('DD MMMMWriteHeader');
 
-              for (let i = 0; i < items.length; i++) {
+                  var expiry = items[i].exp_date;
+                  var expiryDate = moment(expiry).format('MM/YYYY');
 
-                var datetime = items[i].cart_created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-
-                var expiry = items[i].exp_date;
-                var expiryDate = moment(expiry).format('MM/YYYY');
-
-                var htmlData = `
-                      <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].product_name}</strong></td>
-                        <td>${items[i].batch_name}</td>
-                        <td>${expiryDate}</td>
-                        <td>${items[i].saled_pri_qty_cart} : ${items[i].saled_sec_qty_cart}</td>
-                        <td>${items[i].cust_name}</td>
-                        <td>${date}</td>
-                        <td>
-                          <div class="action-btns">
-                            <a type="button" class="btn p-0 mx-2" href='/sale_receipt/${items[i].order_id}'><i class='bx bx-link-external'></i></a>
-                          </div>         
-                        </td>
-                      </tr>`
-                $("#reportcart").append(htmlData);
-
-              }
-
-
-            })
-          })
-
-          $(document).on('change', '#selectyear', function () {
-            var year = $("#selectyear").val();
-
-            $.get(`/api/v2/saledCategory?orgId=<%=orgId%>&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-
-              for (let i = 0; i < items.length; i++) {
-
-                var datetime = items[i].cart_created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-
-                var expiry = items[i].exp_date;
-                var expiryDate = moment(expiry).format('MM/YYYY');
-
-                var htmlData = `
+                  var htmlData = `
                     <tr>
+                      <td>${i + 1}</td> <!-- Adding index as first column -->
                       <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].product_name}</strong></td>
                       <td>${items[i].batch_name}</td>
                       <td>${expiryDate}</td>
@@ -363,56 +599,56 @@
                       <td>${date}</td>
                       <td>
                         <div class="action-btns">
-                            <a type="button" class="btn p-0 mx-2" href='/sale_receipt/${items[i].order_id}'><i class='bx bx-link-external'></i></a>
-                        </div>         
+                          <a type="button" class="btn p-0 mx-2" href='/sale_receipt/${items[i].order_id}'><i class='bx bx-link-external'></i></a>
+                        </div>
                       </td>
                     </tr>
-                    `
-                $("#reportcart").append(htmlData);
+                    `;
+                  $("#reportcart").append(htmlData);
+                  // console.log(`Appended Schedule row ${i + 1}: ${htmlData.trim().substring(0, 50)}...`); // Debug log
+                }
+                // No total field for Schedule Report, so no update needed here.
 
+                // Render the Schedule chart with the fetched data
+                renderScheduleChart(items, selectedFilterType);
+                console.log("Schedule chart rendering initiated."); // Debug log
+
+              } else {
+                console.log("No Schedule Report data found for the selected period (else block triggered).");
+                $("#reportcart").empty().append('<tr><td colspan="7" class="text-center">No Schedule Report data found for the selected period.</td></tr>');
+                // No total field for Schedule Report, so no reset needed here.
+
+                // Clear the chart if no data is found
+                if (myScheduleChart) {
+                  myScheduleChart.destroy();
+                  myScheduleChart = null;
+                  // console.log("Schedule chart destroyed due to no data."); // Debug log
+                }
               }
-
-            })
-          })
-
-
-
-          $("#generatereport").click(function () {
-            var fromDate = $("input[name='fromdate']").val();
-            var toDate = $("input[name='todate']").val();
-
-            $.get(`/api/v2/saledCategory?orgId=<%=orgId%>&startDate=${fromDate}&endDate=${toDate}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-              for (let i = 0; i < items.length; i++) {
-
-                var datetime = items[i].cart_created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-
-                var expiry = items[i].exp_date;
-                var expiryDate = moment(expiry).format('MM/YYYY');
-
-                var htmlData = `
-                      <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].product_name}</strong></td>
-                        <td>${items[i].batch_name}</td>
-                        <td>${expiryDate}</td>
-                        <td>${items[i].saled_pri_qty_cart} : ${items[i].saled_sec_qty_cart}</td>
-                        <td>${items[i].cust_name}</td>
-                        <td>${date}</td>
-                        <td>
-                          <div class="action-btns">
-                            <a type="button" class="btn p-0 mx-2" href='/sale_receipt/${items[i].order_id}'><i class='bx bx-link-external'></i></a>
-                          </div>         
-                        </td>
-                      </tr>`
-                $("#reportcart").append(htmlData);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+              console.error("AJAX Error for Schedule Report! Text Status:", textStatus, "Error Thrown:", errorThrown, "JQ XHR:", jqXHR);
+              $("#reportcart").empty().append('<tr><td colspan="7" class="text-center text-danger">Error loading Schedule Report. Please try again.</td></tr>');
+              // No total field for Schedule Report, so no reset needed here.
+              if (myScheduleChart) {
+                myScheduleChart.destroy();
+                myScheduleChart = null;
+                // console.log("Schedule chart destroyed due to AJAX error."); // Debug log
               }
-            })
-          })
-        })
+            });
+          }
+          // Function: generateScheduleReport - END
+
+          // Event Handler: $("#generateScheduleReport").click() - START
+          // Attach click handler to the "Generate Report" button for Schedule Report
+          $("#generateScheduleReport").click(function () {
+            console.log("Generate Schedule Report button clicked."); // Debug log
+            generateScheduleReport();
+          });
+          // Event Handler: $("#generateScheduleReport").click() - END
+        });
+        // Function: $(document).ready - END
       </script>
+      <!-- Script End -->
 
       <style>
         @media (max-width: 767px) {

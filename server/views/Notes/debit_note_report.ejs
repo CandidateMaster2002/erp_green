@@ -28,7 +28,7 @@
 
                   <!--  -->
                   <div>
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="date-range-filter">
                       <div class="row align-items-center flex ">
                         <div class="col-md-2  text-center">
                           <!-- <div class="card-header mb-2">From Date</div> -->
@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="fromdate" />
+                            <input class="form-control" type="date" id="from-date-input" name="fromdate" />
                           </div>
                         </div>
                         <div class="col-md-2 text-center">
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="todate" />
+                            <input class="form-control" type="date" id="to-date-input" name="todate" />
                           </div>
                         </div>
                       </div>
@@ -52,13 +52,16 @@
 
                     <div class="card mb-4">
                       <div class="row">
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
+                          <h5 class="card-header"><input type="radio" name="radio" value="daterange" checked> Date Range</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="monthly"> Monthly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="quarterly"> Quarterly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="yearly"> Yearly</h5>
                         </div>
                       </div>
@@ -74,7 +77,7 @@
 
 
                   <div class="text-center mb-4">
-                    <button type="button" class="btn btn-primary" id="generatereport">Generate Report</button>
+                    <button type="button" class="btn btn-primary" id="generateDebitReport">Generate Report</button>
                   </div>
 
                   <!-- Report List -->
@@ -130,6 +133,14 @@
                   </div>
 
                   <!-- / Report List -->
+                   <!-- NEW: Chart Section for Debit -->
+                  <div class="card mt-4 mb-4">
+                    <h5 class="card-header">Debit Overview Chart</h5>
+                    <div class="card-body">
+                      <canvas id="debitChart"></canvas> <!-- Unique ID for Debit chart -->
+                    </div>
+                  </div>
+                  <!-- / Chart Section -->
 
 
                 </div>
@@ -153,278 +164,494 @@
     <!-- / Layout wrapper -->
 
     <%- include('../partials/footercode.ejs') %>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+      <!-- Script Start -->
       <script>
+        // Declare a global variable to hold the Chart.js instance for Debit reports.
+        // This allows us to destroy and recreate the chart when new data is loaded.
+        let myDebitChart;
 
+        // Function: $(document).ready - START
         $(document).ready(function () {
+          console.log("Debit Report Script loaded and starting..."); // Debug log
 
-          // Default from date - to date
-          var today = new Date();
-          var dd = String(today.getDate()).padStart(2, '0');
-          var mm = String(today.getMonth() + 1).padStart(2, '0');
-          var yyyy = today.getFullYear();
-          today = yyyy + '-' + mm + '-' + dd;
-          $("input[name='fromdate']").val(today);
-          $("input[name='todate']").val(today);
+          // Consistently define today's date components for initial setup
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const currentFullYear = today.getFullYear();
 
-
-          $('input[name="radio"][value="monthly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalDebit").text(`₹0.00`);
-
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-
-                            <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="selectmonth" aria-label="Default select example">
-                                    <option selected value="">Please Select</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="month-selectyear" aria-label="Default select example">
-                                    <option selected value="">Please Select</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                </select>
-                            </div>
-                        </div>    
-                    </div>
-                `);
+          // Function: populateYearDropdown - START
+          // Helper function to populate year dropdowns dynamically
+          function populateYearDropdown(selectorId) {
+            const dynamicCurrentYear = new Date().getFullYear();
+            $(selectorId).empty().append('<option selected value="">Please Select</option>');
+            for (let i = -5; i <= 5; i++) { // Populate years from 5 years ago to 5 years from now
+              const year = dynamicCurrentYear + i;
+              $(selectorId).append(`<option value="${year}">${year}</option>`);
             }
-          });
+            $(selectorId).val(dynamicCurrentYear); // Set current year as default selected
+          }
+          // Function: populateYearDropdown - END
 
-          $('input[name="radio"][value="quarterly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalDebit").text(`₹0.00`);
+          // Function: getXAxisLabel - START
+          // Helper function to determine the appropriate X-axis label based on the selected filter type
+          function getXAxisLabel(filterType) {
+            if (filterType === 'monthly' || filterType === 'daterange') return 'Date';
+            if (filterType === 'quarterly') return 'Quarter / Year';
+            if (filterType === 'yearly') return 'Month / Year';
+            return 'Period';
+          }
+          // Function: getXAxisLabel - END
 
+          // Function: renderDebitChart - START
+          /**
+           * Renders or updates the Debit Note chart based on the provided Debit data.
+           * Aggregates data by the relevant period and draws a Chart.js graph.
+           * @param {Array<Object>} debitItems - The array of Debit Note objects.
+           * @param {string} filterType - The type of filter applied ('daterange', 'monthly', 'quarterly', 'yearly').
+           */
+          function renderDebitChart(debitItems, filterType) {
+            const ctx = document.getElementById('debitChart'); // Ensure your HTML has <canvas id="debitChart"></canvas>
 
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 col-12  text-center mb-2">
-                            <select class="form-select" id="selectquarter" aria-label="Default select example">
-                                <option selected>Please Select</option>
-                                <option value="1">April-June</option>
-                                <option value="2">July-Sept</option>
-                                <option value="3">Oct-Dec</option>
-                                <option value="4">Jan-March</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-12 text-center mb-2">
-                            <select class="form-select" id="quarter-selectyear" aria-label="Default select example" >
-                                <option selected value="">Please Select</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                `);
+            if (!ctx) {
+              console.error("ERROR: Canvas element with ID 'debitChart' not found!");
+              return;
             }
-          });
 
-          $('input[name="radio"][value="yearly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalDebit").text(`₹0.00`);
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body ">
-                        <div class="col-md-12 text-center mb-2">
-                            <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;">
-                                <option selected value="">Please Select</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-                `);
+            // Destroy any existing chart instance before drawing a new one
+            if (myDebitChart) {
+              myDebitChart.destroy();
+              // console.log("Existing Debit chart destroyed."); // Debug log
             }
-          });
 
-          $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
+            // If no Debit items, clear chart and return
+            if (!debitItems || debitItems.length === 0) {
+              myDebitChart = null;
+              console.log("No Debit items to render chart."); // Debug log
+              return;
+            }
+
+            // --- Data Aggregation for Chart ---
+            let aggregatedData = {};
+            let chartType = 'bar'; // Default chart type
+
+            debitItems.forEach(item => {
+              let key;
+              const debitDate = moment(item.created_date); // Use 'created_date' for Debit items
+
+              // Calculate total amount for each Debit item based on your existing logic
+              const totalAmt = item.debit_amt - item.less_discount + item.total_cgst + item.total_sgst + item.total_igst;
+
+              // Determine aggregation key and chart type based on filter
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                key = debitDate.format('YYYY-MM-DD');
+                chartType = 'line'; // Line chart for daily trends
+              } else if (filterType === 'quarterly') {
+                const year = debitDate.year();
+                const month = debitDate.month() + 1;
+                let quarter;
+                // Assuming April-March financial year
+                if (month >= 4 && month <= 6) { quarter = 'Q1'; }
+                else if (month >= 7 && month <= 9) { quarter = 'Q2'; }
+                else if (month >= 10 && month <= 12) { quarter = 'Q3'; }
+                else { quarter = 'Q4'; }
+                key = `${year} ${quarter}`;
+                chartType = 'bar'; // Bar chart for quarterly sums
+              } else if (filterType === 'yearly') {
+                key = debitDate.format('YYYY-MM'); // Aggregate by month for yearly view
+                chartType = 'line'; // Line chart for monthly trends within a year
+              } else {
+                key = debitDate.format('YYYY-MM-DD'); // Fallback to daily if filter type is unknown
+                chartType = 'line';
+              }
+
+              if (!aggregatedData[key]) {
+                aggregatedData[key] = 0;
+              }
+              aggregatedData[key] += totalAmt;
+            });
+
+            const sortedKeys = Object.keys(aggregatedData).sort();
+
+            const labels = sortedKeys.map(key => {
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                return moment(key).format('MMM D,YYYY'); // e.g., Jan 1, 2024
+              } else if (filterType === 'yearly') {
+                return moment(key).format('MMM YYYY'); // e.g., Jan 2024
+              }
+              return key; // For quarterly, return as '2024 Q1'
+            });
+
+            const dataValues = sortedKeys.map(key => aggregatedData[key].toFixed(2));
+
+            // --- Chart.js Configuration and Initialization ---
+            myDebitChart = new Chart(ctx, {
+              type: chartType,
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Total Debit Amount (₹)',
+                  data: dataValues,
+                  // Use a distinct color for Debit charts (e.g., a shade of teal or blue)
+                  backgroundColor: chartType === 'bar' ? 'rgba(75, 192, 192, 0.8)' : 'rgba(75, 192, 192, 0.4)', // Teal
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1,
+                  fill: chartType === 'line' ? true : false,
+                  tension: chartType === 'line' ? 0.4 : 0
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `Debit Note Overview: ${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`
+                  },
+                  legend: {
+                    display: true,
+                    position: 'top'
+                  }
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: getXAxisLabel(filterType)
+                    }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: 'Amount (₹)'
+                    }
+                  }
+                }
+              }
+            });
+            // console.log("Debit chart initialization attempt complete."); // Debug log
+          }
+          // Function: renderDebitChart - END
+
+          // --- Initial setup for default date range and filter display on page load ---
+          // Set initial dates for the 'From Date' and 'To Date' inputs to today
+          $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+          $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+
+          // Hide the dynamic dropdown container initially and show date range filter
+          $("#dropdown").empty();
+          $('#date-range-filter').show(); // Assuming your HTML has this ID for the date range card
+          $('input[name="radio"][value="daterange"]').prop('checked', true); // Set Date Range as default checked
+
+          // Handle URL parameter for 'currentFY' (Current Financial Year) - if applicable for Debit Reports
+          var urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.get('filter') == 'currentFY') {
+            const fyCurrentYear = new Date().getFullYear();
+            const fyCurrentMonth = new Date().getMonth();
+
+            let fyStartYear;
+            let fyEndYear;
+
+            if (fyCurrentMonth < 3) { // If the current month is before April (Jan, Feb, Mar)
+              fyStartYear = fyCurrentYear - 1; // FY starts last year
+              fyEndYear = currentFullYear;
+            } else { // If the current month is April or later
+              fyStartYear = currentFullYear; // FY starts this year
+              fyEndYear = currentFullYear + 1;
+            }
+
+            const fyStartDate = `${fyStartYear}-04-01`; // April 1st
+            const fyEndDate = `${fyEndYear}-03-31`; // March 31st of next calendar year
+
+            $("#from-date-input").val(fyStartDate);
+            $("#to-date-input").val(fyEndDate);
+
+            $('input[name="radio"][value="daterange"]').prop('checked', true); // Ensure daterange is selected
+            $('#date-range-filter').show(); // Ensure date inputs are visible
+            $("#dropdown").empty(); // Clear any dynamically added dropdowns
+
+            // Automatically generate report for FY if URL param is present
+            generateDebitReport();
+          }
+
+          // Event Handler: $('input[name="radio"]').on('click') - START
+          // Unified event handler for all radio button clicks
           $('input[name="radio"]').on('click', function () {
-            var value = $(this).val();
+            console.log("Radio button clicked. Value:", $(this).val()); // Debug log
+            const selectedValue = $(this).val();
 
-            // Hide the card-body elements of all dropdowns
+            // Hide all potential filter sections first, clear table and total
+            $('#date-range-filter').hide(); // Hide date range inputs
+            $("#dropdown").empty(); // Clear dynamic dropdowns
+            $("#reportcart").empty(); // Clear report table
+            $("#totalDebit").text(`₹0.00`); // Reset total debit amount
 
-            $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
-            // Show the corresponding dropdown's card-body based on the selected radio button
+            // Destroy the chart when the filter type changes
+            if (myDebitChart) {
+              myDebitChart.destroy();
+              myDebitChart = null;
+              console.log("Existing Debit chart destroyed."); // Debug log
+            }
 
+            // Show appropriate filter inputs and populate dropdowns based on selected radio button
+            if (selectedValue === 'daterange') {
+              $('#date-range-filter').show();
+              // Reset date inputs to today's date if switching back to daterange
+              $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+              $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+            } else if (selectedValue === 'monthly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectmonth" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                                  <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                                  <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                                  <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="month-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#month-selectyear');
+              $('#selectmonth').val(new Date().getMonth() + 1); // Set current month as default
+            } else if (selectedValue === 'quarterly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectquarter" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">April-June (Q1)</option>
+                                  <option value="2">July-Sept (Q2)</option>
+                                  <option value="3">Oct-Dec (Q3)</option>
+                                  <option value="4">Jan-March (Q4)</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="quarter-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#quarter-selectyear');
+              // Set default quarter based on current month for FY (April-March)
+              const currentMonth = new Date().getMonth() + 1;
+              if (currentMonth >= 4 && currentMonth <= 6) $('#selectquarter').val('1');
+              else if (currentMonth >= 7 && currentMonth <= 9) $('#selectquarter').val('2');
+              else if (currentMonth >= 10 && currentMonth <= 12) $('#selectquarter').val('3');
+              else if (currentMonth >= 1 && currentMonth <= 3) $('#selectquarter').val('4');
+            } else if (selectedValue === 'yearly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="col-md-12 text-center mb-2">
+                          <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;"></select>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#selectyear');
+            }
+            // REMOVED: No automatic generateDebitReport() call here.
+            // Data will only load when the "Generate Report" button is explicitly clicked.
           });
+          // Event Handler: $('input[name="radio"]').on('click') - END
 
+          // Event Handler: Delegated change listeners for dynamic dropdowns - START
+          // These listeners will only fire on change, but will NOT automatically trigger report generation.
+          // The user must click the "Generate Report" button.
+          $(document).on('change', '#selectmonth, #month-selectyear, #selectquarter, #quarter-selectyear, #selectyear, #from-date-input, #to-date-input', function () {
+            console.log("Dropdown or date input changed. User needs to click 'Generate Report'.");
+            // No action here as per requirement for explicit button click
+          });
+          // Event Handler: Delegated change listeners for dynamic dropdowns - END
 
-          $(document).on('change', '#selectmonth, #month-selectyear', function () {
-            var month = $("#selectmonth").val();
-            var year = $("#month-selectyear").val();
+          // Function: generateDebitReport - START
+          // Main function to generate the Debit Note report based on selected filters
+          function generateDebitReport() {
+            console.log("generateDebitReport function called."); // Debug log
+            let apiUrl = `/api/v2/debitNotes?orgId=<%=orgId%>`; // API endpoint for Debit Notes
+            const selectedFilterType = $('input[name="radio"]:checked').val();
+            console.log("Selected Filter Type for Debit Report:", selectedFilterType); // Debug log
 
-            $.get(`/api/v2/debitNotes?orgId=<%=orgId%>&month=${month}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
+            if (!selectedFilterType) {
+              console.warn("No filter type selected for Debit Note report.");
+              return;
+            }
 
-              var totalDebit = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].debit_amt - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst;
-                totalDebit += totalAmt;
-
-                var datetime = items[i].created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="/debit_note_receipt/${items[i].debit_invoice_id}" > <strong>${items[i].debit_invoice_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+            // Build the API URL based on the selected filter type and its inputs
+            if (selectedFilterType === 'daterange') {
+              const fromDate = $("#from-date-input").val();
+              const toDate = $("#to-date-input").val();
+              // console.log("Date Range for Debit Report: From", fromDate, "To", toDate); // Debug log
+              if (!fromDate || !toDate) {
+                console.warn("Dates missing for daterange filter in Debit report.");
+                $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">Please select both From Date and To Date.</td></tr>');
+                $("#totalDebit").text(`₹0.00`);
+                if (myDebitChart) { myDebitChart.destroy(); myDebitChart = null; }
+                return;
               }
-              $("#totalDebit").text(`₹${totalDebit.toFixed(2)}`);
-            })
-          })
-
-          $(document).on('change', '#selectquarter, #quarter-selectyear', function () {
-            var quarter = $("#selectquarter").val();
-            var year = $("#quarter-selectyear").val();
-
-            $.get(`/api/v2/debitNotes?orgId=<%=orgId%>&quarter=${quarter}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-              var totalDebit = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].debit_amt - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst;
-                totalDebit += totalAmt;
-
-                var datetime = items[i].created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="/debit_note_receipt/${items[i].debit_invoice_id}" > <strong>${items[i].debit_invoice_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&startDate=${fromDate}&endDate=${toDate}`;
+            } else if (selectedFilterType === 'monthly') {
+              const month = $('#selectmonth').val();
+              const year = $('#month-selectyear').val();
+              if (!month || !year) {
+                console.warn("Month or Year missing for monthly filter in Debit report.");
+                $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">Please select a Month and Year.</td></tr>');
+                $("#totalDebit").text(`₹0.00`);
+                if (myDebitChart) { myDebitChart.destroy(); myDebitChart = null; }
+                return;
               }
-              $("#totalDebit").text(`₹${totalDebit.toFixed(2)}`);
-            })
-          })
-
-          $(document).on('change', '#selectyear', function () {
-            var year = $(this).find('option:selected').text();
-            console.log(year);
-            $.get(`/api/v2/debitNotes?orgId=<%=orgId%>&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-              var totalDebit = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].debit_amt - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst;
-                totalDebit += totalAmt;
-
-                var datetime = items[i].created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="/debit_note_receipt/${items[i].debit_invoice_id}" > <strong>${items[i].debit_invoice_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&month=${month}&year=${year}`;
+            } else if (selectedFilterType === 'quarterly') {
+              const quarter = $('#selectquarter').val();
+              const year = $('#quarter-selectyear').val();
+              if (!quarter || !year) {
+                console.warn("Quarter or Year missing for quarterly filter in Debit report.");
+                $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">Please select a Quarter and Year.</td></tr>');
+                $("#totalDebit").text(`₹0.00`);
+                if (myDebitChart) { myDebitChart.destroy(); myDebitChart = null; }
+                return;
               }
-              $("#totalDebit").text(`₹${totalDebit.toFixed(2)}`);
-            })
-          })
-
-
-
-          $("#generatereport").click(function () {
-            var fromDate = $("input[name='fromdate']").val();
-            var toDate = $("input[name='todate']").val();
-
-            $.get(`/api/v2/debitNotes?orgId=<%=orgId%>&startDate=${fromDate}&endDate=${toDate}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-              var totalDebit = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].debit_amt - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst;
-                totalDebit += totalAmt;
-
-                var datetime = items[i].created_date;
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="/debit_note_receipt/${items[i].debit_invoice_id}" > <strong>${items[i].debit_invoice_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&quarter=${quarter}&year=${year}`;
+            } else if (selectedFilterType === 'yearly') {
+              const year = $('#selectyear').val();
+              if (!year) {
+                console.warn("Year missing for yearly filter in Debit report.");
+                $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">Please select a Year.</td></tr>');
+                $("#totalDebit").text(`₹0.00`);
+                if (myDebitChart) { myDebitChart.destroy(); myDebitChart = null; }
+                return;
               }
-              $("#totalDebit").text(`₹${totalDebit.toFixed(2)}`);
-            })
-          })
-        })
+              apiUrl += `&year=${year}`;
+            }
+
+            console.log("API URL for Debit Report to be called:", apiUrl); // Debug log
+            // Perform the AJAX GET request to the constructed API URL
+            $.get(apiUrl, function (data, status) {
+              console.log("AJAX Success for Debit Report! Data:", data, "Status:", status);
+              $("#reportcart").empty(); // Clear existing report data
+              let totalDebit = 0; // Initialize total for Debit Notes
+
+              // --- NEW CONSOLE LOGS FOR DEBUGGING (USING JSON.stringify) ---
+              // These logs will help us confirm the exact nesting if issues persist
+              console.log("DEBUG DEBIT: Type of data:", typeof data);
+              console.log("DEBUG DEBIT: Raw content of data (STRINGIFIED):", JSON.stringify(data, null, 2));
+              if (data.data) {
+                console.log("DEBUG DEBIT: Type of data.data:", typeof data.data);
+                console.log("DEBUG DEBIT: Is data.data an Array?", Array.isArray(data.data));
+                console.log("DEBUG DEBIT: Raw content of data.data (STRINGIFIED):", JSON.stringify(data.data, null, 2));
+              }
+              if (data.data && data.data.data) {
+                console.log("DEBUG DEBIT: Type of data.data.data:", typeof data.data.data);
+                console.log("DEBUG DEBIT: Is data.data.data an Array?", Array.isArray(data.data.data));
+                console.log("DEBUG DEBIT: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
+              }
+              if (data.data && data.data.data && data.data.data.data) {
+                console.log("DEBUG DEBIT: Type of data.data.data.data:", typeof data.data.data.data);
+                console.log("DEBUG DEBIT: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
+                console.log("DEBUG DEBIT: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
+              }
+              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
+                console.log("DEBUG DEBIT: Type of data.data.data.data.data:", typeof data.data.data.data.data);
+                console.log("DEBUG DEBIT: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
+                console.log("DEBUG DEBIT: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
+              }
+              // --- END NEW CONSOLE LOGS ---
+
+              // --- CRITICAL: Attempt to access the data array based on common nesting patterns ---
+              // Most likely path: data.data.data.data.data (5 levels deep) if success is at top level of object
+              // Or: data.data.data.data (4 levels deep) if data object itself is the first child
+              // Let's assume 5 levels deep, as suggested by your previous credit report output structure.
+              let items = null;
+              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.data && Array.isArray(data.data.data.data.data.data) && data.data.data.data.data.data.length > 0) {
+                  items = data.data.data.data.data.data;
+              } else if (data.data && data.data.data && data.data.data.data && Array.isArray(data.data.data.data) && data.data.data.data.length > 0) {
+                  // Fallback for 4 levels deep, if the outer 'success' wrapper is not always there, or if 'data' is duplicated less
+                  items = data.data.data.data;
+              }
+
+
+              if (items && items.length > 0) {
+                console.log("Debit Note Items for table and chart (from determined path):", items);
+                console.log("Number of items:", items.length);
+
+                for (let i = 0; i < items.length; i++) {
+                  // Calculate total amount for each Debit item as per your existing logic
+                  const totalAmt = items[i].debit_amt - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst;
+                  totalDebit += totalAmt; // Sum up Debit amounts
+
+                  var datetime = items[i].created_date; // Use 'created_date' property
+                  var date = moment(datetime).format('DD MMMM YYYY'); // Formatted date
+                  var time = moment(datetime).utcOffset('+05:30'); // Assuming IST
+                  var localTime = time.format('hh:mm A'); // Formatted time
+
+                  var htmlData = `
+                    <tr>
+                      <td>${i + 1}</td>
+                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href="/debit_note_receipt/${items[i].debit_invoice_id}" > <strong>${items[i].debit_invoice_id}</strong></a></td>
+                      <td>${items[i].vendor_name}</td>
+                      <td>${date}</td>
+                      <td>${localTime}</td>
+                      <td class="text-end">₹${totalAmt.toFixed(2)}</td>
+                    </tr>
+                    `;
+                  $("#reportcart").append(htmlData);
+                  // console.log(`Appended Debit row ${i + 1}: ${htmlData.trim().substring(0, 50)}...`); // Debug log
+                }
+                $("#totalDebit").text(`₹${totalDebit.toFixed(2)}`); // Update total Debit amount display
+                // console.log("Total Debit Amount updated to:", `₹${totalDebit.toFixed(2)}`); // Debug log
+
+                // Render the Debit Note chart with the fetched data
+                renderDebitChart(items, selectedFilterType);
+                console.log("Debit chart rendering initiated."); // Debug log
+
+              } else {
+                console.log("No Debit Note data found for the selected period (else block triggered).");
+                $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">No Debit Note data found for the selected period.</td></tr>');
+                $("#totalDebit").text(`₹0.00`); // Reset total Debit amount
+
+                // Clear the chart if no data is found
+                if (myDebitChart) {
+                  myDebitChart.destroy();
+                  myDebitChart = null;
+                  // console.log("Debit chart destroyed due to no data."); // Debug log
+                }
+              }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+              console.error("AJAX Error for Debit Report! Text Status:", textStatus, "Error Thrown:", errorThrown, "JQ XHR:", jqXHR);
+              $("#reportcart").empty().append('<tr><td colspan="6" class="text-center text-danger">Error loading Debit Note report. Please try again.</td></tr>');
+              $("#totalDebit").text(`₹0.00`);
+              if (myDebitChart) {
+                myDebitChart.destroy();
+                myDebitChart = null;
+                // console.log("Debit chart destroyed due to AJAX error."); // Debug log
+              }
+            });
+          }
+          // Function: generateDebitReport - END
+
+          // Event Handler: $("#generateDebitReport").click() - START
+          // Attach click handler to the "Generate Report" button for Debit Report
+          $("#generateDebitReport").click(function () {
+            console.log("Generate Debit Report button clicked."); // Debug log
+            generateDebitReport();
+          });
+          // Event Handler: $("#generateDebitReport").click() - END
+        });
+        // Function: $(document).ready - END
       </script>
+      <!-- Script End -->
+
       <style>
         @media (max-width: 767px) {
 

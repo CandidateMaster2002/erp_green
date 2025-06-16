@@ -43,6 +43,7 @@ module.exports = async (app) => {
       ownerName: req.owner_name,
       orgId: req.org_id,
       check,
+      activePage: 'home',
     });
   });
 
@@ -106,7 +107,11 @@ module.exports = async (app) => {
           return res.send({ status: 'error', error });
         }
         res.render('OwnerControls/employee_master', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'employee_master',
         });
       },
     );
@@ -139,9 +144,12 @@ module.exports = async (app) => {
         if (error) {
           return res.send({ status: 'error', error });
         }
-        // console.log(results)
         res.render('OwnerControls/customer_list', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'customer_list',
         });
       },
     );
@@ -177,7 +185,11 @@ module.exports = async (app) => {
         }
         // console.log(results);
         res.render('OwnerControls/vendor_list', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'vendor_list',
         });
       },
     );
@@ -206,31 +218,60 @@ module.exports = async (app) => {
   // Sales components
 
   app.get('/sale_invoice', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Sales/sale_invoice', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Sales/sale_invoice', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'sale_invoice',
+    });
   });
 
   app.get('/sale_entry_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Sales/sale_entry_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Sales/sale_entry_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'sale_entry_report',
+    });
   });
 
   app.get('/sale_return_invoice', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Sales/sale_return_invoice', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Sales/sale_return_invoice', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'sale_return_invoice',
+    });
   });
 
   app.get('/return_items', checkAuth, fetchOrgId, accessControl, (req, res) => {
     res.render('Sales/return_items', {
-      orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name, id: req.query.saleInvoiceNo,
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      id: req.query.saleInvoiceNo,
+      activePage: 'sale_return_invoice', // Same as sale_return_invoice, if it's a sub-page
     });
   });
 
   app.get('/sale_return_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Sales/sale_return_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Sales/sale_return_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'sale_return_report',
+    });
   });
 
   // Inventory Managment component
 
   app.get('/product_stock', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Inventory/product_stock', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/product_stock', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'product_stock',
+    });
   });
 
   app.get('/near_expiry_list', checkAuth, fetchOrgId, accessControl, (req, res) => {
@@ -257,7 +298,12 @@ module.exports = async (app) => {
   });
 
   app.get('/add_product', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Inventory/add_product', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/add_product', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'inventory',
+    });
   });
 
   app.get('/product_batch/:id', checkAuth, fetchOrgId, accessControl, (req, res) => {
@@ -297,14 +343,23 @@ module.exports = async (app) => {
         }
 
         res.render('Inventory/purchase_order', {
-          vendors: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          vendors: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'purchase_order',
         });
       },
     );
   });
 
   app.get('/po_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Inventory/po_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/po_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'po_report',
+    });
   });
 
   // Receipt
@@ -373,7 +428,11 @@ module.exports = async (app) => {
         }
 
         res.render('Notes/credit_note', {
-          vendors: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          vendors: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'credit_note',
         });
       },
     );
@@ -389,7 +448,11 @@ module.exports = async (app) => {
         }
 
         res.render('Notes/debit_note', {
-          vendors: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          vendors: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'debit_note',
         });
       },
     );
@@ -404,39 +467,78 @@ module.exports = async (app) => {
           console.log(error);
         }
         res.render('Notes/grn', {
-          vendors: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          vendors: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'grn',
         });
       },
     );
   });
 
   app.get('/credit_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Notes/credit_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Notes/credit_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'credit_report',
+    });
   });
 
   app.get('/debit_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Notes/debit_note_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Notes/debit_note_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'debit_report',
+    });
   });
 
   app.get('/grn_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Notes/grn_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Notes/grn_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'grn_report',
+    });
   });
 
   // Reports
   app.get('/schedule_h1_report', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/schedule_h1_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/schedule_h1_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'schedule_h1_report',
+    });
   });
 
   app.get('/inventory_in_out', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/itemwise_in_out_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/itemwise_in_out_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'inventory_in_out',
+    });
   });
 
   app.get('/partywise_in_out', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/partywise_in_out_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/partywise_in_out_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'partywise_in_out',
+    });
   });
 
   app.get('/substitute_meds', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/medicine_substitute', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/medicine_substitute', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'substitute_meds',
+    });
   });
 
   app.get('/inventory/csv/upload', checkAuth, fetchOrgId, (req, res) => {
@@ -448,7 +550,12 @@ module.exports = async (app) => {
   });
 
   app.get('/grn/csv/upload', checkAuth, fetchOrgId, (req, res) => {
-    res.render('Purchase/purchase_bill_upload', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Purchase/purchase_bill_upload', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'grn',
+    });
   });
 
   app.get('/grn/csv/map_products', checkAuth, fetchOrgId, (req, res) => {
@@ -467,14 +574,29 @@ module.exports = async (app) => {
   });
 
   app.get('/general_ledger', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/general_ledger_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/general_ledger_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'general_ledger',
+    });
   });
 
   app.get('/gst/gstr1', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/gstr1_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/gstr1_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'gstr1',
+    });
   });
 
   app.get('/gst/gstr2', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('Reports/gstr2_report', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Reports/gstr2_report', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'gstr2',
+    });
   });
 };

@@ -26,7 +26,7 @@
                   <hr class="mb-4">
 
                   <div>
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="date-range-filter">
                       <div class="row align-items-center flex ">
                         <div class="col-md-2  text-center">
                           <!-- <div class="card-header mb-2">From Date</div> -->
@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="fromdate" />
+                            <input class="form-control" type="date" id="from-date-input" name="fromdate" />
                           </div>
                         </div>
                         <div class="col-md-2 text-center">
@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-md-4 ">
                           <div class="card-header">
-                            <input class="form-control" type="date" id="html5-date-input" name="todate" />
+                            <input class="form-control" type="date" id="to-date-input" name="todate" />
                           </div>
                         </div>
                       </div>
@@ -50,13 +50,16 @@
 
                     <div class="card mb-4">
                       <div class="row">
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
+                          <h5 class="card-header"><input type="radio" name="radio" value="daterange" checked> Date Range</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="monthly"> Monthly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="quarterly"> Quarterly</h5>
                         </div>
-                        <div class="col-md-4 text-center">
+                        <div class="col-md-3 text-center">
                           <h5 class="card-header"><input type="radio" name="radio" value="yearly"> Yearly</h5>
                         </div>
                       </div>
@@ -68,7 +71,7 @@
 
 
                   <div class="text-center mb-4">
-                    <button type="button" class="btn btn-primary" id="generatereport">Generate Report</button>
+                    <button type="button" class="btn btn-primary" id="generateGrnReport">Generate Report</button>
                   </div>
 
                   <!-- Report List -->
@@ -113,9 +116,9 @@
                       <div class="table-footer bg-light position-sticky" style="bottom: 0;">
                         <table class="table">
                           <tfoot>
-                            <tr class="table-danger">
-                              <td class="h5 ps-5">Total Purchase</td>
-                              <td class="h5 text-end" id="totalPurchase"></td> <!-- Total cost here -->
+                            <tr class="table-success">
+                              <td class="h5 ps-5">Total GRN AMOUNT</td>
+                              <td class="h5 text-end" id="totalGrnAmount"></td> <!-- Total cost here -->
                             </tr>
                           </tfoot>
                         </table>
@@ -124,6 +127,14 @@
                   </div>
 
                   <!-- / Report List -->
+                   <!-- NEW: Chart Section for GRN -->
+                  <div class="card mt-4 mb-4">
+                    <h5 class="card-header">Goods Received Note Overview Chart</h5>
+                    <div class="card-body">
+                      <canvas id="grnChart"></canvas> <!-- Unique ID for GRN chart -->
+                    </div>
+                  </div>
+                  <!-- / Chart Section -->
 
 
                 </div>
@@ -147,315 +158,450 @@
     <!-- / Layout wrapper -->
 
     <%- include('../partials/footercode.ejs') %>
+      <!-- Chart.js CDN Link -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+      <!-- Script Start -->
       <script>
+        
+        let myGrnChart;
 
+        
         $(document).ready(function () {
+          // console.log("GRN Report Script loaded and starting..."); // Debug log
+          // console.log("Document is ready for GRN Report."); // Debug log
 
-          // Default from date - to date
-          var today = new Date();
-          var dd = String(today.getDate()).padStart(2, '0');
-          var mm = String(today.getMonth() + 1).padStart(2, '0');
-          var yyyy = today.getFullYear();
-          today = yyyy + '-' + mm + '-' + dd;
-          $("input[name='fromdate']").val(today);
-          $("input[name='todate']").val(today);
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const currentFullYear = today.getFullYear();
 
-          // Check if any filter is applied
+          // Helper function to populate year dropdowns dynamically
+          function populateYearDropdown(selectorId) {
+            const dynamicCurrentYear = new Date().getFullYear(); 
+            $(selectorId).empty().append('<option selected value="">Please Select</option>');
+            for (let i = -5; i <= 5; i++) { 
+              const year = dynamicCurrentYear + i;
+              $(selectorId).append(`<option value="${year}">${year}</option>`);
+            }
+            $(selectorId).val(dynamicCurrentYear); 
+          }
+          
+
+          
+          // Helper function to determine the appropriate X-axis label based on the selected filter type
+          function getXAxisLabel(filterType) {
+            if (filterType === 'monthly' || filterType === 'daterange') return 'Date';
+            if (filterType === 'quarterly') return 'Quarter / Year';
+            if (filterType === 'yearly') return 'Month / Year';
+            return 'Period';
+          }
+          
+
+          
+          /**
+           * Renders or updates the Goods Received Note chart based on the provided GRN data.
+           * Aggregates data by the relevant period and draws a Chart.js graph.
+           * @param {Array<Object>} grnItems - The array of GRN objects (from API response).
+           * @param {string} filterType - The type of filter applied ('daterange', 'monthly', 'quarterly', 'yearly').
+           */
+          function renderGrnChart(grnItems, filterType) {
+            const ctx = document.getElementById('grnChart');
+
+            if (!ctx) {
+              console.error("ERROR: Canvas element with ID 'grnChart' not found!");
+              return;
+            }
+
+            if (myGrnChart) {
+              myGrnChart.destroy();
+              // console.log("Existing GRN chart destroyed."); // Debug log
+            }
+
+            if (!grnItems || grnItems.length === 0) {
+              myGrnChart = null;
+              return;
+            }
+
+            // --- Data Aggregation for Chart ---
+            let aggregatedData = {};
+            let chartType = 'bar'; 
+
+            grnItems.forEach(item => {
+              let key;
+              const grnDate = moment(item.created_date_grn); 
+
+              
+              const totalAmt = item.total - item.less_discount + item.total_cgst + item.total_sgst + item.total_igst + item.credit_debit;
+
+              // Determine aggregation key and chart type based on filter
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                key = grnDate.format('YYYY-MM-DD');
+                chartType = 'line'; // Line chart for daily trends
+              } else if (filterType === 'quarterly') {
+                const year = grnDate.year();
+                const month = grnDate.month() + 1;
+                let quarter;
+                if (month >= 4 && month <= 6) { quarter = 'Q1'; }
+                else if (month >= 7 && month <= 9) { quarter = 'Q2'; }
+                else if (month >= 10 && month <= 12) { quarter = 'Q3'; }
+                else { quarter = 'Q4'; }
+                key = `${year} ${quarter}`;
+                chartType = 'bar'; // Bar chart for quarterly sums
+              } else if (filterType === 'yearly') {
+                key = grnDate.format('YYYY-MM'); // Aggregate by month for yearly view
+                chartType = 'line'; // Line chart for monthly trends within a year
+              } else {
+                key = grnDate.format('YYYY-MM-DD'); // Fallback to daily if filter type is unknown
+                chartType = 'line';
+              }
+
+              if (!aggregatedData[key]) {
+                aggregatedData[key] = 0;
+              }
+              aggregatedData[key] += totalAmt; // Aggregate by the calculated total amount
+            });
+
+            const sortedKeys = Object.keys(aggregatedData).sort();
+
+            const labels = sortedKeys.map(key => {
+              if (filterType === 'monthly' || filterType === 'daterange') {
+                return moment(key).format('MMM D,YYYY'); // e.g., Jan 1,2024
+              } else if (filterType === 'yearly') {
+                return moment(key).format('MMM YYYY'); // e.g., Jan 2024
+              }
+              return key; // For quarterly, return as '2024 Q1'
+            });
+
+            const dataValues = sortedKeys.map(key => aggregatedData[key].toFixed(2));
+
+            // --- Chart.js Configuration and Initialization ---
+            myGrnChart = new Chart(ctx, {
+              type: chartType,
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Total GRN Amount (₹)',
+                  data: dataValues,
+                  // Use a distinct color for GRN charts (e.g., a shade of green or blue)
+                  backgroundColor: chartType === 'bar' ? 'rgba(75, 192, 192, 0.8)' : 'rgba(75, 192, 192, 0.4)', // Teal/Green
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1,
+                  fill: chartType === 'line' ? true : false,
+                  tension: chartType === 'line' ? 0.4 : 0
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `Goods Received Note Overview: ${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`
+                  },
+                  legend: {
+                    display: true,
+                    position: 'top'
+                  }
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: getXAxisLabel(filterType)
+                    }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: 'Amount (₹)'
+                    }
+                  }
+                }
+              }
+            });
+            // console.log("GRN chart initialization attempt complete."); // Debug log
+          }
+          
+
+          
+          $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+          $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+
+          // Hide the dynamic dropdown container initially and show date range filter
+          $("#dropdown").empty();
+          $('#date-range-filter').show();
+          $('input[name="radio"][value="daterange"]').prop('checked', true); // Set Date Range as default checked
+
+          // Handle URL parameter for 'currentFY' (Current Financial Year) - if applicable for GRN
           var urlParams = new URLSearchParams(window.location.search);
           if (urlParams.get('filter') == 'currentFY') {
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth();
+            const fyCurrentYear = new Date().getFullYear();
+            const fyCurrentMonth = new Date().getMonth();
 
-            let startYear;
-            let endYear;
+            let fyStartYear;
+            let fyEndYear;
 
-            if (currentMonth < 3) { // If the current month is before April
-              startYear = currentYear - 1;
-              endYear = currentYear;
-            } else {
-              startYear = currentYear;
-              endYear = currentYear + 1;
+            if (fyCurrentMonth < 3) { 
+              fyStartYear = fyCurrentYear - 1; 
+              fyEndYear = fyCurrentYear;
+            } else { 
+              fyStartYear = fyCurrentYear; 
+              fyEndYear = fyCurrentYear + 1;
             }
 
-            const startDate = `${startYear}-04-01`;
-            const endDate = `${endYear}-03-31`;
+            const fyStartDate = `${fyStartYear}-04-01`; // April 1st
+            const fyEndDate = `${fyEndYear}-03-31`; // March 31st of next calendar year
 
-            $("input[name='fromdate']").val(startDate);
-            $("input[name='todate']").val(endDate);
-            generateReport();
+            $("#from-date-input").val(fyStartDate);
+            $("#to-date-input").val(fyEndDate);
+
+            $('input[name="radio"][value="daterange"]').prop('checked', true); // Ensure daterange is selected
+            $('#date-range-filter').show(); // Ensure date inputs are visible
+            $("#dropdown").empty(); // Clear any dynamically added dropdowns
+
+            // Automatically generate report for FY if URL param is present
+            generateGrnReport();
           }
 
-          $('input[name="radio"][value="monthly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalPurchase").text('₹0.00');
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-  
-                            <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="selectmonth" aria-label="Default select example">
-                                  <option selected value="">Please Select</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-12  text-center mb-2">
-                                <select class="form-select" id="month-selectyear" aria-label="Default select example">
-                                    <option selected value="">Please Select</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                </select>
-                            </div>
-                        </div>    
-                    </div>
-                `);
-            }
-          });
-
-          $('input[name="radio"][value="quarterly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalPurchase").text('₹0.00');
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 col-12  text-center mb-2">
-                            <select class="form-select" id="selectquarter" aria-label="Default select example">
-                                <option selected>Please Select</option>
-                                <option value="1">April-June</option>
-                                <option value="2">July-Sept</option>
-                                <option value="3">Oct-Dec</option>
-                                <option value="4">Jan-March</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 col-12 text-center mb-2">
-                            <select class="form-select" id="quarter-selectyear" aria-label="Default select example" >
-                                <option selected value="">Please Select</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                `);
-            }
-          });
-
-          $('input[name="radio"][value="yearly"]').on('click', function () {
-            // Clear previous inputs
-            $("input[name='fromdate']").val('');
-            $("input[name='todate']").val('');
-            $("#reportcart").empty();
-            $("#totalPurchase").text('₹0.00');
-
-            if ($(this).is(':checked')) {
-              $("#dropdown").html(`
-                    <div class="card-body ">
-                      <div class="col-md-12 text-center mb-2">
-                          <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;">
-                            <option selected value="">Please Select</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                          </select>
-                      </div>
-                    </div>
-                `);
-            }
-          });
-
-          $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
+          
           $('input[name="radio"]').on('click', function () {
-            var value = $(this).val();
+            // console.log("Radio button clicked. Value:", $(this).val()); // Debug log
+            const selectedValue = $(this).val();
 
-            // Hide the card-body elements of all dropdowns
+            // Hide all potential filter sections first, clear table and total
+            $('#date-range-filter').hide();
+            $("#dropdown").empty();
+            $("#reportcart").empty();
+            $("#totalGrnAmount").text(`₹0.00`); // Reset total GRN amount
 
-            $("#dropdown_month .card-body, #dropdown_quarter .card-body, #dropdown_year .card-body").hide();
-            // Show the corresponding dropdown's card-body based on the selected radio button
+            // Destroy the chart when the filter type changes
+            if (myGrnChart) {
+              myGrnChart.destroy();
+              myGrnChart = null;
+              // console.log("Existing GRN chart destroyed."); // Debug log
+            }
 
+            // Show appropriate filter inputs and populate dropdowns
+            if (selectedValue === 'daterange') {
+              $('#date-range-filter').show();
+              // Reset date inputs to today's date
+              $("#from-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+              $("#to-date-input").val(`${currentFullYear}-${mm}-${dd}`);
+            } else if (selectedValue === 'monthly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectmonth" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                                  <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                                  <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                                  <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="month-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#month-selectyear');
+              $('#selectmonth').val(new Date().getMonth() + 1); // Set current month as default
+            } else if (selectedValue === 'quarterly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="selectquarter" aria-label="Default select example">
+                                  <option selected value="">Please Select</option>
+                                  <option value="1">April-June (Q1)</option>
+                                  <option value="2">July-Sept (Q2)</option>
+                                  <option value="3">Oct-Dec (Q3)</option>
+                                  <option value="4">Jan-March (Q4)</option>
+                              </select>
+                          </div>
+                          <div class="col-md-6 col-12 text-center mb-2">
+                              <select class="form-select" id="quarter-selectyear" aria-label="Default select example"></select>
+                          </div>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#quarter-selectyear');
+              // Set default quarter based on current month for FY (April-March)
+              const currentMonth = new Date().getMonth() + 1;
+              if (currentMonth >= 4 && currentMonth <= 6) $('#selectquarter').val('1');
+              else if (currentMonth >= 7 && currentMonth <= 9) $('#selectquarter').val('2');
+              else if (currentMonth >= 10 && currentMonth <= 12) $('#selectquarter').val('3');
+              else if (currentMonth >= 1 && currentMonth <= 3) $('#selectquarter').val('4');
+            } else if (selectedValue === 'yearly') {
+              $("#dropdown").html(`
+                  <div class="card-body">
+                      <div class="col-md-12 text-center mb-2">
+                          <select class="form-select" id="selectyear" aria-label="Default select example" style="width: 100%;"></select>
+                      </div>
+                  </div>
+              `);
+              populateYearDropdown('#selectyear');
+            }
           });
-          $(document).on('change', '#selectmonth, #month-selectyear', function () {
-            var month = $("#selectmonth").val();
-            var year = $("#month-selectyear").val();
+          
 
-            $.get(`/api/v2/purchaseEntries?orgId=<%=orgId%>&month=${month}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
+          
+          $(document).on('change', '#selectmonth, #month-selectyear, #selectquarter, #quarter-selectyear, #selectyear', function () {
+            // console.log("Dynamic dropdown changed, triggering report generation."); // Debug log
+            generateGrnReport();
+          });
+          
 
-              var totalPurchase = 0;
-              for (let i = 0; i < items.length; i++) {
+          
+          // Main function to generate the Goods Received Note report based on selected filters
+          function generateGrnReport() {
+            // console.log("generateGrnReport function called."); // Debug log
+            let apiUrl = `/api/v2/purchaseEntries?orgId=<%=orgId%>`; // API endpoint for GRN
+            const selectedFilterType = $('input[name="radio"]:checked').val();
+            // console.log("Selected Filter Type for GRN:", selectedFilterType); // Debug log
 
-                //Calculate total amount
-                var totalAmt = items[i].total - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst + items[i].credit_debit;
+            if (!selectedFilterType) {
+              // Using a custom message box instead of alert() for better UX
+              // alert("Please select a report filter type (Date Range, Monthly, Quarterly, or Yearly).");
+              console.warn("No filter type selected for GRN report."); // Debug log
+              return;
+            }
 
-                totalPurchase += totalAmt;
-
-                var datetime = items[i].created_date_grn;
-                var total = (items[i].purchase) * (items[i].qty);
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href='/grn_receipt/${items[i].grn_id}' ><strong>${items[i].grn_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+            // Build the API URL based on the selected filter type and its inputs
+            if (selectedFilterType === 'daterange') {
+              const fromDate = $("#from-date-input").val();
+              const toDate = $("#to-date-input").val();
+              // console.log("Date Range for GRN: From", fromDate, "To", toDate); // Debug log
+              if (!fromDate || !toDate) {
+                // alert("Please select both From Date and To Date for Date Range filter.");
+                console.warn("Dates missing for daterange filter in GRN report."); // Debug log
+                return;
               }
-
-              $("#totalPurchase").text(`₹${totalPurchase.toFixed(2)}`);
-            })
-          })
-
-          $(document).on('change', '#selectquarter, #quarter-selectyear', function () {
-            var quarter = $("#selectquarter").val();
-            var year = $("#quarter-selectyear").val();
-
-            $.get(`/api/v2/purchaseEntries?orgId=<%=orgId%>&quarter=${quarter}&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-              var totalPurchase = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].total - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst + items[i].credit_debit;
-
-                totalPurchase += totalAmt;
-
-                var datetime = items[i].created_date_grn;
-                var total = (items[i].purchase) * (items[i].qty);
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href='/grn_receipt/${items[i].grn_id}' ><strong>${items[i].grn_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td>₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&startDate=${fromDate}&endDate=${toDate}`;
+            } else if (selectedFilterType === 'monthly') {
+              const month = $('#selectmonth').val();
+              const year = $('#month-selectyear').val();
+              if (!month || !year) {
+                
+                console.warn("Month or Year missing for monthly filter in GRN report.");
+                return;
               }
-
-              $("#totalPurchase").text(`₹${totalPurchase.toFixed(2)}`);
-            })
-          })
-
-          $(document).on('change', '#selectyear', function () {
-            var year = $("#selectyear").val();
-
-            $.get(`/api/v2/purchaseEntries?orgId=<%=orgId%>&year=${year}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-
-              var totalPurchase = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].total - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst + items[i].credit_debit;
-
-                totalPurchase += totalAmt;
-
-                var datetime = items[i].created_date_grn;
-                var total = (items[i].purchase) * (items[i].qty);
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href='/grn_receipt/${items[i].grn_id}' ><strong>${items[i].grn_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td class="text-end">₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&month=${month}&year=${year}`;
+            } else if (selectedFilterType === 'quarterly') {
+              const quarter = $('#selectquarter').val();
+              const year = $('#quarter-selectyear').val();
+              if (!quarter || !year) {
+                // alert("Please select a Quarter and Year for Quarterly filter.");
+                console.warn("Quarter or Year missing for quarterly filter in GRN report.");
+                return;
               }
-
-              $("#totalPurchase").text(`₹${totalPurchase.toFixed(2)}`);
-            })
-          })
-
-
-          function generateReport () {
-            var fromDate = $("input[name='fromdate']").val();
-            var toDate = $("input[name='todate']").val();
-
-            $.get(`/api/v2/purchaseEntries?orgId=<%=orgId%>&startDate=${fromDate}&endDate=${toDate}`, function (data, status) {
-              $("#reportcart").empty();
-              var items = data.data;
-              console.log(items);
-
-              var totalPurchase = 0;
-              for (let i = 0; i < items.length; i++) {
-
-                //Calculate total amount
-                var totalAmt = items[i].total - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst + items[i].credit_debit;
-
-                totalPurchase += totalAmt;
-
-                var datetime = items[i].created_date_grn;
-                var total = (items[i].purchase) * (items[i].qty);
-                var date = moment(datetime).format('DD MMMM YYYY');
-                var time = moment(datetime).utcOffset('+05:30');
-                var localTime = time.format('hh:mm A');
-                var htmlData = `
-                      <tr>
-                        <td>${i + 1}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href='/grn_receipt/${items[i].grn_id}' ><strong>${items[i].grn_id}</strong></a></td>
-                        <td>${items[i].vendor_name}</td>
-                        <td>${date}</td>
-                        <td>${localTime}</td>
-                        <td>₹${totalAmt.toFixed(2)}</td>
-                      </tr>
-                      `
-                $("#reportcart").append(htmlData);
+              apiUrl += `&quarter=${quarter}&year=${year}`;
+            } else if (selectedFilterType === 'yearly') {
+              const year = $('#selectyear').val();
+              if (!year) {
+                // alert("Please select a Year for Yearly filter.");
+                console.warn("Year missing for yearly filter in GRN report.");
+                return;
               }
+              apiUrl += `&year=${year}`;
+            }
 
-              $("#totalPurchase").text(`₹${totalPurchase.toFixed(2)}`);
-            })
+            
+            $.get(apiUrl, function (data, status) {
+              console.log("AJAX Success for GRN! Data:", data, "Status:", status);
+              $("#reportcart").empty(); 
+              let totalGrnAmount = 0; 
+
+              // --- NEW CONSOLE LOGS FOR DEBUGGING ---
+              console.log("DEBUG GRN: Type of data:", typeof data);
+              console.log("DEBUG GRN: Raw content of data:", data);
+              console.log("DEBUG GRN: Type of data.data:", typeof data.data);
+              console.log("DEBUG GRN: Is data.data an Array?", Array.isArray(data.data));
+              console.log("DEBUG GRN: Raw content of data.data:", data.data);
+              // If you suspect another level of nesting:
+              console.log("DEBUG GRN: Type of data.data.data:", typeof data.data.data);
+              console.log("DEBUG GRN: Is data.data.data an Array?", Array.isArray(data.data.data));
+              console.log("DEBUG GRN: Raw content of data.data.data:", data.data.data);
+              // --- END NEW CONSOLE LOGS ---
+              
+              if (data.data && data.data.data && data.data.data.data && data.data.data.data.length > 0) {
+                var items = data.data.data.data; // CORRECTED: Access the deepest nested 'data' array
+                console.log("GRN Items for table and chart (from data.data.data.data):", items);
+                console.log("Number of items:", items.length);
+
+                for (let i = 0; i < items.length; i++) {
+                  // Calculate total amount for each GRN item as per your existing logic
+                  const totalAmt = items[i].total - items[i].less_discount + items[i].total_cgst + items[i].total_sgst + items[i].total_igst + items[i].credit_debit;
+                  totalGrnAmount += totalAmt; // Sum up GRN amounts
+
+                  var datetime = items[i].created_date_grn; 
+                  var date = moment(datetime).format('DD MMMM YYYY'); 
+                  var time = moment(datetime).utcOffset('+05:30'); // Assuming IST
+                  var localTime = time.format('hh:mm A'); // Formatted time
+
+                  var htmlData = `
+                    <tr>
+                      <td>${i + 1}</td>
+                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i><a href='/grn_receipt/${items[i].grn_id}' ><strong>${items[i].grn_id}</strong></a></td>
+                      <td>${items[i].vendor_name}</td>
+                      <td>${date}</td>
+                      <td>${localTime}</td>
+                      <td class="text-end">₹${totalAmt.toFixed(2)}</td>
+                    </tr>
+                    `
+                  $("#reportcart").append(htmlData);
+                  // console.log(`Appended GRN row ${i + 1}: ${htmlData.trim().substring(0, 50)}...`); // Debug log
+                }
+                $("#totalGrnAmount").text(`₹${totalGrnAmount.toFixed(2)}`); // Update total GRN amount display
+                // console.log("Total GRN Amount updated to:", `₹${totalGrnAmount.toFixed(2)}`); // Debug log
+
+                // Render the GRN chart with the fetched data
+                renderGrnChart(items, selectedFilterType);
+                // console.log("GRN chart rendering initiated."); // Debug log
+
+              } else {
+                console.log("No GRN data found for the selected period (else block triggered).");
+                $("#reportcart").append('<tr><td colspan="6" class="text-center">No Goods Received Note data found for the selected period.</td></tr>');
+                $("#totalGrnAmount").text(`₹0.00`); // Reset total GRN amount
+
+                // Clear the chart if no data is found
+                if (myGrnChart) {
+                  myGrnChart.destroy();
+                  myGrnChart = null;
+                  // console.log("GRN chart destroyed due to no data."); // Debug log
+                }
+              }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+              console.error("AJAX Error for GRN! Text Status:", textStatus, "Error Thrown:", errorThrown, "JQ XHR:", jqXHR);
+              $("#reportcart").empty().append('<tr><td colspan="6" class="text-center text-danger">Error loading Goods Received Note report. Please try again.</td></tr>');
+              $("#totalGrnAmount").text(`₹0.00`);
+              // Clear the chart on AJAX failure
+              if (myGrnChart) {
+                myGrnChart.destroy();
+                myGrnChart = null;
+                // console.log("GRN chart destroyed due to AJAX error."); // Debug log
+              }
+            });
           }
+          // Function: generateGrnReport - END
 
-          $("#generatereport").click(function () {
-            generateReport();
-          })
-        })
+          
+          $("#generateGrnReport").click(function () {
+            // console.log("Generate GRN Report button clicked."); // Debug log
+            generateGrnReport();
+          });
+          
+        });
+        // Function: $(document).ready - END
       </script>
+      <!-- Script End -->
+
       <style>
         @media (max-width: 767px) {
 

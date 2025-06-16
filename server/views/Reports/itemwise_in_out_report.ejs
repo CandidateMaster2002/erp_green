@@ -82,14 +82,20 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                       <!-- <h5 class="mb-2 mb-md-0 head-invoicelist">Invoice List</h5> -->
                       <div class="card p-3 col-md-6 me-1 mob-view">
-                        <div class="input-group has-validation">
+                        <div class="input-group has-validation position-relative" >
 
                           <input class="form-control" type="text" placeholder="Search product.." id="medicinename"
                             aria-label="Search">
                           <div class="invalid-feedback">
                             Please select a product.
                           </div>
+                          <!-- NEW: Autocomplete results container -->
+                          <div id="product-suggestions" class="list-group position-absolute w-100 bg-white border border-top-0 rounded-bottom" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
+                              <!-- Suggestions will be dynamically inserted here -->
+                          </div>
                         </div>
+                        <!-- Hidden input to store the selected product's ID -->
+                        <input type="hidden" id="selected-product-id" name="productId" value="">
                       </div>
 
                       <!-- <div class="text-center mb-4"> -->
@@ -164,15 +170,16 @@
 
     <%- include('../partials/footercode.ejs') %>
       <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+      <!-- Ensure jQuery UI is loaded, as the current code uses it. If not, this line is needed. -->
+      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script> 
       <script>
 
         $(document).ready(function () {
 
-          // Hide validation messages on input
+          // --- Input Validation Hiding Logic (Existing) ---
           $('input').each(function () {
             $(this).on('input', function () {
-              if ($(this).val() == '') {
+              if ($(this).val() === '') { // Use strict equality
                 $(this).addClass('is-invalid');
               } else {
                 $(this).removeClass('is-invalid');
@@ -180,36 +187,83 @@
             });
           });
 
-          var productId;
-
+          // --- Autocomplete for Product Search (Integrated with Typesense Backend) ---
           $('#medicinename').autocomplete({
-            minLength: 3,
+            minLength: 2, // Start search after 2 characters (adjustable)
             source: function (request, response) {
-              let query = request.term;
+              const queryTerm = request.term;
+              const orgId = "<%=orgId%>"; // Get orgId from EJS context
 
-              $.get(`/api/v2/search-inventory-product?orgId=<%=orgId%>&search=${query}`, function (data, status) {
-                let searchTerm = request.term;
-                let results = data.data.filter(item => item.med_name.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 10);
-                response(results);
-              })
+              // Clear previously selected product ID if user starts typing again
+              $("#selected-product-id").val(''); 
+              $("#medicinename").removeClass('is-invalid'); // Clear validation on new input
 
+              if (queryTerm.length < this.options.minLength) {
+                response([]); // Don't search if query is too short
+                $("#product-suggestions").hide().empty(); // Hide and clear suggestions
+                return;
+              }
+
+              // Make AJAX call to your backend Typesense search endpoint
+              // The backend controller itemSearch is mapped to /api/v2/item-search
+              $.get(`/api/autocomplete?orgId=${orgId}&query=${encodeURIComponent(queryTerm)}`, function (data) {
+                console.log("Typesense search response data:", data); // Debug: Check raw response
+
+                // The backend controller (api.itemsearch.controllers.js) is designed
+                // to return a filtered array of documents directly (res.json(filteredDocuments)).
+                // So, 'data' should directly be the array of products.
+                const results = data || []; 
+
+                if (results.length > 0) {
+                  // Map results to jQuery UI Autocomplete expected format (label, value)
+                  // And also pass the original item for easy access in 'select'
+                  response(results.map(item => ({
+                    label: `${item.med_name} (${item.salt_composition || 'N/A'})`, // Text displayed in suggestion
+                    value: item.med_name, // Value put into input field on selection
+                    originalItem: item // Store the full item for product_id
+                  })));
+                } else {
+                  response([]); // No results
+                }
+              }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("Error during product search:", textStatus, errorThrown, jqXHR);
+                response([]); // Return empty on error
+              });
             },
             select: function (event, ui) {
+              // This is called when an item is selected from the suggestions
+              // Using setTimeout to allow the default select behavior to finish first
               setTimeout(function () {
-                console.log('the selected med', ui.item);
-                productId = ui.item.product_id;
-                $("#medicinename").val(ui.item.med_name);
-              }, 0)
+                console.log('Selected product:', ui.item.originalItem);
+                
+                // Set the visible input field to the selected product's name
+                $("#medicinename").val(ui.item.originalItem.med_name);
+
+                // Set the hidden input field with the actual product ID
+                // The item from Typesense has 'id' as the product ID
+                $("#selected-product-id").val(ui.item.originalItem.id); 
+                
+                $("#medicinename").removeClass('is-invalid'); // Clear any validation
+                // No need to manually hide suggestions as jQuery UI Autocomplete handles this on select.
+              }, 0);
+            },
+            // Custom rendering for suggestions (optional, but good for custom display)
+            // This is largely replicating your existing _renderItem logic
+            _renderItem: function (ul, item) {
+                return $("<li>")
+                    .append(`<div>${item.originalItem.med_name} (${item.originalItem.salt_composition || 'N/A'})</div>`)
+                    .appendTo(ul);
+            },
+            // Handle clearing selected-product-id if user manually edits the input after selection
+            change: function(event, ui) {
+                if (ui.item === null) { // If user types something not in list or clears it
+                    $("#selected-product-id").val('');
+                    console.log("Product input changed, selected ID cleared.");
+                }
             }
-          }).data('ui-autocomplete')._renderItem = function (ul, item) {
-            return $('<li>')
-              .append('<div>' + item.med_name + '(' + item.salt_composition + ')' + '</div>')
-              .appendTo(ul);
-          };
-          //endof autocomplete
+          });
 
-
-          // Default from date - to date
+          // --- Default Date Range Setup (Existing) ---
           var today = new Date();
           var dd = String(today.getDate()).padStart(2, '0');
           var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -218,15 +272,18 @@
           $("input[name='fromdate']").val(today);
           $("input[name='todate']").val(today);
 
+          // --- Generate Report Button Click Handler ---
           $("#generatereport").click(function (e) {
+            e.preventDefault(); // Prevent default form submission
+            let isValid = true;
 
-            e.preventDefault();
-            var isValid = true;
+            const fromDate = $("input[name='fromdate']").val();
+            const toDate = $("input[name='todate']").val();
+            // Get the selected product ID from the hidden input
+            const selectedProductId = $("#selected-product-id").val(); 
 
-            var fromDate = $("input[name='fromdate']").val();
-            var toDate = $("input[name='todate']").val();
-
-            if ($("#medicinename").val() == '' || !productId) {
+            // Validate product selection using the hidden ID
+            if ($("#medicinename").val() === '' || !selectedProductId) { // Check both text and hidden ID
               $("#medicinename").addClass('is-invalid');
               $("#medicinename").focus();
               isValid = false;
@@ -234,7 +291,7 @@
               $("#medicinename").removeClass('is-invalid');
             }
 
-            if (fromDate == '') {
+            if (fromDate === '') { // Use strict equality
               $("input[name='fromdate']").addClass('is-invalid');
               $("input[name='fromdate']").focus();
               isValid = false;
@@ -242,7 +299,7 @@
               $("input[name='fromdate']").removeClass('is-invalid');
             }
 
-            if (toDate == '') {
+            if (toDate === '') { // Use strict equality
               $("input[name='todate']").addClass('is-invalid');
               $("input[name='todate']").focus();
               isValid = false;
@@ -253,7 +310,7 @@
             if (fromDate > toDate) {
               $("input[name='fromdate']").addClass('is-invalid');
               $("input[name='todate']").addClass('is-invalid');
-              $("input[name='todate']").focus();
+              // No focus here as both are invalid, might conflict
               isValid = false;
             } else {
               $("input[name='fromdate']").removeClass('is-invalid');
@@ -261,56 +318,83 @@
             }
 
             if (isValid) {
-
               // Show loader
               $('#loader').show();
 
+              // Make AJAX call to get product transactions (Itemwise In/Out report data)
               $.ajax({
-                url: `/api/v2/reports/productTransactions`,
-                type: 'POST',
+                url: `/api/v2/reports/productTransactions`, // Your backend endpoint for this report
+                type: 'POST', // As per your existing code
                 data: JSON.stringify({
-                  orgId: "<%=orgId%>",
-                  productId: productId,
+                  orgId: "<%=orgId%>", // Passed from EJS
+                  productId: selectedProductId, // Use the ID from the hidden input
                   startDate: fromDate,
                   endDate: toDate
                 }),
                 contentType: 'application/json',
                 success: function (response) {
                   $('#loader').hide();
+                  $("#reportcart").empty(); // Clear existing report data
 
-                  $("#reportcart").empty();
-                  var items = response.data;
+                  console.log("Product Transactions Report Response:", response); // Debug response
 
-                  for (let i = 0; i < items.length; i++) {
-
-                    var datetime = items[i].transaction_date;
-                    var date = moment(datetime).format('DD MMMM YYYY');
-
-                    var htmlData = `
-                      <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${items[i].bill_no === '0' ? '-' : items[i].bill_no}</strong></td>
-                        <td>${items[i].transaction_type}</td>
-                        <td>${date}</td>
-                        <td>${(items[i].party_name) === '0' ? '-' : items[i].party_name}</td>
-                        <td>${(items[i].pri_received_quantity === 0 && items[i].sec_received_quantity === 0) ? '-' : items[i].pri_received_quantity + ' : ' + items[i].sec_received_quantity}</td>
-                        <td>${(items[i].pri_issued_quantity === 0 && items[i].sec_issued_quantity === 0) ? '-' : items[i].pri_issued_quantity + ' : ' + items[i].sec_issued_quantity}</td>                      
-                      </tr>`
-                    $("#reportcart").append(htmlData);
+                  // --- CRITICAL: Adjust data access based on backend's nesting ---
+                  // Assuming the productTransactions endpoint will follow a similar nesting
+                  // as your other dummy data services (e.g., data.data.data.data.data)
+                  let items = null;
+                  if (response.data && response.data.data && response.data.data.data && response.data.data.data.data && Array.isArray(response.data.data.data.data.data)) {
+                      items = response.data.data.data.data.data;
+                  } else if (response.data && response.data.data && response.data.data.data && Array.isArray(response.data.data.data)) {
+                      items = response.data.data.data;
+                  } else if (response.data && Array.isArray(response.data)) { // Fallback if data is directly under .data
+                      items = response.data;
+                  } else if (Array.isArray(response)) { // Fallback if response is directly an array
+                      items = response;
                   }
+                  
+                  if (items && items.length > 0) {
+                    for (let i = 0; i < items.length; i++) {
+                      // Adjust field names if needed based on the actual dummy data structure
+                      const billNo = items[i].bill_no === '0' ? '-' : items[i].bill_no;
+                      const transactionType = items[i].transaction_type;
+                      const transactionDate = moment(items[i].transaction_date).format('DD MMMM YYYY');
+                      const partyName = items[i].party_name === '0' ? '-' : items[i].party_name;
+                      
+                      const priReceived = items[i].pri_received_quantity || 0;
+                      const secReceived = items[i].sec_received_quantity || 0;
+                      const receivedQty = (priReceived === 0 && secReceived === 0) ? '-' : `${priReceived} : ${secReceived}`;
+                      
+                      const priIssued = items[i].pri_issued_quantity || 0;
+                      const secIssued = items[i].sec_issued_quantity || 0;
+                      const issuedQty = (priIssued === 0 && secIssued === 0) ? '-' : `${priIssued} : ${secIssued}`;
 
-
+                      var htmlData = `
+                        <tr>
+                          <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>${billNo}</strong></td>
+                          <td>${transactionType}</td>
+                          <td>${transactionDate}</td>
+                          <td>${partyName}</td>
+                          <td>${receivedQty}</td>
+                          <td>${issuedQty}</td>
+                        </tr>`;
+                      $("#reportcart").append(htmlData);
+                    }
+                  } else {
+                    $("#reportcart").empty().append('<tr><td colspan="6" class="text-center">No transactions found for the selected product and date range.</td></tr>');
+                  }
                 },
-                error: function (error) {
+                error: function (jqXHR, textStatus, errorThrown) {
                   $('#loader').hide();
-                  alert("Invalid input", error)
+                  console.error("AJAX Error for Product Transactions Report:", textStatus, errorThrown, jqXHR);
+                  // Provide a user-friendly message in the report table
+                  $("#reportcart").empty().append('<tr><td colspan="6" class="text-center text-danger">Error loading report. Please try again.</td></tr>');
                 }
-              })
-
-
+              });
             }
-          })
-        })
+          });
+        });
       </script>
+
 
       <style>
         @media (max-width: 767px) {
