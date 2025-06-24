@@ -92,6 +92,42 @@ function generateDummySaltAlternatives(productId, orgId) {
 }
 // Function: generateDummySaltAlternatives - END
 
+// Helper function to generate a single dummy inventory item
+function generateSingleDummyInventoryItem(index, orgId = '316') {
+  const itemNames = [
+    'Laptop X', 'Mouse Pro', 'Keyboard Mechanical', 'Monitor UltraWide', 'Webcam HD',
+    'Headphones Wireless', 'USB-C Hub', 'SSD 1TB', 'External Hard Drive 2TB', 'Router WiFi 6',
+    'Speaker Bluetooth', 'Printer Laser', 'Graphics Card RTX', 'RAM 16GB Kit', 'CPU Cooler',
+    'Wireless Charger', 'External Webcam', 'Gaming Headset', 'Noise-Cancelling Earbuds', 'Smart Home Hub'
+  ];
+  const hsnCodes = ['847130', '847160', '852852', '852580', '851830', '850440', '847170', '851762', '851829', '844331', '847330', '841590'];
+  const packUnits = ['PCS', 'BOX', 'KG', 'LTR'];
+  const statuses = ['OK', 'LOW', 'OUT OF STOCK'];
+
+  const itemName = itemNames[index % itemNames.length]; // Cycle through names
+  const hsn = hsnCodes[index % hsnCodes.length];
+  const packUnit = packUnits[Math.floor(Math.random() * packUnits.length)];
+  const status = statuses[Math.floor(Math.random() * statuses.length)];
+
+  const remStock = Math.floor(Math.random() * 100) + 1; // 1 to 100
+  const threshold = Math.floor(Math.random() * 20) + 1; // 1 to 20
+
+  return {
+    id: index + 1, // Unique ID
+    org_id: orgId,
+    item_name: itemName,
+    product_id: `prod-${orgId.substring(0,3).toLowerCase()}-${(1000 + index).toString().padStart(3, '0')}`,
+    inventory_id: 100 + index + 1,
+    pack_units: packUnit,
+    hsn: hsn,
+    rem_stock: remStock,
+    status: status,
+    med_name: itemName, // Often item_name is used for med_name
+    batch_qty: remStock, // For simplicity, batch_qty equals rem_stock in dummy
+    threshold: threshold,
+  };
+}
+
 module.exports = {
   createBatch: async (batchData) => {
     return executeTransaction(async (connection) => {
@@ -169,16 +205,21 @@ module.exports = {
   getPaginatedInventory: async (orgId, limit, offset) => {
   // Determine if we should use dummy data based on an environment variable
     if (process.env.USE_DUMMY_DATA === 'true') {
-      // --- ADD THE REQUIRE STATEMENT HERE ---
-      // eslint-disable-next-line global-require
-      const { dummyInventory } = require('./dummyInventoryData'); // <-- NEW LOCATION!
       console.log('Using dummy inventory data for pagination in v2services.');
-      // console.log('DEBUG: Received orgId:', orgId);
-      // console.log('DEBUG: Received limit:', limit);
-      // console.log('DEBUG: Received offset:', offset);
+      console.log('DEBUG: Received orgId:', orgId);
+      console.log('DEBUG: Received limit:', limit);
+      console.log('DEBUG: Received offset:', offset);
+
+      const desiredTotalDummyItems = 20; // WE WANT EXACTLY 20 DUMMY ENTRIES
+      let allDummyItems = [];
+      for (let i = 0; i < desiredTotalDummyItems; i++) {
+        // Pass the actual orgId to generate specific dummy data if needed,
+        // or just '316' if all dummy data should be for one org.
+        allDummyItems.push(generateSingleDummyInventoryItem(i, orgId));
+      }
 
       // 1. Filter dummy data by org_id (simulating WHERE clause)
-      const filteredData = dummyInventory.filter((item) => item.org_id === orgId);
+      const filteredData = allDummyItems.filter((item) => item.org_id === orgId);
       // console.log('DEBUG: Filtered data (by orgId) count:', filteredData.length);
 
       // 1.5. Sort the filtered data by product name (med_name) A-Z
