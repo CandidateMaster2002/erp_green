@@ -10,6 +10,10 @@ const expiryInventoryRepository = require('../v2repositories/expiryInventoryRepo
 // const saltAlternativeRepository = require('../v2repositories/saltAlternativeRepository');
 require('dotenv').config();
 // Import the dummy inventory data
+// --- ADD THESE CONSOLE.LOGS ---
+console.log('DEBUG: NODE_ENV from process.env:', process.env.NODE_ENV);
+console.log('DEBUG: USE_DUMMY_DATA from process.env:', process.env.USE_DUMMY_DATA);
+// --- END OF CONSOLE.LOGS ---
 
 // --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR ALTERNATIVE REPORT ---
 
