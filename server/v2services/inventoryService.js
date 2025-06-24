@@ -10,7 +10,6 @@ const expiryInventoryRepository = require('../v2repositories/expiryInventoryRepo
 // const saltAlternativeRepository = require('../v2repositories/saltAlternativeRepository');
 require('dotenv').config();
 // Import the dummy inventory data
-const { dummyInventory } = require('./dummyInventoryData');
 
 // --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR ALTERNATIVE REPORT ---
 
@@ -166,6 +165,9 @@ module.exports = {
   getPaginatedInventory: async (orgId, limit, offset) => {
   // Determine if we should use dummy data based on an environment variable
     if (process.env.USE_DUMMY_DATA === 'true') {
+      // --- ADD THE REQUIRE STATEMENT HERE ---
+      // eslint-disable-next-line global-require
+      const { dummyInventory } = require('./dummyInventoryData'); // <-- NEW LOCATION!
       console.log('Using dummy inventory data for pagination in v2services.');
       // console.log('DEBUG: Received orgId:', orgId);
       // console.log('DEBUG: Received limit:', limit);
@@ -174,6 +176,21 @@ module.exports = {
       // 1. Filter dummy data by org_id (simulating WHERE clause)
       const filteredData = dummyInventory.filter((item) => item.org_id === orgId);
       // console.log('DEBUG: Filtered data (by orgId) count:', filteredData.length);
+
+      // 1.5. Sort the filtered data by product name (med_name) A-Z
+      filteredData.sort((a, b) => {
+        const nameA = a.med_name ? a.med_name.toUpperCase() : ''; // Handle potential null/undefined and ensure case-insensitive comparison
+        const nameB = b.med_name ? b.med_name.toUpperCase() : ''; // Handle potential null/undefined and ensure case-insensitive comparison
+
+        if (nameA < nameB) {
+          return -1; // nameA comes before nameB
+        }
+        if (nameA > nameB) {
+          return 1; // nameA comes after nameB
+        }
+        return 0; // names are equal
+      });
+      // --- END OF SUGGESTED CHANGE ---
 
       // 2. Get total count *before* pagination for UI (e.g., "Page 1 of 5")
       const totalCount = filteredData.length;
