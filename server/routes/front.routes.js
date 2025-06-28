@@ -542,11 +542,21 @@ module.exports = async (app) => {
   });
 
   app.get('/inventory/csv/upload', checkAuth, fetchOrgId, (req, res) => {
-    res.render('Inventory/csv_upload', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/csv_upload', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'inventory',
+    });
   });
 
   app.get('/inventory/csv/map_products', checkAuth, fetchOrgId, (req, res) => {
-    res.render('Inventory/inventory_product_mapping', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('Inventory/inventory_product_mapping', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'inventory',
+    });
   });
 
   app.get('/grn/csv/upload', checkAuth, fetchOrgId, (req, res) => {

@@ -42,6 +42,10 @@ exports.sendOTPEmail = (to, OTPValue) => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_APP_PASS,        // use an App Password, not your Gmail password
     },
+    // Add this line for development/testing ONLY
+    tls: {
+      rejectUnauthorized: false
+    },
   });
   const mailData = {
     from: process.env.EMAIL_USER,
