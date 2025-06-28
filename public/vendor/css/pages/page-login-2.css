@@ -68,7 +68,14 @@ html, body {
     display: block; /* Remove extra space below image */
     margin: 1rem auto; /* Center images */
     border-radius: 8px; /* Add some rounded corners to images */
+    
 } 
+.resend-wrapper {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+}
 
 .right {
     /* border-radius: 10px; - Removed if it's a full-height section. */
@@ -105,7 +112,7 @@ html, body {
     gap: 20px; /* Adjusted gap to be consistent */
     box-shadow: 0px 0px 8px 0px rgba(51, 51, 51, 0.16); /* Added box shadow */
     border-radius: 12px; /* Consistent border-radius */
-    background: #FFF; /* Added background for the form */
+    background-color: #FFF; /* Added background for the form */
     margin: 0; /* Reset fixed margins, it will be centered by parent flexbox */
     box-sizing: border-box;
     display: flex; /* Make form a flex container */
@@ -236,7 +243,7 @@ html, body {
         padding: 20px; /* Adjusted padding */
         gap: 20px;
         border-radius: 12px;
-        background: #FFF;
+        background-color: #FFF;
         box-shadow: 0px 0px 8px 0px rgba(51, 51, 51, 0.16);
         margin: 0; /* Removed fixed margin-left and rely on flex centering */
         box-sizing: border-box;

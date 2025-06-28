@@ -1,7 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable max-len */
 /* eslint-disable camelcase */
-// Atharv Kurde
 
 const { createJwtToken } = require('../utils/token.util');
 require('dotenv').config();
