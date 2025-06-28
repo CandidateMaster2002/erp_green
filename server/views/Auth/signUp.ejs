@@ -138,7 +138,7 @@
 
                     </div>
                 </div> -->
-                <div class="form">
+                <div class="form" style="background-color: #fff;">
                     <!-- <% const currentStep = step || 'email'; %> -->
                     <% if (!step || step === 'email') { %>
                     <!-- Step 1: Enter Email -->
@@ -173,8 +173,8 @@
                         <% } %>
                     
                         <button class="btn btn-primary">Verify OTP</button>
-                      </form>
-                      <!-- Resend OTP Button -->
+                    </form>
+                    <!-- Resend OTP Button -->
                     <form action="/signup/send-otp" method="POST">
                         <input type="hidden" name="email" value="<%= email %>">
                         <button class="btn btn-secondary">Resend OTP</button>
