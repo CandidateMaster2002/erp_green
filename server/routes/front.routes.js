@@ -156,7 +156,12 @@ module.exports = async (app) => {
   });
 
   app.get('/new_customer', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('OwnerControls/new_customer', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('OwnerControls/new_customer', {
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'new_customer',
+    });
   });
 
   app.get('/update_customer/:id', checkAuth, fetchOrgId, accessControl, (req, res) => {
@@ -205,14 +210,23 @@ module.exports = async (app) => {
           throw error;
         }
         res.render('OwnerControls/update_vendor', {
-          vendor: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          vendor: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'update_vendor',
         });
       },
     );
   });
 
   app.get('/new_vendor', checkAuth, fetchOrgId, accessControl, (req, res) => {
-    res.render('OwnerControls/new_vendor', { orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name });
+    res.render('OwnerControls/new_vendor', { 
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'new_vendor',
+    });
   });
 
   // Sales components
@@ -368,7 +382,11 @@ module.exports = async (app) => {
     console.log('got the id', req.params.id);
     console.log(req.org_id);
     res.render('Receipt/preview_sale_receipt', {
-      id: req.params.id, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+      id: req.params.id,
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'preview_sale_receipt',
     });
   });
 

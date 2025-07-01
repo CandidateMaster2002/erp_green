@@ -793,10 +793,21 @@
 
           // Total purchase amount
           $.get('/api/v2/purchaseEntry/total?orgId=<%=orgId%>', function (data, status) {
-            var revenue = Math.round(data.data[0].total_purchase);
-            var formatedRevenue = (revenue.toLocaleString());
-            $("#inventorycost").text(`₹${formatedRevenue}`);
-          })
+            if (
+              data &&
+              data.data &&
+              Array.isArray(data.data) &&
+              data.data.length > 0 &&
+              !isNaN(parseFloat(data.data[0].total_purchase))
+            ) {
+              var revenue = Math.round(data.data[0].total_purchase_amount);
+              var formatedRevenue = revenue.toLocaleString();
+              $("#inventorycost").text(`₹${formatedRevenue}`);
+            } else {
+              $("#inventorycost").text('₹0'); // fallback to 0 if data is missing or invalid
+            }
+          });
+
 
           // Total Purchase bills
           $.get('/api/v2/purchaseEntry/totalEntries?orgId=<%=orgId%>', function (data, status) {

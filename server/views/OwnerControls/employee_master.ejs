@@ -73,7 +73,7 @@
                                   <%=new Date(data[i].emp_created).toDateString()%>
                                 </td>
                                 <td>
-                                  <select id="empAccess" class="form-select-sm">
+                                  <select id="empAccess" class="form-select-sm emp-access">
                                     <option value="<%=data[i].emp_id%>/enable" <%=data[i].emp_access===1 ? 'selected'
                                       : '' %> >Enable</option>
                                     <option value="<%=data[i].emp_id%>/disable" <%=data[i].emp_access===0 ? 'selected'
@@ -141,22 +141,47 @@
 
         $(document).ready(function () {
 
-          $('#empAccess').change(function () {
-            var value = $(this).val();
-            var emp_id = value.split('/')[0];
-            var emp_access = value.split('/')[1];
-            $.ajax({
-              url: '/api/emp/' + emp_id + '/' + emp_access,
-              type: 'GET',
-              success: function (result) {
-                // location.reload();
-                return;
+          function updateSelectColor() {
+            $('#empAccess').each(function () {
+              const value = $(this).val().split('/')[1]; // get 'enable' or 'disable'
+
+              if (value === 'enable') {
+                $(this).css({
+                  'background-color': '#28a745',  
+                  'color': 'white',            
+                  'border': '1px solid #c3e6cb'   
+                });
+              } else if (value === 'disable') {
+                $(this).css({
+                  'background-color': '#dc3545',  
+                  'color': 'white',             
+                  'border': '1px solid #f5c6cb'   
+                });
               }
             });
-          });
+          }
 
+          updateSelectColor();
+
+          $('#empAccess').change(function () {
+           var value = $(this).val();
+           var emp_id = value.split('/')[0];
+           var emp_access = value.split('/')[1];
+
+           // Update color based on new selection
+           updateSelectColor();
+
+           // AJAX call to server
+           $.ajax({
+             url: '/api/emp/' + emp_id + '/' + emp_access,
+             type: 'GET',
+             success: function (result) {
+               // Optional: success message
+             }
+           });
+          });
         });
-      </script>
+    </script>
 
   </body>
 
