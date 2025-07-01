@@ -167,6 +167,15 @@ html, body {
     margin-bottom: 1rem; /* Space below each input */
 }
 
+.password-wrapper {
+  position: relative;
+}
+.password-wrapper .toggle-password {
+  color: #888;
+  font-size: 1rem;
+}
+
+
 .form .or {
     margin: 1rem auto; /* Center horizontally with auto margins */
     width: fit-content; /* Only take width of content */

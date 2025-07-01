@@ -340,10 +340,11 @@ exports.emailLogin = (req, res) => {
         redirect: `/register?email=${encodeURIComponent(email)}`
       });
     }
-    });
+   });
+};
 
 
-    exports.checkphone=(req,res) =>{
+exports.checkphone=(req,res) =>{
       const { phone } = req.body;
       telephoneExistsInOrganization(phone, (err, results) => {
         if (err) {
@@ -359,6 +360,6 @@ exports.emailLogin = (req, res) => {
           });
         }
     })
-    }
+    
 
-  }
+};

@@ -19,5 +19,5 @@
     app.get('/api/logout/', controller.logoutUser);
     app.post('/api/auth/emailLogin', controller.emailLogin);
     app.get('/api/auth/guestLogin', controller.guestLogin);
-    // app.post('/api/auth/check-phone', controller.checkphone);
+    app.post('/api/auth/check-phone', controller.checkphone);
   };
