@@ -302,6 +302,7 @@ module.exports = {
     const batchId = req.params.batchId;
     try {
       const batch = await inventoryService.getBatchByBatchId(batchId);
+      console.log("batchId:", batchId);
       res.status(200).json({
         success: true,
         data: batch[0],

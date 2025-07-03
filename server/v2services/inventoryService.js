@@ -293,6 +293,7 @@ module.exports = {
 
   getBatchByBatchId: async (batchId) => {
     return executeTransaction(async (connection) => {
+      console.log("Fetching batch by ID:", batchId);
       return batchModel.getBatchByBatchId(connection, batchId);
     });
   },
@@ -341,6 +342,7 @@ module.exports = {
       const productData = data.productData;
       const inventoryData = data.inventoryData;
       const batchData = data.batchData;
+      console.log("batch-Data is :",batchData);
 
       if (!productData || !inventoryData || !batchData) {
         throw new Error('Invalid data');

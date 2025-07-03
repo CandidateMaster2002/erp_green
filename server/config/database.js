@@ -18,6 +18,7 @@ const initialisePool = () => new Promise((res) => {
             connectionLimit: 10,
         });
   pool.getConnection((error) => {
+    console.log("error:", error);
     if (error) throw error;
     else console.log('Connection Successfull');
     res('Connection Successfull');

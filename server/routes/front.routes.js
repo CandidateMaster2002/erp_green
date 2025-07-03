@@ -309,7 +309,11 @@ module.exports = async (app) => {
           return res.send({ status: 'error', error });
         }
         res.render('Inventory/update_addproduct', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'update_addproduct',
         });
       },
     );
@@ -326,7 +330,11 @@ module.exports = async (app) => {
 
   app.get('/product_batch/:id', checkAuth, fetchOrgId, accessControl, (req, res) => {
     res.render('Inventory/product_batch', {
-      orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name, id: req.params.id,
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      id: req.params.id,
+      activePage: 'product_batch',
     });
   });
 
@@ -344,7 +352,11 @@ module.exports = async (app) => {
           return res.send({ status: 'error', error });
         }
         res.render('Inventory/add_batch', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'add_batch',
         });
       },
     );
