@@ -163,8 +163,9 @@
 
                 // Make the AJAX call to the V2 paginated endpoint
                 $.get(`/api/v2/inventory/paginated?orgID=${orgId}&limit=${itemsPerPage}&offset=${offset}`, function (result, status) {
-                    if (result.success && result.data && result.data.data) { // Access result.data.data and result.data.totalCount
-                        const inventoryItems = result.data.data;
+                    console.log("result from API:", result);
+                    if (result.success && result.data ) { // Access result.data.data and result.data.totalCount
+                        const inventoryItems = result.data;
                         totalItems = result.data.totalCount;
                         totalPages = Math.ceil(totalItems / itemsPerPage);
                         currentPage = pageNumber; // Update current page after successful fetch

@@ -2,11 +2,11 @@
 /* eslint-disable arrow-body-style */
 const { executeTransaction } = require('../utils/transaction.util');
 // Temporarily commenting out model imports as we are serving dummy data for reports.
-// const organisationModel = require('../v2models/organisationModel');
-// const customerMasterModel = require('../v2models/customerMasterModel');
-// const saleEntryModel = require('../v2models/saleEntryModel');
-// const saleEntryItemModel = require('../v2models/saleEntryItemModel');
-// const batchModel = require('../v2models/batchModel');
+const organisationModel = require('../v2models/organisationModel');
+const customerMasterModel = require('../v2models/customerMasterModel');
+const saleEntryModel = require('../v2models/saleEntryModel');
+const saleEntryItemModel = require('../v2models/saleEntryItemModel');
+const batchModel = require('../v2models/batchModel');
 
 function generateDummySale(index, date, totalAmount, orgId, customerName = 'Dummy Customer') {
   const pad = (num) => num.toString().padStart(2, '0');

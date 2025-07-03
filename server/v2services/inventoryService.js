@@ -263,14 +263,19 @@ module.exports = {
     // You will need to ensure inventoryModel.getPaginatedInventoryByOrgId returns both data
     // and total count
     return executeTransaction(async (connection) => {
-    // Assume inventoryModel.getPaginatedInventoryByOrgId returns { data: [], totalCount: number }
-      const results = await inventoryModel.getPaginatedInventoryByOrgId(
+      const results = await inventoryModel.getInventoryByOrgId(
         connection,
         orgId,
         limit,
         offset,
       );
-      return results; // This should be an object with data and totalCount
+
+      // console.log(" Paginated inventory data:", results.data);
+      // console.log(" Total inventory count:", results.totalCount);
+      // console.log("Raw result from inventoryModel.getPaginatedInventoryByOrgId:", results);
+      console.log("Raw Inventory results:", results);
+
+      return results;
     });
   },
 
