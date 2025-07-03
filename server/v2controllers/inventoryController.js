@@ -164,10 +164,10 @@ module.exports = {
     }
   },
   
- getPaginatedInventory: async (req, res) => {
-    const orgId = req.query.orgID; // Ensure this matches your frontend query param (orgID)
-    const limit = parseInt(req.query.limit, 10) || 10; // Default limit to 10
-    const offset = parseInt(req.query.offset, 10) || 0; // Default offset to 0
+  getPaginatedInventory: async (req, res) => {
+    const orgId = req.query.orgID;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = parseInt(req.query.offset, 10) || 0;
 
     if (!orgId) {
       return res.status(400).json({
@@ -175,16 +175,14 @@ module.exports = {
         message: 'orgID is required for pagination',
       });
     }
+
     try {
-      // Call the inventory service with pagination parameters
       const inventoryData = await inventoryService.getPaginatedInventory(orgId, limit, offset);
-      // (Optional but recommended): You might also want to get the total count
-      // for pagination UI (e.g., "Page 1 of 5"). We'll address this in the service layer.
-      // For now, we'll just return the paginated data.
+
       res.status(200).json({
         success: true,
         data: inventoryData,
-        // totalCount: totalCount // Will add this later from service
+        // totalCount: inventoryData.length
       });
     } catch (error) {
       console.error('Error fetching paginated inventory (V2):', error);

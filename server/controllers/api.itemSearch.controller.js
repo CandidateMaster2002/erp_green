@@ -28,15 +28,16 @@ exports.itemSearch = async (req, res) => {
     // The condition allows items with 'org_id' equal to 'admin' OR the requested 'orgId'.
     const filteredDocuments = rawDocuments.filter((doc) => {
       // Ensure 'doc' and 'doc.org_id' exist to prevent further TypeErrors.
-      if (!doc || typeof doc.org_id === 'undefined') {
-        console.warn('Document without \'org_id\' field found, skipping:', doc);
-        return false; // Skip documents that don't have an org_id
-      }
+      // if (!doc || typeof doc.org_id === 'undefined') {
+      //   console.warn('Document without \'org_id\' field found, skipping:', doc);
+      //   return false; // Skip documents that don't have an org_id
+      // }    This is Commented out
       // Assuming 'admin' is a special orgId that can always be shown.
       // Use strict equality (===) for 'admin' if it's a string,
       // and loose equality (==) for orgId if it might be a number from query parameters.
       // For consistency, it's often best to ensure types match (e.g., both strings).
-      return doc.org_id === 'admin' || doc.org_id === String(orgId);
+      // return doc.org_id === 'admin' || doc.org_id === String(orgId); I commented this out  
+      return true;
     });
 
     // The 'filteredDocuments' array already contains the actual product data,

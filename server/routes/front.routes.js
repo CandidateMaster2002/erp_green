@@ -174,7 +174,11 @@ module.exports = async (app) => {
         }
 
         res.render('OwnerControls/update_customer', {
-          data: results, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+          data: results,
+          orgId: req.org_id,
+          orgName: req.org_name,
+          ownerName: req.owner_name,
+          activePage: 'update_customer',
         });
       },
     );
@@ -404,7 +408,11 @@ module.exports = async (app) => {
 
   app.get('/po_receipt/:id', checkAuth, fetchOrgId, accessControl, (req, res) => {
     res.render('Receipt/preview_po_receipt', {
-      id: req.params.id, orgId: req.org_id, orgName: req.org_name, ownerName: req.owner_name,
+      id: req.params.id,
+      orgId: req.org_id,
+      orgName: req.org_name,
+      ownerName: req.owner_name,
+      activePage: 'preview_po_receipt',
     });
   });
 
