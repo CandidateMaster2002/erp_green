@@ -8,8 +8,8 @@
 // for testing purposes of the Schedule Report.
 // If you want to switch back to real database interaction, uncomment these lines
 // and remove the dummy data generation logic in getFilteredSaledCategory.
-// const { executeTransaction } = require('../utils/transaction.util'); 
-// const categoryReportRepository = require('../v2repositories/categoryReportRepository'); 
+const { executeTransaction } = require('../utils/transaction.util'); 
+const categoryReportRepository = require('../v2repositories/categoryReportRepository'); 
 
 // Keep other imports if they are used by other functions in this service file.
 // These are assumed to still interact with real database models for their respective functionalities.
@@ -18,519 +18,573 @@ const { getStateFromPincode } = require('../utils/pincode.util');
 const generalLedgerRepository = require('../v2repositories/generalLedgerRepository');
 const gstReportRepository = require('../v2repositories/gstReportRepository');
 const partyTransactionRepository = require('../v2repositories/partyTransactionRepository');
-// const productTransactionRepository = require('../v2repositories/productTransactionRepository');
+const productTransactionRepository = require('../v2repositories/productTransactionRepository');
 const organisationModel = require('../v2models/organisationModel');
 
-// --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR SCHEDULE REPORT ---
-// Function: generateDummyScheduleItem - START
-/**
- * Generates a single dummy Schedule Report item.
- * @param {number} index - A unique index for the item.
- * @param {Date} date - The creation date of the item.
- * @param {string} orgId - The organization ID.
- * @returns {object} A dummy Schedule Report item object.
- */
-function generateDummyScheduleItem(index, date, orgId) {
-  const products = ['Paracetamol 500mg', 'Amoxicillin 250mg', 'Ibuprofen 400mg', 'Cough Syrup (100ml)', 'Vitamin C Tabs', 'Antacid Gel', 'Aspirin', 'Band-Aids', 'Thermometer', 'Antiseptic Solution'];
-  const customers = ['Akash Pharma', 'Bhavin Traders', 'Chetan Medico', 'Dhaval Distributors', 'Eklavya Pharmacy', 'Falguni Chemist', 'Gaurav Stores', 'Harish Health'];
-  const batches = ['BATCH-A-001', 'BATCH-B-002', 'BATCH-C-003', 'BATCH-D-004', 'BATCH-E-005', 'BATCH-F-006'];
+// // --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR SCHEDULE REPORT ---
+// // Function: generateDummyScheduleItem - START
+// /**
+//  * Generates a single dummy Schedule Report item.
+//  * @param {number} index - A unique index for the item.
+//  * @param {Date} date - The creation date of the item.
+//  * @param {string} orgId - The organization ID.
+//  * @returns {object} A dummy Schedule Report item object.
+//  */
+// function generateDummyScheduleItem(index, date, orgId) {
+//   const products = ['Paracetamol 500mg', 'Amoxicillin 250mg', 'Ibuprofen 400mg', 'Cough Syrup (100ml)', 'Vitamin C Tabs', 'Antacid Gel', 'Aspirin', 'Band-Aids', 'Thermometer', 'Antiseptic Solution'];
+//   const customers = ['Akash Pharma', 'Bhavin Traders', 'Chetan Medico', 'Dhaval Distributors', 'Eklavya Pharmacy', 'Falguni Chemist', 'Gaurav Stores', 'Harish Health'];
+//   const batches = ['BATCH-A-001', 'BATCH-B-002', 'BATCH-C-003', 'BATCH-D-004', 'BATCH-E-005', 'BATCH-F-006'];
 
-  const productName = products[Math.floor(Math.random() * products.length)];
-  const batchName = batches[Math.floor(Math.random() * batches.length)];
-  const customerName = customers[Math.floor(Math.random() * customers.length)];
-  const saled_pri_qty_cart = Math.floor(Math.random() * 50) + 1; // 1 to 50 primary quantity
-  const saled_sec_qty_cart = Math.floor(Math.random() * 10) + 1; // 1 to 10 secondary quantity
+//   const productName = products[Math.floor(Math.random() * products.length)];
+//   const batchName = batches[Math.floor(Math.random() * batches.length)];
+//   const customerName = customers[Math.floor(Math.random() * customers.length)];
+//   const saled_pri_qty_cart = Math.floor(Math.random() * 50) + 1; // 1 to 50 primary quantity
+//   const saled_sec_qty_cart = Math.floor(Math.random() * 10) + 1; // 1 to 10 secondary quantity
 
-  // Generate a random expiry date within the next 1-5 years
-  const expDate = new Date(date.getFullYear() + Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 12), 1); // Random month, day 1
+//   // Generate a random expiry date within the next 1-5 years
+//   const expDate = new Date(date.getFullYear() + Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 12), 1); // Random month, day 1
 
-  // Generate a unique order ID
-  const orderId = `SALE-${orgId ? orgId.substring(0, 3).toUpperCase() : 'ORG'}${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${index}`;
+//   // Generate a unique order ID
+//   const orderId = `SALE-${orgId ? orgId.substring(0, 3).toUpperCase() : 'ORG'}${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${index}`;
 
-  return {
-    product_name: productName,
-    batch_name: batchName,
-    exp_date: expDate.toISOString(), // ISO string for consistency
-    saled_pri_qty_cart,
-    saled_sec_qty_cart,
-    cust_name: customerName,
-    cart_created_date: date.toISOString(), // ISO string for consistency
-    order_id: orderId
-  };
-}
-// Function: generateDummyScheduleItem - END
+//   return {
+//     product_name: productName,
+//     batch_name: batchName,
+//     exp_date: expDate.toISOString(), // ISO string for consistency
+//     saled_pri_qty_cart,
+//     saled_sec_qty_cart,
+//     cust_name: customerName,
+//     cart_created_date: date.toISOString(), // ISO string for consistency
+//     order_id: orderId
+//   };
+// }
+// // Function: generateDummyScheduleItem - END
 
-// Function: generateDummyScheduleData - START
-/**
- * Generates an array of dummy Schedule Report data based on the specified filters.
- * @param {string} filterType - The type of filter ('startDate', 'month', 'quarter', 'year', 'default').
- * @param {*} filterValue1 - Primary filter value (e.g., start date string, month number, quarter number, year number).
- * @param {*} filterValue2 - Secondary filter value (e.g., end date string, year number).
- * @param {string} orgId - The organization ID.
- * @returns {Array<object>} An array of dummy Schedule Report items.
- */
-function generateDummyScheduleData(filterType, filterValue1, filterValue2, orgId) {
-  const dummyData = [];
-  let startDate;
-  let endDate;
-  const itemsPerDay = 2; // Generate 0-2 items per day for dummy data
+// // Function: generateDummyScheduleData - START
+// /**
+//  * Generates an array of dummy Schedule Report data based on the specified filters.
+//  * @param {string} filterType - The type of filter ('startDate', 'month', 'quarter', 'year', 'default').
+//  * @param {*} filterValue1 - Primary filter value (e.g., start date string, month number, quarter number, year number).
+//  * @param {*} filterValue2 - Secondary filter value (e.g., end date string, year number).
+//  * @param {string} orgId - The organization ID.
+//  * @returns {Array<object>} An array of dummy Schedule Report items.
+//  */
+// function generateDummyScheduleData(filterType, filterValue1, filterValue2, orgId) {
+//   const dummyData = [];
+//   let startDate;
+//   let endDate;
+//   const itemsPerDay = 2; // Generate 0-2 items per day for dummy data
 
-  // Determine the date range based on the filter type
-  if (filterType === 'startDate' && filterValue1 && filterValue2) { 
-    startDate = new Date(filterValue1);
-    endDate = new Date(filterValue2);
-  } else if (filterType === 'month' && filterValue1 && filterValue2) {
-    startDate = new Date(filterValue2, filterValue1 - 1, 1); // year, month-1, day (JS months are 0-indexed)
-    endDate = new Date(filterValue2, filterValue1, 0); // Last day of the current month
-  } else if (filterType === 'quarter' && filterValue1 && filterValue2) {
-    const year = parseInt(filterValue2);
-    const quarter = parseInt(filterValue1);
-    // Assuming April-March financial year for quarters
-    if (quarter === 1) { // Q1: April-June
-      startDate = new Date(year, 3, 1); // April is month 3
-      endDate = new Date(year, 5, 30); // June is month 5
-    } else if (quarter === 2) { // Q2: July-Sept
-      startDate = new Date(year, 6, 1); // July is month 6
-      endDate = new Date(year, 8, 30); // Sept is month 8
-    } else if (quarter === 3) { // Q3: Oct-Dec
-      startDate = new Date(year, 9, 1); // Oct is month 9
-      endDate = new Date(year, 11, 31); // Dec is month 11
-    } else if (quarter === 4) { // Q4: Jan-March (of the *next* calendar year relative to FY start year)
-      startDate = new Date(year + 1, 0, 1); // Jan of next calendar year
-      endDate = new Date(year + 1, 2, 31); // Mar of next calendar year
-    } else {
-      // Invalid quarter, fall back to default
-      const defaultEndDate = new Date();
-      const defaultStartDate = new Date();
-      defaultStartDate.setDate(defaultEndDate.getDate() - 6); // Last 7 days
-      startDate = defaultStartDate;
-      endDate = defaultEndDate;
-    }
-  } else if (filterType === 'year' && filterValue1) {
-    startDate = new Date(filterValue1, 0, 1); // January 1st
-    endDate = new Date(filterValue1, 11, 31); // December 31st
-  } else {
-    // Fallback: Default to last 7 days if no valid filter type or values provided
-    endDate = new Date();
-    startDate = new Date();
-    startDate.setDate(endDate.getDate() - 6);
-  }
+//   // Determine the date range based on the filter type
+//   if (filterType === 'startDate' && filterValue1 && filterValue2) { 
+//     startDate = new Date(filterValue1);
+//     endDate = new Date(filterValue2);
+//   } else if (filterType === 'month' && filterValue1 && filterValue2) {
+//     startDate = new Date(filterValue2, filterValue1 - 1, 1); // year, month-1, day (JS months are 0-indexed)
+//     endDate = new Date(filterValue2, filterValue1, 0); // Last day of the current month
+//   } else if (filterType === 'quarter' && filterValue1 && filterValue2) {
+//     const year = parseInt(filterValue2);
+//     const quarter = parseInt(filterValue1);
+//     // Assuming April-March financial year for quarters
+//     if (quarter === 1) { // Q1: April-June
+//       startDate = new Date(year, 3, 1); // April is month 3
+//       endDate = new Date(year, 5, 30); // June is month 5
+//     } else if (quarter === 2) { // Q2: July-Sept
+//       startDate = new Date(year, 6, 1); // July is month 6
+//       endDate = new Date(year, 8, 30); // Sept is month 8
+//     } else if (quarter === 3) { // Q3: Oct-Dec
+//       startDate = new Date(year, 9, 1); // Oct is month 9
+//       endDate = new Date(year, 11, 31); // Dec is month 11
+//     } else if (quarter === 4) { // Q4: Jan-March (of the *next* calendar year relative to FY start year)
+//       startDate = new Date(year + 1, 0, 1); // Jan of next calendar year
+//       endDate = new Date(year + 1, 2, 31); // Mar of next calendar year
+//     } else {
+//       // Invalid quarter, fall back to default
+//       const defaultEndDate = new Date();
+//       const defaultStartDate = new Date();
+//       defaultStartDate.setDate(defaultEndDate.getDate() - 6); // Last 7 days
+//       startDate = defaultStartDate;
+//       endDate = defaultEndDate;
+//     }
+//   } else if (filterType === 'year' && filterValue1) {
+//     startDate = new Date(filterValue1, 0, 1); // January 1st
+//     endDate = new Date(filterValue1, 11, 31); // December 31st
+//   } else {
+//     // Fallback: Default to last 7 days if no valid filter type or values provided
+//     endDate = new Date();
+//     startDate = new Date();
+//     startDate.setDate(endDate.getDate() - 6);
+//   }
 
-  const currentDate = new Date(startDate);
-  let itemIndex = 0;
-  // Loop through each day in the range, generating 0-2 items per day, up to a max of 30 items
-  while (currentDate <= endDate && itemIndex < 30) { 
-    const numItemsToday = Math.floor(Math.random() * 3); // 0 to 2 items per day
-    for (let i = 0; i < numItemsToday && itemIndex < 30; i++) {
-      const itemTime = new Date(currentDate);
-      itemTime.setHours(Math.floor(Math.random() * 24)); // Random hour
-      itemTime.setMinutes(Math.floor(Math.random() * 60)); // Random minute
-      itemTime.setSeconds(Math.floor(Math.random() * 60)); // Random second
-      dummyData.push(generateDummyScheduleItem(++itemIndex, itemTime, orgId));
-    }
-    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-  }
+//   const currentDate = new Date(startDate);
+//   let itemIndex = 0;
+//   // Loop through each day in the range, generating 0-2 items per day, up to a max of 30 items
+//   while (currentDate <= endDate && itemIndex < 30) { 
+//     const numItemsToday = Math.floor(Math.random() * 3); // 0 to 2 items per day
+//     for (let i = 0; i < numItemsToday && itemIndex < 30; i++) {
+//       const itemTime = new Date(currentDate);
+//       itemTime.setHours(Math.floor(Math.random() * 24)); // Random hour
+//       itemTime.setMinutes(Math.floor(Math.random() * 60)); // Random minute
+//       itemTime.setSeconds(Math.floor(Math.random() * 60)); // Random second
+//       dummyData.push(generateDummyScheduleItem(++itemIndex, itemTime, orgId));
+//     }
+//     currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+//   }
 
-  return dummyData;
-}
-// Function: generateDummyScheduleData - END
+//   return dummyData;
+// }
+// // Function: generateDummyScheduleData - END
 
-// --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR ITEMWISE IN/OUT REPORT ---
-// Function: generateDummyProductTransactionItem - START
-/**
- * Generates a single dummy product transaction item for the Itemwise In/Out report.
- * @param {number} index - A unique index for the transaction.
- * @param {Date} date - The date of the transaction.
- * @param {string} productId - The ID of the product being tracked.
- * @param {string} orgId - The organization ID.
- * @returns {object} A dummy product transaction item object.
- */
-function generateDummyProductTransactionItem(index, date, productId, orgId) {
-  const transactionTypes = ['Purchase', 'Sale', 'Stock Adjustment In', 'Stock Adjustment Out'];
-  const partyNames = ['Vendor Alpha', 'Customer One', 'Vendor Beta', 'Customer Two', 'Internal Transfer'];
+// // --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR ITEMWISE IN/OUT REPORT ---
+// // Function: generateDummyProductTransactionItem - START
+// /**
+//  * Generates a single dummy product transaction item for the Itemwise In/Out report.
+//  * @param {number} index - A unique index for the transaction.
+//  * @param {Date} date - The date of the transaction.
+//  * @param {string} productId - The ID of the product being tracked.
+//  * @param {string} orgId - The organization ID.
+//  * @returns {object} A dummy product transaction item object.
+//  */
+// function generateDummyProductTransactionItem(index, date, productId, orgId) {
+//   const transactionTypes = ['Purchase', 'Sale', 'Stock Adjustment In', 'Stock Adjustment Out'];
+//   const partyNames = ['Vendor Alpha', 'Customer One', 'Vendor Beta', 'Customer Two', 'Internal Transfer'];
 
-  const billNoPrefix = Math.random() > 0.5 ? 'INV' : 'GRN'; // Mix of Invoice and Goods Received Notes
-  const billNo = `${billNoPrefix}-${Math.floor(10000 + Math.random() * 90000)}`; // e.g., INV-12345
+//   const billNoPrefix = Math.random() > 0.5 ? 'INV' : 'GRN'; // Mix of Invoice and Goods Received Notes
+//   const billNo = `${billNoPrefix}-${Math.floor(10000 + Math.random() * 90000)}`; // e.g., INV-12345
 
-  const transactionType = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
-  const partyName = partyNames[Math.floor(Math.random() * partyNames.length)];
+//   const transactionType = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
+//   const partyName = partyNames[Math.floor(Math.random() * partyNames.length)];
 
-  let priReceived = 0;
-  let secReceived = 0;
-  let priIssued = 0;
-  let secIssued = 0;
+//   let priReceived = 0;
+//   let secReceived = 0;
+//   let priIssued = 0;
+//   let secIssued = 0;
 
-  // Simulate quantities based on transaction type
-  if (transactionType.includes('Receive') || transactionType === 'Purchase') {
-    priReceived = Math.floor(Math.random() * 20) + 1; // 1-20 primary units
-    secReceived = Math.floor(Math.random() * 5) + 0; // 0-5 secondary units
-  } else { // Includes 'Sale', 'Stock Adjustment Out'
-    priIssued = Math.floor(Math.random() * 15) + 1; // 1-15 primary units
-    secIssued = Math.floor(Math.random() * 4) + 0; // 0-4 secondary units
-  }
+//   // Simulate quantities based on transaction type
+//   if (transactionType.includes('Receive') || transactionType === 'Purchase') {
+//     priReceived = Math.floor(Math.random() * 20) + 1; // 1-20 primary units
+//     secReceived = Math.floor(Math.random() * 5) + 0; // 0-5 secondary units
+//   } else { // Includes 'Sale', 'Stock Adjustment Out'
+//     priIssued = Math.floor(Math.random() * 15) + 1; // 1-15 primary units
+//     secIssued = Math.floor(Math.random() * 4) + 0; // 0-4 secondary units
+//   }
 
-  return {
-    bill_no: billNo,
-    transaction_type: transactionType,
-    transaction_date: date.toISOString(),
-    party_name: partyName,
-    pri_received_quantity: priReceived,
-    sec_received_quantity: secReceived,
-    pri_issued_quantity: priIssued,
-    sec_issued_quantity: secIssued,
-    // Add product details for context, even if they aren't directly displayed in the table
-    product_id: productId,
-    // product_name: 'Dummy Product Name' // Could be derived from productId if needed
-  };
-}
-// Function: generateDummyProductTransactionItem - END
+//   return {
+//     bill_no: billNo,
+//     transaction_type: transactionType,
+//     transaction_date: date.toISOString(),
+//     party_name: partyName,
+//     pri_received_quantity: priReceived,
+//     sec_received_quantity: secReceived,
+//     pri_issued_quantity: priIssued,
+//     sec_issued_quantity: secIssued,
+//     // Add product details for context, even if they aren't directly displayed in the table
+//     product_id: productId,
+//     // product_name: 'Dummy Product Name' // Could be derived from productId if needed
+//   };
+// }
+// // Function: generateDummyProductTransactionItem - END
 
-// Function: generateDummyProductTransactions - START
-/**
- * Generates an array of dummy product transactions for the Itemwise In/Out report.
- * @param {string} productId - The ID of the selected product.
- * @param {string} orgId - The organization ID.
- * @param {string} startDateStr - The start date string (YYYY-MM-DD).
- * @param {string} endDateStr - The end date string (YYYY-MM-DD).
- * @returns {Array<object>} An array of dummy product transaction items.
- */
-function generateDummyProductTransactions(productId, orgId, startDateStr, endDateStr) {
-  const transactions = [];
-  const startDate = new Date(startDateStr);
-  const endDate = new Date(endDateStr);
+// // Function: generateDummyProductTransactions - START
+// /**
+//  * Generates an array of dummy product transactions for the Itemwise In/Out report.
+//  * @param {string} productId - The ID of the selected product.
+//  * @param {string} orgId - The organization ID.
+//  * @param {string} startDateStr - The start date string (YYYY-MM-DD).
+//  * @param {string} endDateStr - The end date string (YYYY-MM-DD).
+//  * @returns {Array<object>} An array of dummy product transaction items.
+//  */
+// function generateDummyProductTransactions(productId, orgId, startDateStr, endDateStr) {
+//   const transactions = [];
+//   const startDate = new Date(startDateStr);
+//   const endDate = new Date(endDateStr);
 
-  const currentDate = new Date(startDate);
-  let transactionCount = 0; // Limit total dummy transactions
+//   const currentDate = new Date(startDate);
+//   let transactionCount = 0; // Limit total dummy transactions
 
-  // Generate 0-3 transactions per day within the range, up to a max of 25 transactions
-  while (currentDate <= endDate && transactionCount < 25) {
-    const numTransactionsToday = Math.floor(Math.random() * 4); // 0 to 3 transactions per day
-    for (let i = 0; i < numTransactionsToday && transactionCount < 25; i++) {
-      const transactionTime = new Date(currentDate);
-      transactionTime.setHours(Math.floor(Math.random() * 24));
-      transactionTime.setMinutes(Math.floor(Math.random() * 60));
-      transactionTime.setSeconds(Math.floor(Math.random() * 60));
+//   // Generate 0-3 transactions per day within the range, up to a max of 25 transactions
+//   while (currentDate <= endDate && transactionCount < 25) {
+//     const numTransactionsToday = Math.floor(Math.random() * 4); // 0 to 3 transactions per day
+//     for (let i = 0; i < numTransactionsToday && transactionCount < 25; i++) {
+//       const transactionTime = new Date(currentDate);
+//       transactionTime.setHours(Math.floor(Math.random() * 24));
+//       transactionTime.setMinutes(Math.floor(Math.random() * 60));
+//       transactionTime.setSeconds(Math.floor(Math.random() * 60));
 
-      transactions.push(generateDummyProductTransactionItem(transactions.length + 1, transactionTime, productId, orgId));
-      transactionCount++;
-    }
-    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-  }
-  return transactions;
-}
-// Function: generateDummyProductTransactions - END
+//       transactions.push(generateDummyProductTransactionItem(transactions.length + 1, transactionTime, productId, orgId));
+//       transactionCount++;
+//     }
+//     currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+//   }
+//   return transactions;
+// }
+// // Function: generateDummyProductTransactions - END
 
-// --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR PARTYWISE IN/OUT REPORT ---
-// Function: generateDummyPartyTransactionItem - START
-/**
- * Generates a single dummy party transaction item for the Partywise In/Out report.
- * @param {number} index - A unique index for the transaction.
- * @param {Date} date - The date of the transaction.
- * @param {string} partyId - The ID of the party.
- * @param {string} partyType - The type of party ('customer' or 'distributor').
- * @param {string} orgId - The organization ID.
- * @returns {object} A dummy party transaction item object.
- */
-function generateDummyPartyTransactionItem(index, date, partyId, partyType, orgId) {
-  const products = ['Paracetamol 500mg', 'Amoxicillin 250mg', 'Ibuprofen 400mg', 'Cough Syrup (100ml)', 'Vitamin C Tabs', 'Antacid Gel'];
+// // --- NEW HELPER FUNCTIONS FOR DUMMY DATA GENERATION FOR PARTYWISE IN/OUT REPORT ---
+// // Function: generateDummyPartyTransactionItem - START
+// /**
+//  * Generates a single dummy party transaction item for the Partywise In/Out report.
+//  * @param {number} index - A unique index for the transaction.
+//  * @param {Date} date - The date of the transaction.
+//  * @param {string} partyId - The ID of the party.
+//  * @param {string} partyType - The type of party ('customer' or 'distributor').
+//  * @param {string} orgId - The organization ID.
+//  * @returns {object} A dummy party transaction item object.
+//  */
+// function generateDummyPartyTransactionItem(index, date, partyId, partyType, orgId) {
+//   const products = ['Paracetamol 500mg', 'Amoxicillin 250mg', 'Ibuprofen 400mg', 'Cough Syrup (100ml)', 'Vitamin C Tabs', 'Antacid Gel'];
 
-  // Bill types will vary by party type
-  let billNoPrefix;
-  let transactionType;
-  let priReceived = 0;
-  let secReceived = 0;
-  let priIssued = 0;
-  let secIssued = 0;
+//   // Bill types will vary by party type
+//   let billNoPrefix;
+//   let transactionType;
+//   let priReceived = 0;
+//   let secReceived = 0;
+//   let priIssued = 0;
+//   let secIssued = 0;
 
-  if (partyType === 'customer') {
-    // Customer transactions are typically Sales or Payments Received (from their perspective)
-    billNoPrefix = 'INV';
-    const types = ['Sale', 'Return In']; // Return In is customer returning
-    transactionType = types[Math.floor(Math.random() * types.length)];
+//   if (partyType === 'customer') {
+//     // Customer transactions are typically Sales or Payments Received (from their perspective)
+//     billNoPrefix = 'INV';
+//     const types = ['Sale', 'Return In']; // Return In is customer returning
+//     transactionType = types[Math.floor(Math.random() * types.length)];
 
-    const qty = Math.floor(Math.random() * 10) + 1;
-    if (transactionType === 'Sale') {
-      priIssued = qty; // We issue to customer
-      secIssued = Math.floor(Math.random() * 3);
-    } else { // Return In
-      priReceived = qty; // We receive from customer
-      secReceived = Math.floor(Math.random() * 3);
-    }
-  } else { // distributor
-    // Distributor transactions are typically Purchases or Returns Out (to them)
-    billNoPrefix = 'GRN'; // Goods Receipt Note
-    const types = ['Purchase', 'Return Out']; // Return Out is us returning to distributor
-    transactionType = types[Math.floor(Math.random() * types.length)];
+//     const qty = Math.floor(Math.random() * 10) + 1;
+//     if (transactionType === 'Sale') {
+//       priIssued = qty; // We issue to customer
+//       secIssued = Math.floor(Math.random() * 3);
+//     } else { // Return In
+//       priReceived = qty; // We receive from customer
+//       secReceived = Math.floor(Math.random() * 3);
+//     }
+//   } else { // distributor
+//     // Distributor transactions are typically Purchases or Returns Out (to them)
+//     billNoPrefix = 'GRN'; // Goods Receipt Note
+//     const types = ['Purchase', 'Return Out']; // Return Out is us returning to distributor
+//     transactionType = types[Math.floor(Math.random() * types.length)];
 
-    const qty = Math.floor(Math.random() * 20) + 5;
-    if (transactionType === 'Purchase') {
-      priReceived = qty; // We receive from distributor
-      secReceived = Math.floor(Math.random() * 5);
-    } else { // Return Out
-      priIssued = qty; // We issue back to distributor
-      secIssued = Math.floor(Math.random() * 5);
-    }
-  }
+//     const qty = Math.floor(Math.random() * 20) + 5;
+//     if (transactionType === 'Purchase') {
+//       priReceived = qty; // We receive from distributor
+//       secReceived = Math.floor(Math.random() * 5);
+//     } else { // Return Out
+//       priIssued = qty; // We issue back to distributor
+//       secIssued = Math.floor(Math.random() * 5);
+//     }
+//   }
 
-  const billNo = `${billNoPrefix}-${Math.floor(10000 + Math.random() * 90000)}`;
-  const productName = products[Math.floor(Math.random() * products.length)];
+//   const billNo = `${billNoPrefix}-${Math.floor(10000 + Math.random() * 90000)}`;
+//   const productName = products[Math.floor(Math.random() * products.length)];
 
-  return {
-    bill_no: billNo,
-    transaction_type: transactionType,
-    transaction_date: date.toISOString(),
-    product_name: productName, // Partywise also shows product name
-    pri_received_quantity: priReceived,
-    sec_received_quantity: secReceived,
-    pri_issued_quantity: priIssued,
-    sec_issued_quantity: secIssued,
-    party_id: partyId, // The ID of the party for whom the report is generated
-    // We don't need party_name here as it's passed as partyId and type.
-    // The frontend already knows the party name from the dropdown selection.
-  };
-}
-// Function: generateDummyPartyTransactionItem - END
+//   return {
+//     bill_no: billNo,
+//     transaction_type: transactionType,
+//     transaction_date: date.toISOString(),
+//     product_name: productName, // Partywise also shows product name
+//     pri_received_quantity: priReceived,
+//     sec_received_quantity: secReceived,
+//     pri_issued_quantity: priIssued,
+//     sec_issued_quantity: secIssued,
+//     party_id: partyId, // The ID of the party for whom the report is generated
+//     // We don't need party_name here as it's passed as partyId and type.
+//     // The frontend already knows the party name from the dropdown selection.
+//   };
+// }
+// // Function: generateDummyPartyTransactionItem - END
 
-// Function: generateDummyPartyTransactions - START
-/**
- * Generates an array of dummy product transactions for a specific party for the Partywise In/Out report.
- * @param {string} partyType - The type of party ('customer' or 'distributor').
- * @param {string} partyId - The ID of the selected party.
- * @param {string} orgId - The organization ID.
- * @param {string} startDateStr - The start date string (YYYY-MM-DD).
- * @param {string} endDateStr - The end date string (YYYY-MM-DD).
- * @returns {Array<object>} An array of dummy party transaction items.
- */
-function generateDummyPartyTransactions(partyType, partyId, orgId, startDateStr, endDateStr) {
-  const transactions = [];
-  const startDate = new Date(startDateStr);
-  const endDate = new Date(endDateStr);
+// // Function: generateDummyPartyTransactions - START
+// /**
+//  * Generates an array of dummy product transactions for a specific party for the Partywise In/Out report.
+//  * @param {string} partyType - The type of party ('customer' or 'distributor').
+//  * @param {string} partyId - The ID of the selected party.
+//  * @param {string} orgId - The organization ID.
+//  * @param {string} startDateStr - The start date string (YYYY-MM-DD).
+//  * @param {string} endDateStr - The end date string (YYYY-MM-DD).
+//  * @returns {Array<object>} An array of dummy party transaction items.
+//  */
+// function generateDummyPartyTransactions(partyType, partyId, orgId, startDateStr, endDateStr) {
+//   const transactions = [];
+//   const startDate = new Date(startDateStr);
+//   const endDate = new Date(endDateStr);
 
-  const currentDate = new Date(startDate);
-  let transactionCount = 0;
+//   const currentDate = new Date(startDate);
+//   let transactionCount = 0;
 
-  // Generate 0-4 transactions per day within the range, up to a max of 30 transactions
-  while (currentDate <= endDate && transactionCount < 30) {
-    const numTransactionsToday = Math.floor(Math.random() * 5); // 0 to 4 transactions per day
-    for (let i = 0; i < numTransactionsToday && transactionCount < 30; i++) {
-      const transactionTime = new Date(currentDate);
-      transactionTime.setHours(Math.floor(Math.random() * 24));
-      transactionTime.setMinutes(Math.floor(Math.random() * 60));
-      transactionTime.setSeconds(Math.floor(Math.random() * 60));
+//   // Generate 0-4 transactions per day within the range, up to a max of 30 transactions
+//   while (currentDate <= endDate && transactionCount < 30) {
+//     const numTransactionsToday = Math.floor(Math.random() * 5); // 0 to 4 transactions per day
+//     for (let i = 0; i < numTransactionsToday && transactionCount < 30; i++) {
+//       const transactionTime = new Date(currentDate);
+//       transactionTime.setHours(Math.floor(Math.random() * 24));
+//       transactionTime.setMinutes(Math.floor(Math.random() * 60));
+//       transactionTime.setSeconds(Math.floor(Math.random() * 60));
 
-      transactions.push(generateDummyPartyTransactionItem(transactions.length + 1, transactionTime, partyId, partyType, orgId));
-      transactionCount++;
-    }
-    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-  }
-  return transactions;
-}
-// Function: generateDummyPartyTransactions - END
+//       transactions.push(generateDummyPartyTransactionItem(transactions.length + 1, transactionTime, partyId, partyType, orgId));
+//       transactionCount++;
+//     }
+//     currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+//   }
+//   return transactions;
+// }
+// // Function: generateDummyPartyTransactions - END
 
-// --- NEW HELPER FUNCTIONS FOR DUMMY PARTY LISTS (FOR DROPDOWNS) ---
-// Function: generateDummyDistributors - START
-/**
- * Generates a list of dummy distributors.
- * @param {string} orgId - The organization ID.
- * @returns {Array<object>} An array of dummy distributor objects.
- */
-function generateDummyDistributors(orgId) {
-  const distributors = [];
-  for (let i = 1; i <= 5; i++) { // Generate 5 dummy distributors
-    const vendorId = `VND-${orgId.substring(0,3).toUpperCase()}-${String(i).padStart(3, '0')}`;
-    distributors.push({
-      vendor_id: vendorId,
-      vendor_name: `Dummy Distributor ${String.fromCharCode(64 + i)}`,
-      org_id: orgId
-    });
-  }
-  return distributors;
-}
-// Function: generateDummyDistributors - END
+// // --- NEW HELPER FUNCTIONS FOR DUMMY PARTY LISTS (FOR DROPDOWNS) ---
+// // Function: generateDummyDistributors - START
+// /**
+//  * Generates a list of dummy distributors.
+//  * @param {string} orgId - The organization ID.
+//  * @returns {Array<object>} An array of dummy distributor objects.
+//  */
+// function generateDummyDistributors(orgId) {
+//   const distributors = [];
+//   for (let i = 1; i <= 5; i++) { // Generate 5 dummy distributors
+//     const vendorId = `VND-${orgId.substring(0,3).toUpperCase()}-${String(i).padStart(3, '0')}`;
+//     distributors.push({
+//       vendor_id: vendorId,
+//       vendor_name: `Dummy Distributor ${String.fromCharCode(64 + i)}`,
+//       org_id: orgId
+//     });
+//   }
+//   return distributors;
+// }
+// // Function: generateDummyDistributors - END
 
-// Function: generateDummyCustomers - START
-/**
- * Generates a list of dummy customers.
- * @param {string} orgId - The organization ID.
- * @returns {Array<object>} An array of dummy customer objects.
- */
-function generateDummyCustomers(orgId) {
-  const customers = [];
-  for (let i = 1; i <= 7; i++) { // Generate 7 dummy customers
-    const customerId = `CUST-${orgId.substring(0,3).toUpperCase()}-${String(i).padStart(3, '0')}`;
-    customers.push({
-      customer_id: customerId,
-      cust_name: `Dummy Customer ${String.fromCharCode(96 + i).toUpperCase()}`,
-      org_id: orgId
-    });
-  }
-  return customers;
-}
-// Function: generateDummyCustomers - END
+// // Function: generateDummyCustomers - START
+// /**
+//  * Generates a list of dummy customers.
+//  * @param {string} orgId - The organization ID.
+//  * @returns {Array<object>} An array of dummy customer objects.
+//  */
+// function generateDummyCustomers(orgId) {
+//   const customers = [];
+//   for (let i = 1; i <= 7; i++) { // Generate 7 dummy customers
+//     const customerId = `CUST-${orgId.substring(0,3).toUpperCase()}-${String(i).padStart(3, '0')}`;
+//     customers.push({
+//       customer_id: customerId,
+//       cust_name: `Dummy Customer ${String.fromCharCode(96 + i).toUpperCase()}`,
+//       org_id: orgId
+//     });
+//   }
+//   return customers;
+// }
+// // Function: generateDummyCustomers - END
 
 module.exports = {
-  // Function: getFilteredSaledCategory - START
-  /**
-   * Generates and returns filtered dummy sales category data for the Schedule Report.
-   * This function bypasses actual database calls and provides mock data for testing.
-   *
-   * @param {object} filter - An object containing filtering parameters (e.g., startDate, endDate, month, year, quarter, orgId).
-   * @returns {object} An object containing the dummy sales category data, wrapped in a nested structure.
-   */
+  // // Function: getFilteredSaledCategory - START
+  // /**
+  //  * Generates and returns filtered dummy sales category data for the Schedule Report.
+  //  * This function bypasses actual database calls and provides mock data for testing.
+  //  *
+  //  * @param {object} filter - An object containing filtering parameters (e.g., startDate, endDate, month, year, quarter, orgId).
+  //  * @returns {object} An object containing the dummy sales category data, wrapped in a nested structure.
+  //  */
   getFilteredSaledCategory: async (filter) => {
-    // We are no longer using executeTransaction or repository calls directly here for dummy data.
-    // Uncomment the 'executeTransaction' and 'categoryReportRepository' imports at the top
-    // and remove this dummy data generation logic if you want to switch back to real database interaction.
-    // return executeTransaction(async (connection) => {
-    const {
-      month,
-      year,
-      quarter,
-      startDate,
-      endDate,
-      orgId,
-    } = filter;
-
-    try {
-      let scheduleData = [];
-
-      // Determine which dummy data generation function to call based on the filter
-      if (startDate && endDate) {
-        // Note: The filter values for startDate and endDate are already strings from frontend,
-        // generateDummyScheduleData will handle their conversion to Date objects.
-        scheduleData = generateDummyScheduleData('startDate', startDate, endDate, orgId);
-      } else if (quarter && year) {
-        scheduleData = generateDummyScheduleData('quarter', quarter, year, orgId);
-      } else if (month && year) {
-        scheduleData = generateDummyScheduleData('month', month, year, orgId);
-      } else if (year && !month && !quarter) { // Filter by year only
-        scheduleData = generateDummyScheduleData('year', year, null, orgId);
-      } else {
-        // Default fallback if no valid filters are provided (e.g., on initial page load without specific params)
-        scheduleData = generateDummyScheduleData('default', null, null, orgId);
+    return executeTransaction(async (connection) => {
+      if (filter.startDate && filter.endDate) {
+        filter.endDate = new Date(filter.endDate);
+        filter.endDate.setDate(filter.endDate.getDate() + 1);
+        // eslint-disable-next-line max-len
+        return categoryReportRepository.getSaledCategoryBetweenDates(connection, filter.startDate, filter.endDate, filter.orgId, 15);
       }
 
-      // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
-      // Based on previous debugging (e.g., Credit Report), this is likely 4 levels deep under 'data'.
-      // The structure needs to be { data: { data: { data: { data: yourArray } } } }
-      return { data: { data: { data: { data: scheduleData } } } };
-    } catch (error) {
-      console.error('Error generating dummy Schedule Report data:', error);
-      // Re-throw the error so the controller can catch it and send an appropriate HTTP 500 response
-      throw new Error('Failed to generate dummy Schedule Report data due to an internal error.');
-    }
-    // }); // End of executeTransaction if it were enabled
-  },
-  // Function: getFilteredSaledCategory - END
+      if (filter.quarter && filter.year) {
+        let quarterStart;
+        let quarterEnd;
+        if (filter.quarter === '1') {
+          quarterStart = 4;
+          quarterEnd = 6;
+        } else if (filter.quarter === '2') {
+          quarterStart = 7;
+          quarterEnd = 9;
+        } else if (filter.quarter === '3') {
+          quarterStart = 10;
+          quarterEnd = 12;
+        } else if (filter.quarter === '4') {
+          quarterStart = 1;
+          quarterEnd = 3;
+        }
+        // eslint-disable-next-line max-len
+        return categoryReportRepository.getSaledCategoryForQuarter(connection, quarterStart, quarterEnd, filter.year, filter.orgId, 15);
+      }
 
-  // Function: getProductTransactions - START (Updated for dummy data)
-  /**
-   * Generates and returns filtered dummy product transaction data for the Itemwise In/Out Report.
-   * This function bypasses actual database calls and provides mock data for testing.
-   *
-   * @param {string} productId - The ID of the selected product.
-   * @param {string} orgId - The organization ID.
-   * @param {string} startDate - The start date string for filtering.
-   * @param {string} endDate - The end date string for filtering.
-   * @returns {object} An object containing the dummy product transaction data, wrapped in a nested structure.
-   */
+      if (filter.month && filter.year) {
+        // eslint-disable-next-line max-len
+        return categoryReportRepository.getSaledCategoryForMonth(connection, filter.month, filter.year, filter.orgId, 15);
+      }
+
+      if (filter.year && !filter.month && !filter.quarterStart && !filter.quarterEnd) {
+        return categoryReportRepository.getSaledCategoryForYear(connection, filter.year, filter.orgId, 15);
+    // // We are no longer using executeTransaction or repository calls directly here for dummy data.
+    // // Uncomment the 'executeTransaction' and 'categoryReportRepository' imports at the top
+    // // and remove this dummy data generation logic if you want to switch back to real database interaction.
+    // // return executeTransaction(async (connection) => {
+    // const {
+    //   month,
+    //   year,
+    //   quarter,
+    //   startDate,
+    //   endDate,
+    //   orgId,
+    // } = filter;
+
+    // try {
+    //   let scheduleData = [];
+
+    //   // Determine which dummy data generation function to call based on the filter
+    //   if (startDate && endDate) {
+    //     // Note: The filter values for startDate and endDate are already strings from frontend,
+    //     // generateDummyScheduleData will handle their conversion to Date objects.
+    //     scheduleData = generateDummyScheduleData('startDate', startDate, endDate, orgId);
+    //   } else if (quarter && year) {
+    //     scheduleData = generateDummyScheduleData('quarter', quarter, year, orgId);
+    //   } else if (month && year) {
+    //     scheduleData = generateDummyScheduleData('month', month, year, orgId);
+    //   } else if (year && !month && !quarter) { // Filter by year only
+    //     scheduleData = generateDummyScheduleData('year', year, null, orgId);
+    //   } else {
+    //     // Default fallback if no valid filters are provided (e.g., on initial page load without specific params)
+    //     scheduleData = generateDummyScheduleData('default', null, null, orgId);
+      }
+      throw new Error('Invalid filters provided');
+    });
+
+    //   // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
+    //   // Based on previous debugging (e.g., Credit Report), this is likely 4 levels deep under 'data'.
+    //   // The structure needs to be { data: { data: { data: { data: yourArray } } } }
+    //   return { data: { data: { data: { data: scheduleData } } } };
+    // } catch (error) {
+    //   console.error('Error generating dummy Schedule Report data:', error);
+    //   // Re-throw the error so the controller can catch it and send an appropriate HTTP 500 response
+    //   throw new Error('Failed to generate dummy Schedule Report data due to an internal error.');
+    // }
+    // // }); // End of executeTransaction if it were enabled
+  },
+  // // Function: getFilteredSaledCategory - END
+
+  // // Function: getProductTransactions - START (Updated for dummy data)
+  // /**
+  //  * Generates and returns filtered dummy product transaction data for the Itemwise In/Out Report.
+  //  * This function bypasses actual database calls and provides mock data for testing.
+  //  *
+  //  * @param {string} productId - The ID of the selected product.
+  //  * @param {string} orgId - The organization ID.
+  //  * @param {string} startDate - The start date string for filtering.
+  //  * @param {string} endDate - The end date string for filtering.
+  //  * @returns {object} An object containing the dummy product transaction data, wrapped in a nested structure.
+  //  */
   getProductTransactions: async (productId, orgId, startDate, endDate) => {
-    // We are no longer using executeTransaction or repository calls directly here for dummy data.
-    // Uncomment the 'executeTransaction' and 'productTransactionRepository' imports at the top
-    // and remove this dummy data generation logic if you want to switch back to real database interaction.
-    // return executeTransaction(async (connection) => { // Commented out
-    //   const results = productTransactionRepository.getProductTransactions(connection, productId, orgId, startDate, endDate);
-    //   return results;
-    // }); // Commented out
+    return executeTransaction(async (connection) => {
+      const results = productTransactionRepository.getProductTransactions(connection, productId, orgId, startDate, endDate);
+      return results;
+    });
+    // // We are no longer using executeTransaction or repository calls directly here for dummy data.
+    // // Uncomment the 'executeTransaction' and 'productTransactionRepository' imports at the top
+    // // and remove this dummy data generation logic if you want to switch back to real database interaction.
+    // // return executeTransaction(async (connection) => { // Commented out
+    // //   const results = productTransactionRepository.getProductTransactions(connection, productId, orgId, startDate, endDate);
+    // //   return results;
+    // // }); // Commented out
 
-    try {
-      console.log(`Generating dummy data for Product Transactions for Product ID: ${productId}, Org ID: ${orgId}, Dates: ${startDate} to ${endDate}`);
+    // try {
+    //   console.log(`Generating dummy data for Product Transactions for Product ID: ${productId}, Org ID: ${orgId}, Dates: ${startDate} to ${endDate}`);
 
-      const dummyTransactions = generateDummyProductTransactions(productId, orgId, startDate, endDate);
+    //   const dummyTransactions = generateDummyProductTransactions(productId, orgId, startDate, endDate);
 
-      // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
-      // Based on previous debugging (e.g., Credit Report), this is likely 4 levels deep under 'data'.
-      // The structure needs to be { data: { data: { data: { data: yourArray } } } }
-      return { data: { data: { data: { data: dummyTransactions } } } };
-    } catch (error) {
-      console.error('Error generating dummy Product Transactions data:', error);
-      // Re-throw the error so the controller can catch it and send an appropriate HTTP 500 response
-      throw new Error('Failed to generate dummy Product Transactions data due to an internal error.');
-    }
+    //   // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
+    //   // Based on previous debugging (e.g., Credit Report), this is likely 4 levels deep under 'data'.
+    //   // The structure needs to be { data: { data: { data: { data: yourArray } } } }
+    //   return { data: { data: { data: { data: dummyTransactions } } } };
+    // } catch (error) {
+    //   console.error('Error generating dummy Product Transactions data:', error);
+    //   // Re-throw the error so the controller can catch it and send an appropriate HTTP 500 response
+    //   throw new Error('Failed to generate dummy Product Transactions data due to an internal error.');
+    // }
   },
-  // Function: getProductTransactions - END
+  // // Function: getProductTransactions - END
 
-  // Function: getPartyTransactions - START (Updated for dummy data)
-  /**
-   * Generates and returns filtered dummy party transaction data for the Partywise In/Out Report.
-   * This function bypasses actual database calls and provides mock data for testing.
-   *
-   * @param {string} partyType - The type of party ('customer' or 'distributor').
-   * @param {string} partyId - The ID of the selected party.
-   * @param {string} orgId - The organization ID.
-   * @param {string} startDate - The start date string for filtering.
-   * @param {string} endDate - The end date string for filtering.
-   * @returns {object} An object containing the dummy party transaction data, wrapped in a nested structure.
-   */
+  // // Function: getPartyTransactions - START (Updated for dummy data)
+  // /**
+  //  * Generates and returns filtered dummy party transaction data for the Partywise In/Out Report.
+  //  * This function bypasses actual database calls and provides mock data for testing.
+  //  *
+  //  * @param {string} partyType - The type of party ('customer' or 'distributor').
+  //  * @param {string} partyId - The ID of the selected party.
+  //  * @param {string} orgId - The organization ID.
+  //  * @param {string} startDate - The start date string for filtering.
+  //  * @param {string} endDate - The end date string for filtering.
+  //  * @returns {object} An object containing the dummy party transaction data, wrapped in a nested structure.
+  //  */
   getPartyTransactions: async (partyType, partyId, orgId, startDate, endDate) => {
-    // We are no longer using executeTransaction or repository calls directly here for dummy data.
-    // Uncomment the 'executeTransaction' and 'partyTransactionRepository' imports at the top
-    // and remove this dummy data generation logic if you want to switch back to real database interaction.
-    // return executeTransaction(async (connection) => {
-    //   if (partyType === 'customer') {
-    //     const customerId = partyId;
-    //     const results = partyTransactionRepository.getCustomerTransactions(connection, customerId, orgId, startDate, endDate);
-    //     return results;
-    //   }
-    //   if (partyType === 'distributor') {
-    //     const distributorId = partyId;
-    //     const results = partyTransactionRepository.getDistributorTransactions(connection, distributorId, orgId, startDate, endDate);
-    //     return results;
-    //   }
-    //   throw new Error('Invalid party provided');
-    // });
+    return executeTransaction(async (connection) => {
+      if (partyType === 'customer') {
+        const customerId = partyId;
+        const results = partyTransactionRepository.getCustomerTransactions(connection, customerId, orgId, startDate, endDate);
+        return results;
+      }
+      if (partyType === 'distributor') {
+        const distributorId = partyId;
+        const results = partyTransactionRepository.getDistributorTransactions(connection, distributorId, orgId, startDate, endDate);
+        return results;
+      }
+      throw new Error('Invalid party provided');
+    });
+  //   // We are no longer using executeTransaction or repository calls directly here for dummy data.
+  //   // Uncomment the 'executeTransaction' and 'partyTransactionRepository' imports at the top
+  //   // and remove this dummy data generation logic if you want to switch back to real database interaction.
+  //   // return executeTransaction(async (connection) => {
+  //   //   if (partyType === 'customer') {
+  //   //     const customerId = partyId;
+  //   //     const results = partyTransactionRepository.getCustomerTransactions(connection, customerId, orgId, startDate, endDate);
+  //   //     return results;
+  //   //   }
+  //   //   if (partyType === 'distributor') {
+  //   //     const distributorId = partyId;
+  //   //     const results = partyTransactionRepository.getDistributorTransactions(connection, distributorId, orgId, startDate, endDate);
+  //   //     return results;
+  //   //   }
+  //   //   throw new Error('Invalid party provided');
+  //   // });
 
-    try {
-      console.log(`Generating dummy data for Party Transactions for Party Type: ${partyType}, Party ID: ${partyId}, Org ID: ${orgId}, Dates: ${startDate} to ${endDate}`);
+  //   try {
+  //     console.log(`Generating dummy data for Party Transactions for Party Type: ${partyType}, Party ID: ${partyId}, Org ID: ${orgId}, Dates: ${startDate} to ${endDate}`);
 
-      const dummyTransactions = generateDummyPartyTransactions(partyType, partyId, orgId, startDate, endDate);
+  //     const dummyTransactions = generateDummyPartyTransactions(partyType, partyId, orgId, startDate, endDate);
 
-      // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
-      // This is likely 4 levels deep under 'data'.
-      // The structure needs to be { data: { data: { data: { data: yourArray } } } }
-      return { data: { data: { data: { data: dummyTransactions } } } };
-    } catch (error) {
-      console.error('Error generating dummy Party Transactions data:', error);
-      throw new Error('Failed to generate dummy Party Transactions data due to an internal error.');
-    }
-  },
-  // Function: getPartyTransactions - END
+  //     // CRITICAL: Wrap the dummy data in the exact nested structure the frontend expects.
+  //     // This is likely 4 levels deep under 'data'.
+  //     // The structure needs to be { data: { data: { data: { data: yourArray } } } }
+  //     return { data: { data: { data: { data: dummyTransactions } } } };
+  //   } catch (error) {
+  //     console.error('Error generating dummy Party Transactions data:', error);
+  //     throw new Error('Failed to generate dummy Party Transactions data due to an internal error.');
+  //   }
+  // },
+  // // Function: getPartyTransactions - END
 
-  // --- NEW FUNCTIONS TO SERVE DUMMY LISTS OF PARTIES FOR DROPDOWNS ---
-  /**
-   * Provides a list of dummy distributors for dropdowns.
-   * In a real application, this would fetch from a database.
-   * @param {string} orgId - The organization ID.
-   * @returns {object} An object containing the dummy distributor list.
-   */
-  getAllDistributors: async (orgId) => {
-    console.log(`Providing dummy list of distributors for Org ID: ${orgId}`);
-    const distributors = generateDummyDistributors(orgId);
-    // Assuming a simpler return structure for lists: { data: [...] }
-    return { data: distributors };
-  },
+  // // --- NEW FUNCTIONS TO SERVE DUMMY LISTS OF PARTIES FOR DROPDOWNS ---
+  // /**
+  //  * Provides a list of dummy distributors for dropdowns.
+  //  * In a real application, this would fetch from a database.
+  //  * @param {string} orgId - The organization ID.
+  //  * @returns {object} An object containing the dummy distributor list.
+  //  */
+  // getAllDistributors: async (orgId) => {
+  //   console.log(`Providing dummy list of distributors for Org ID: ${orgId}`);
+  //   const distributors = generateDummyDistributors(orgId);
+  //   // Assuming a simpler return structure for lists: { data: [...] }
+  //   return { data: distributors };
+  // },
 
-  /**
-   * Provides a list of dummy customers for dropdowns.
-   * In a real application, this would fetch from a database.
-   * @param {string} orgId - The organization ID.
-   * @returns {object} An object containing the dummy customer list.
-   */
-  getAllCustomers: async (orgId) => {
-    console.log(`Providing dummy list of customers for Org ID: ${orgId}`);
-    const customers = generateDummyCustomers(orgId);
-    // Assuming a simpler return structure for lists: { data: [...] }
-    return { data: customers };
+  // /**
+  //  * Provides a list of dummy customers for dropdowns.
+  //  * In a real application, this would fetch from a database.
+  //  * @param {string} orgId - The organization ID.
+  //  * @returns {object} An object containing the dummy customer list.
+  //  */
+  // getAllCustomers: async (orgId) => {
+  //   console.log(`Providing dummy list of customers for Org ID: ${orgId}`);
+  //   const customers = generateDummyCustomers(orgId);
+  //   // Assuming a simpler return structure for lists: { data: [...] }
+  //   return { data: customers };
   },
   // --- END NEW FUNCTIONS FOR DUMMY PARTY LISTS ---
 

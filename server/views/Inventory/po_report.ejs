@@ -538,8 +538,8 @@
 
               // --- CRITICAL FIX: Access the nested 'data.data.data.data' property from the backend response ---
               // Assuming same nesting as GRN. If not, debug using console.logs as before.
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.length > 0) {
-                var items = data.data.data.data.data; // PROBABLE CORRECT ACCESS: Assuming data is nested 3 levels deep
+              if (Array.isArray(data.data) && data.data.length > 0) {
+                var items = data.data; // PROBABLE CORRECT ACCESS: Assuming data is nested 3 levels deep
                 console.log("Purchase Order Items for table and chart (from data.data.data.data):", items);
                 console.log("Number of items:", items.length);
 

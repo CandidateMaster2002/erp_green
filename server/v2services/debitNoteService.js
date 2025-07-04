@@ -127,8 +127,8 @@ module.exports = {
 
       // Generate debit invoice number
       const pharmacyId = await organisationModel.getPharmacyId(connection, data.orgId);
-      const totalResults = await debitNoteModel.getDebitNoteCount(connection, month, year, data.orgId);
-      const debitInvoiceNo = `${pharmacyId[0].org_id_main}DB${returnDate}${totalResults[0].total_rows + 1}`;
+      const secondsSuffix = Math.floor(Date.now() / 1000).toString().slice(-4); // last 4 digits of timestamp
+      const debitInvoiceNo = `${pharmacyId[0].org_id_main}DB${returnDate}${secondsSuffix}`;
 
       // Create debit note items and update batch
       const debitNoteItems = data.debitNoteItems;

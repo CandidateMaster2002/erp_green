@@ -551,37 +551,30 @@
                 console.log("DEBUG DEBIT: Is data.data an Array?", Array.isArray(data.data));
                 console.log("DEBUG DEBIT: Raw content of data.data (STRINGIFIED):", JSON.stringify(data.data, null, 2));
               }
-              if (data.data && data.data.data) {
-                console.log("DEBUG DEBIT: Type of data.data.data:", typeof data.data.data);
-                console.log("DEBUG DEBIT: Is data.data.data an Array?", Array.isArray(data.data.data));
-                console.log("DEBUG DEBIT: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
-              }
-              if (data.data && data.data.data && data.data.data.data) {
-                console.log("DEBUG DEBIT: Type of data.data.data.data:", typeof data.data.data.data);
-                console.log("DEBUG DEBIT: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
-                console.log("DEBUG DEBIT: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
-              }
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
-                console.log("DEBUG DEBIT: Type of data.data.data.data.data:", typeof data.data.data.data.data);
-                console.log("DEBUG DEBIT: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
-                console.log("DEBUG DEBIT: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
-              }
+              // if (data.data && data.data.data) {
+              //   console.log("DEBUG DEBIT: Type of data.data.data:", typeof data.data.data);
+              //   console.log("DEBUG DEBIT: Is data.data.data an Array?", Array.isArray(data.data.data));
+              //   console.log("DEBUG DEBIT: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
+              // }
+              // if (data.data && data.data.data && data.data.data.data) {
+              //   console.log("DEBUG DEBIT: Type of data.data.data.data:", typeof data.data.data.data);
+              //   console.log("DEBUG DEBIT: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
+              //   console.log("DEBUG DEBIT: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
+              // }
+              // if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
+              //   console.log("DEBUG DEBIT: Type of data.data.data.data.data:", typeof data.data.data.data.data);
+              //   console.log("DEBUG DEBIT: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
+              //   console.log("DEBUG DEBIT: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
+              // }
               // --- END NEW CONSOLE LOGS ---
 
               // --- CRITICAL: Attempt to access the data array based on common nesting patterns ---
               // Most likely path: data.data.data.data.data (5 levels deep) if success is at top level of object
               // Or: data.data.data.data (4 levels deep) if data object itself is the first child
               // Let's assume 5 levels deep, as suggested by your previous credit report output structure.
-              let items = null;
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.data && Array.isArray(data.data.data.data.data.data) && data.data.data.data.data.data.length > 0) {
-                  items = data.data.data.data.data.data;
-              } else if (data.data && data.data.data && data.data.data.data && Array.isArray(data.data.data.data) && data.data.data.data.length > 0) {
-                  // Fallback for 4 levels deep, if the outer 'success' wrapper is not always there, or if 'data' is duplicated less
-                  items = data.data.data.data;
-              }
+              let items = Array.isArray(data.data) ? data.data : [];
 
-
-              if (items && items.length > 0) {
+              if (items.length > 0) {
                 console.log("Debit Note Items for table and chart (from determined path):", items);
                 console.log("Number of items:", items.length);
 

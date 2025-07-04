@@ -536,19 +536,19 @@
               console.log("DEBUG CREDIT: Type of data.data:", typeof data.data);
               console.log("DEBUG CREDIT: Is data.data an Array?", Array.isArray(data.data));
               console.log("DEBUG CREDIT: Raw content of data.data (STRINGIFIED):", JSON.stringify(data.data, null, 2)); // <--- THIS LINE IS KEY!
-              console.log("DEBUG CREDIT: Type of data.data.data:", typeof data.data.data);
+              // console.log("DEBUG CREDIT: Type of data.data.data:", typeof data.data.data);
               console.log("DEBUG CREDIT: Is data.data.data an Array?", Array.isArray(data.data.data));
-              console.log("DEBUG CREDIT: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2)); // <--- THIS LINE IS KEY!
-              console.log("DEBUG CREDIT: Type of data.data.data.data:", typeof data.data.data.data);
-              console.log("DEBUG CREDIT: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
-              console.log("DEBUG CREDIT: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2)); // <--- THIS LINE IS KEY!
+              // console.log("DEBUG CREDIT: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2)); // <--- THIS LINE IS KEY!
+              // console.log("DEBUG CREDIT: Type of data.data.data.data:", typeof data.data.data.data);
+              // console.log("DEBUG CREDIT: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
+              // console.log("DEBUG CREDIT: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2)); // <--- THIS LINE IS KEY!
               // --- END NEW CONSOLE LOGS ---
               $("#reportcart").empty(); // Clear existing report data
               let totalCredit = 0; // Initialize total for Credit Notes
 
               
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && Array.isArray(data.data.data.data.data) && data.data.data.data.data.length > 0) {
-                var items = data.data.data.data.data; // CORRECTED: Access the nested 'data' array at this level
+              if (Array.isArray(data.data) && data.data.length > 0) {
+                var items = data.data; // CORRECTED: Access the nested 'data' array at this level
                 console.log("Credit Note Items for table and chart (from data.data.data.data):", items);
                 console.log("Number of items:", items.length);
 

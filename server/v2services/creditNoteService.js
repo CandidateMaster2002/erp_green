@@ -127,8 +127,8 @@ module.exports = {
 
       // Generate credit invoice number
       const pharmacyId = await organisation.getPharmacyId(connection, data.orgId);
-      const totalResults = await creditNoteModel.getCreditCount(connection, month, year, data.orgId);
-      const creditInvoiceNo = `${pharmacyId[0].org_id_main}CR${returnDate}${totalResults[0].total_rows + 1}`;
+      const secondsSuffix = Math.floor(Date.now() / 1000).toString().slice(-4); // last 4 digits of timestamp
+      const creditInvoiceNo = `${pharmacyId[0].org_id_main}CR${returnDate}${secondsSuffix}`;
 
       // Create credit note items and update batch
       const creditNoteItems = data.creditNoteItems;
