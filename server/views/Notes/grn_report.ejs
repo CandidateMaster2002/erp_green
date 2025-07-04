@@ -530,9 +530,11 @@
               console.log("DEBUG GRN: Raw content of data.data.data:", data.data.data);
               // --- END NEW CONSOLE LOGS ---
               
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.length > 0) {
-                var items = data.data.data.data; // CORRECTED: Access the deepest nested 'data' array
-                console.log("GRN Items for table and chart (from data.data.data.data):", items);
+              if (Array.isArray(data.data) && data.data.length > 0) {
+                // console.log("DATA IS THIS", data.data.data.data);
+                console.log("LETS SAY ABOUT THIS DATA", data.data);
+                var items = data.data; // CORRECTED: Access the deepest nested 'data' array
+                console.log("GRN Items for table and chart (from data.data):", items);
                 console.log("Number of items:", items.length);
 
                 for (let i = 0; i < items.length; i++) {
@@ -566,6 +568,7 @@
                 // console.log("GRN chart rendering initiated."); // Debug log
 
               } else {
+                console.log("DATA IS THIS", data.data);
                 console.log("No GRN data found for the selected period (else block triggered).");
                 $("#reportcart").append('<tr><td colspan="6" class="text-center">No Goods Received Note data found for the selected period.</td></tr>');
                 $("#totalGrnAmount").text(`₹0.00`); // Reset total GRN amount

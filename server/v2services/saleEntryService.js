@@ -142,7 +142,8 @@ module.exports = {
 
       const startDate = `${startYear}-04-01`;
       const endDate = `${endYear}-03-31`;
-      return { total_sale_amount: Math.floor(Math.random() * 100000) + 10000 }; // Example dummy total
+      return saleEntryModel.getTotalSaleAmount(connection, orgId, startDate, endDate);
+      // return { total_sale_amount: Math.floor(Math.random() * 100000) + 10000 }; // Example dummy total
     });
   },
 
@@ -164,55 +165,87 @@ module.exports = {
 
       const startDate = `${startYear}-04-01`;
       const endDate = `${endYear}-03-31`;
-      return { total_rows: Math.floor(Math.random() * 500) + 50 }; // Example dummy count
+      return saleEntryModel.getTotalSaleEntries(connection, orgId, startDate, endDate);
     });
   },
 
   getFilteredSaleEntries: async (filter) => {
-    // Remove executeTransaction wrapper as we are not performing real database operations here.
-    const {
-      month,
-      year,
-      quarter,
-      startDate,
-      endDate,
-      orgId,
-    } = filter;
+    return executeTransaction(async (connection) => {
+      if (filter.startDate && filter.endDate) {
+        filter.endDate = new Date(filter.endDate);
+        filter.endDate.setDate(filter.endDate.getDate() + 1);
+        // eslint-disable-next-line max-len
+        return saleEntryModel.getSaleEntriesBetweenDates(connection, filter.startDate, filter.endDate, filter.orgId);
+    // // Remove executeTransaction wrapper as we are not performing real database operations here.
+    // const {
+    //   month,
+    //   year,
+    //   quarter,
+    //   startDate,
+    //   endDate,
+    //   orgId,
+    // } = filter;
 
-    try {
-      if (startDate && endDate) {
-        // Adjust endDate by adding 1 day to ensure the entire end date is included in the range for dummy data generation.
-        // This is a common pattern for date range queries where the end date is inclusive.
-        const adjustedEndDate = new Date(endDate);
-        adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
-        return generateDummySalesForDateRange(startDate, adjustedEndDate.toISOString().split('T')[0], orgId);
+    // try {
+    //   if (startDate && endDate) {
+    //     // Adjust endDate by adding 1 day to ensure the entire end date is included in the range for dummy data generation.
+    //     // This is a common pattern for date range queries where the end date is inclusive.
+    //     const adjustedEndDate = new Date(endDate);
+    //     adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+    //     return generateDummySalesForDateRange(startDate, adjustedEndDate.toISOString().split('T')[0], orgId);
       }
+      if (filter.quarter && filter.year) {
+        let quarterStart;
+        let quarterEnd;
+        if (filter.quarter === '1') {
+          quarterStart = 4;
+          quarterEnd = 6;
+        } else if (filter.quarter === '2') {
+          quarterStart = 7;
+          quarterEnd = 9;
+        } else if (filter.quarter === '3') {
+          quarterStart = 10;
+          quarterEnd = 12;
+        } else if (filter.quarter === '4') {
+          quarterStart = 1;
+          quarterEnd = 3;
+        }
+        // eslint-disable-next-line max-len
+        return saleEntryModel.getSaleEntryForQuarter(connection, quarterStart, quarterEnd, filter.year, filter.orgId);
 
-      if (quarter && year) {
-        return generateDummySalesForQuarter(quarter, year, orgId);
+      // if (quarter && year) {
+      //   return generateDummySalesForQuarter(quarter, year, orgId);
       }
+      if (filter.month && filter.year) {
+        // eslint-disable-next-line max-len
+        return saleEntryModel.getSaleEntryForMonth(connection, filter.month, filter.year, filter.orgId);
 
-      if (month && year) {
-        return generateDummySalesForMonth(month, year, orgId);
+      // if (month && year) {
+      //   return generateDummySalesForMonth(month, year, orgId);
       }
+      if (filter.year && !filter.month && !filter.quarterStart && !filter.quarterEnd) {
+        return saleEntryModel.getSaleEntryForYear(connection, filter.year, filter.orgId);
 
       // If only year is provided, and no month or quarter, fetch for the entire year
-      if (year && !month && !quarter) {
-        return generateDummySalesForYear(year, orgId);
+      // if (year && !month && !quarter) {
+      //   return generateDummySalesForYear(year, orgId);
       }
 
-      // Fallback: If no specific filter (date range, month, quarter, year) is provided,
-      // generate dummy data for the last 7 days as a default.
-      const defaultEndDate = new Date();
-      const defaultStartDate = new Date();
-      defaultStartDate.setDate(defaultStartDate.getDate() - 6); // Set to 6 days before today
+      throw new Error('Invalid filters provided');
+    });
 
-      return generateDummySalesForDateRange(defaultStartDate.toISOString().split('T')[0], defaultEndDate.toISOString().split('T')[0], orgId);
-    } catch (error) {
-      console.error('Error generating dummy sales data:', error);
-      // Re-throw the error so the controller can catch it and send a 500 response
-      throw new Error('Failed to generate dummy sales data');
-    }
+    //   // Fallback: If no specific filter (date range, month, quarter, year) is provided,
+    //   // generate dummy data for the last 7 days as a default.
+    //   const defaultEndDate = new Date();
+    //   const defaultStartDate = new Date();
+    //   defaultStartDate.setDate(defaultStartDate.getDate() - 6); // Set to 6 days before today
+
+    //   return generateDummySalesForDateRange(defaultStartDate.toISOString().split('T')[0], defaultEndDate.toISOString().split('T')[0], orgId);
+    // } catch (error) {
+    //   console.error('Error generating dummy sales data:', error);
+    //   // Re-throw the error so the controller can catch it and send a 500 response
+    //   throw new Error('Failed to generate dummy sales data');
+    // }
   },
   // getFilteredSaleEntries: async (filter) => {
   //   return executeTransaction(async (connection) => {

@@ -800,7 +800,7 @@
               data.data.length > 0 &&
               !isNaN(parseFloat(data.data[0].total_purchase))
             ) {
-              var revenue = Math.round(data.data[0].total_purchase_amount);
+              var revenue = Math.round(data.data[0].total_purchase);
               var formatedRevenue = revenue.toLocaleString();
               $("#inventorycost").text(`₹${formatedRevenue}`);
             } else {
