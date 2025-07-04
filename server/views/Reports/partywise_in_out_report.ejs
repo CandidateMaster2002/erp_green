@@ -302,18 +302,15 @@
 
             // --- CRITICAL: Robust data access based on expected backend nesting ---
             // This handles the deep nesting like { data: { data: { data: { data: [...] } } } }
-            let items = null;
-            if (response.data && response.data.data && response.data.data.data && response.data.data.data.data && Array.isArray(response.data.data.data.data.data)) {
-                items = response.data.data.data.data.data;
-            } else if (response.data && response.data.data && response.data.data.data && Array.isArray(response.data.data.data)) {
-                items = response.data.data.data;
-            } else if (response.data && Array.isArray(response.data)) { // Fallback if data is directly under .data
-                items = response.data;
-            } else if (Array.isArray(response)) { // Fallback if response is directly an array
-                items = response;
+            let items = [];
+            if (Array.isArray(response.data)) {
+              items = response.data;
+            } else {
+              console.warn("Unexpected data structure in partyTransactions response:", response);
             }
 
-            if (items && items.length > 0) {
+
+            if (items.length > 0) {
               for (let i = 0; i < items.length; i++) {
                 const billNo = items[i].bill_no || '-';
                 const transactionType = items[i].transaction_type || '-';

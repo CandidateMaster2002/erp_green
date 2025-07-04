@@ -544,46 +544,46 @@
                 console.log("DEBUG SCHEDULE: Is data.data an Array?", Array.isArray(data.data));
                 console.log("DEBUG SCHEDULE: Raw content of data.data (STRINGIFIED):", JSON.stringify(data.data, null, 2));
               }
-              if (data.data && data.data.data) {
-                console.log("DEBUG SCHEDULE: Type of data.data.data:", typeof data.data.data);
-                console.log("DEBUG SCHEDULE: Is data.data.data an Array?", Array.isArray(data.data.data));
-                console.log("DEBUG SCHEDULE: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
-              }
-              if (data.data && data.data.data && data.data.data.data) {
-                console.log("DEBUG SCHEDULE: Type of data.data.data.data:", typeof data.data.data.data);
-                console.log("DEBUG SCHEDULE: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
-                console.log("DEBUG SCHEDULE: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
-              }
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
-                console.log("DEBUG SCHEDULE: Type of data.data.data.data.data:", typeof data.data.data.data.data);
-                console.log("DEBUG SCHEDULE: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
-                console.log("DEBUG SCHEDULE: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
-              }
+              // if (data.data && data.data.data) {
+              //   console.log("DEBUG SCHEDULE: Type of data.data.data:", typeof data.data.data);
+              //   console.log("DEBUG SCHEDULE: Is data.data.data an Array?", Array.isArray(data.data.data));
+              //   console.log("DEBUG SCHEDULE: Raw content of data.data.data (STRINGIFIED):", JSON.stringify(data.data.data, null, 2));
+              // }
+              // if (data.data && data.data.data && data.data.data.data) {
+              //   console.log("DEBUG SCHEDULE: Type of data.data.data.data:", typeof data.data.data.data);
+              //   console.log("DEBUG SCHEDULE: Is data.data.data.data an Array?", Array.isArray(data.data.data.data));
+              //   console.log("DEBUG SCHEDULE: Raw content of data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data, null, 2));
+              // }
+              // if (data.data && data.data.data && data.data.data.data && data.data.data.data.data) {
+              //   console.log("DEBUG SCHEDULE: Type of data.data.data.data.data:", typeof data.data.data.data.data);
+              //   console.log("DEBUG SCHEDULE: Is data.data.data.data.data an Array?", Array.isArray(data.data.data.data.data));
+              //   console.log("DEBUG SCHEDULE: Raw content of data.data.data.data.data (STRINGIFIED):", JSON.stringify(data.data.data.data.data, null, 2));
+              // }
               // --- END NEW CONSOLE LOGS ---
 
               // --- CRITICAL: Attempt to access the data array based on common nesting patterns ---
               // Based on Credit/Debit, assuming 5 levels deep initially from outer 'data' if 'success' is at root,
               // or 4 levels deep if the data object itself is the root response.
-              let items = null;
-              if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.data && Array.isArray(data.data.data.data.data.data) && data.data.data.data.data.data.length > 0) {
-                  items = data.data.data.data.data.data;
-              } else if (data.data && data.data.data && data.data.data.data && Array.isArray(data.data.data.data) && data.data.data.data.length > 0) {
-                  // Fallback for 4 levels deep (e.g., if the outer 'success' is not always present, or if 'data' is duplicated less)
-                  items = data.data.data.data;
-              }
-              // Add a check if 'data' from API is directly an array (less likely given your backend pattern, but good for robustness)
-              else if (Array.isArray(data) && data.length > 0) {
-                  items = data;
-              }
+              let items = Array.isArray(data.data) ? data.data : [];
+              // if (data.data && data.data.data && data.data.data.data && data.data.data.data.data && data.data.data.data.data.data && Array.isArray(data.data.data.data.data.data) && data.data.data.data.data.data.length > 0) {
+              //     items = data.data.data.data.data.data;
+              // } else if (data.data && data.data.data && data.data.data.data && Array.isArray(data.data.data.data) && data.data.data.data.length > 0) {
+              //     // Fallback for 4 levels deep (e.g., if the outer 'success' is not always present, or if 'data' is duplicated less)
+              //     items = data.data.data.data;
+              //   }
+              // // Add a check if 'data' from API is directly an array (less likely given your backend pattern, but good for robustness)
+              // else if (Array.isArray(data) && data.length > 0) {
+              //     items = data;
+              // }
 
 
-              if (items && items.length > 0) {
+              if (items.length > 0) {
                 console.log("Schedule Report Items for table and chart (from determined path):", items);
                 console.log("Number of items:", items.length);
 
                 for (let i = 0; i < items.length; i++) {
                   var datetime = items[i].cart_created_date;
-                  var date = moment(datetime).format('DD MMMMWriteHeader');
+                  var date = moment(datetime).format('DD MMMM YYYY');
 
                   var expiry = items[i].exp_date;
                   var expiryDate = moment(expiry).format('MM/YYYY');
