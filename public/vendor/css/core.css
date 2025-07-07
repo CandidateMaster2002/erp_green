@@ -147,7 +147,8 @@ h2,
 
 h3,
 .h3 {
-  font-size: calc(1.2875rem + 0.45vw)
+  /* font-size: calc(1.2875rem + 0.45vw) */
+  font-size: calc(1.123rem + 0.21vw);
 }
 
 @media(min-width: 1200px) {

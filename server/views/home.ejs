@@ -123,7 +123,7 @@
                                     <img src="/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded" />
                                   </div>
                                 </div>
-                                <span class="d-block mb-1">Sales Invoices</span>
+                                <span style="font-weight: 400;" class="d-block mb-1">Sales Invoices</span>
                                 <h3 class="card-title text-nowrap mb-1" id="totalorders"></h3>
                                 <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small> -->
                               </div>
@@ -139,8 +139,8 @@
                                   <img src="/img/icons/unicons/chart-success.png" alt="chart success" class="rounded" />
                                 </div>
                               </div>
-                              <span class="fw-semibold d-block mb-1">Total Sales</span>
-                              <h3 class="card-title mb-2" id="totalrevenue"></h3>
+                              <span style="font-weight: 400; font-size: 1.05rem;" class="d-block mb-1">Total Sales</span>
+                              <h3 style="font-size: 1.3rem; font-weight: 600;" class="card-title text-nowrap mb-2" id="totalrevenue"></h3>
                               <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small> -->
                             </div>
                           </div>
@@ -216,7 +216,7 @@
                                     <img src="/img/icons/unicons/cc-primary.png" class="rounded" />
                                   </div>
                                 </div>
-                                <span class="d-block mb-1">Purchase Bills
+                                <span style="font-weight: 400;" class="d-block mb-1">Purchase Bills
                                 </span>
                                 <h3 class="card-title mb-2" id="purchaseordersmade"></h3>
                                 <!-- <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.14%</small> -->
@@ -233,8 +233,8 @@
                                   <img src="/img/icons/unicons/cc-warning.png" alt="Credit Card" class="rounded" />
                                 </div>
                               </div>
-                              <span class="fw-semibold d-block mb-1">Total Purchase</span>
-                              <h3 class="card-title text-nowrap mb-2" id="inventorycost"></h3>
+                              <span style="font-weight: 400; font-size: 1.05rem;" class="d-block mb-1">Total Purchase</span>
+                              <h3 style="font-size: 1.3rem; font-weight: 600; margin-left: -5px;" class="card-title text-nowrap mb-2" id="inventorycost"></h3>
                             </div>
                           </div>
                         </div>
@@ -963,6 +963,7 @@
             orderStatisticsChart.render();
 
           })
+
 
           // profit returns
           $.get('/api/getprofitinhome', function (data, status) {
