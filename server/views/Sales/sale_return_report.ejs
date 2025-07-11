@@ -412,8 +412,8 @@
                     $("#reportcart").empty();
                     let totalReturnAmount = 0;
                      // Now checking for the nested `data.data` as the actual array
-                    if (data.data && data.data.data && data.data.data.length > 0) {
-                        var items = data.data.data; // CORRECTED: Access the nested 'data' property
+                    if (data.data && data.data.length > 0) {
+                        var items = data.data; // CORRECTED: Access the nested 'data' property
                         console.log("Return Items for table and chart (from data.data.data):", items); 
                         console.log("Number of items:", items.length);
                         
