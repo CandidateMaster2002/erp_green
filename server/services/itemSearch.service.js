@@ -45,17 +45,18 @@ const { typesenseClient } = require('../config/elasticsearch');
 module.exports = {
   ESitemSearchService: async (query) => {
     try {
+      console.log("Searching Typesense for:", query);
       const searchResults = await typesenseClient
-        .collections('product_search_index_v2') // Collection name in Typesense
-        .documents()
-        .search({
-          q: query,
-          query_by: 'med_name', // Field to search in
-          prefix: true, // Enable prefix matching
-          fuzzy: true, // Enable typo tolerance
-          per_page: 10, // Limit number of results
-        });
-
+      .collections('product_search_index_v2') // Collection name in Typesense
+      .documents()
+      .search({
+        q: query,
+        query_by: 'med_name', // Field to search in
+        prefix: true, // Enable prefix matching
+        fuzzy: true, // Enable typo tolerance
+        per_page: 10, // Limit number of results
+      });
+      console.log("Search Results are:", searchResults);
       return searchResults;
     } catch (error) {
       throw new Error(`Typesense error: ${error.message}`);

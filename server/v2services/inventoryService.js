@@ -344,6 +344,10 @@ module.exports = {
       const batchData = data.batchData;
       console.log("batch-Data is :",batchData);
 
+      console.log("DEBUG: onboardProductInventory - Received productData:", productData);
+      console.log("DEBUG: onboardProductInventory - Received inventoryData:", inventoryData);
+      console.log("DEBUG: onboardProductInventory - Received batchData:", batchData);
+
       if (!productData || !inventoryData || !batchData) {
         throw new Error('Invalid data');
       }
@@ -358,6 +362,7 @@ module.exports = {
       if (!inventoryData.inventoryId) {
         // eslint-disable-next-line max-len
         const inventoryId = await inventoryModel.createInventory(connection, inventoryData, productData.productId, orgId);
+        console.log("DEBUG: Result of inventoryModel.createInventory:", inventoryId);
         inventoryData.inventoryId = inventoryId;
       }
 
@@ -367,7 +372,7 @@ module.exports = {
   },
 
   getSaltAlternatives: async (orgId, productId) => {
-     return executeTransaction(async (connection) => {
+    return executeTransaction(async (connection) => {
       try {
         const apiUrl = `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}/recommend-from-inventory?orgId=${orgId}&productId=${productId}`;
 
