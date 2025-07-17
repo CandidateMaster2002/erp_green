@@ -181,7 +181,11 @@ module.exports = {
 
       res.status(200).json({
         success: true,
-        data: inventoryData,
+        data: {
+          data: inventoryData.data,
+          totalCount: inventoryData.totalCount,
+        },
+        // data: inventoryData,
         // totalCount: inventoryData.length
       });
     } catch (error) {
