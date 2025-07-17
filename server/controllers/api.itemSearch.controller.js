@@ -10,6 +10,7 @@ exports.itemSearch = async (req, res) => {
   try {
     // 1. Call Typesense search service
     const searchResponse = await ESitemSearchService(query);
+    console.log('Search Response:', JSON.stringify(searchResponse, null, 2));
 
     // 2. Typesense search results are in the 'hits' array
     // Each 'hit' object contains the actual document data under the 'document' property.
@@ -22,6 +23,8 @@ exports.itemSearch = async (req, res) => {
     // Extract the raw documents from the Typesense 'hits' array.
     // Each 'hit' object has a 'document' property which contains the actual product data.
     const rawDocuments = searchResponse.hits.map((hit) => hit.document);
+    
+
 
     // Filter documents based on the org_id field.
     // The dummy data uses 'org_id', so we'll filter by that.
