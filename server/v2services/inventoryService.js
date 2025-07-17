@@ -275,7 +275,11 @@ module.exports = {
       // console.log("Raw result from inventoryModel.getPaginatedInventoryByOrgId:", results);
       console.log("Raw Inventory results:", results);
 
-      return results;
+      // return results;
+      return {
+        data: results.data,
+        totalCount: results.totalCount
+      };
     });
   },
 
@@ -383,13 +387,20 @@ module.exports = {
 
         const recommendations = response.data.recommendations;
         console.log('Salt alternatives:', recommendations);
-
-        recommendations.forEach(async (recommendation) => {
+        
+        // eslint-disable-next-line no-restricted-syntax
+         recommendations.forEach(async (recommendation) => {
           const recommendedProductId = recommendation.product_id;
           // eslint-disable-next-line max-len
           const productDetails = await saltAlternativeRepository.getNearExpiryBatch(connection, orgId, recommendedProductId);
           results.push(productDetails[0]);
         });
+
+        // for (const recommendation of recommendations) {
+        //   const recommendedProductId = recommendation.product_id;
+        //   const productDetails = await saltAlternativeRepository.getNearExpiryBatch(connection, orgId, recommendedProductId);
+        //   results.push(productDetails[0]);
+        // }
 
         return results;
       } catch (error) {
