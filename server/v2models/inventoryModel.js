@@ -98,6 +98,10 @@ module.exports = {
         `,
       [orgId, orgId],
     );
-    return results;
+    // return results;
+    return {
+      data: results,
+      totalCount: results.length, // Assuming you want the total count of items
+    }
   },
 }; 
