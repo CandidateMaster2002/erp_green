@@ -165,7 +165,8 @@
                 $.get(`/api/v2/inventory/paginated?orgID=${orgId}&limit=${itemsPerPage}&offset=${offset}`, function (result, status) {
                     console.log("result from API:", result);
                     if (result.success && result.data ) { // Access result.data.data and result.data.totalCount
-                        const inventoryItems = result.data;
+                        const inventoryItems = result.data.data; // Assuming result.data.data contains the inventory items
+                        console.log("Inventory Items:", inventoryItems);
                         totalItems = result.data.totalCount;
                         totalPages = Math.ceil(totalItems / itemsPerPage);
                         currentPage = pageNumber; // Update current page after successful fetch
@@ -226,6 +227,33 @@
                 $('#prevPageBtn').prop('disabled', currentPage === 1);
                 $('#nextPageBtn').prop('disabled', currentPage === totalPages || totalPages === 0);
             }
+            function confirmDelete(inventoryId) {
+              // Using a custom modal dialog is recommended instead of window.confirm for better UX.
+              // For now, keeping window.confirm as per your original code.
+              var confirmation = window.confirm("Are you sure you want to delete this product from inventory?");
+
+              if (confirmation) {
+                  $.ajax({
+                      url: '/api/v2/inventory/' + inventoryId,
+                      type: 'DELETE',
+                      success: function (result) {
+                          // Instead of full reload, reload current page data for better UX
+                          if (result.success) {
+                              alert('Product deleted successfully!'); // Use custom modal here
+                              // Re-load the current page to reflect deletion
+                              loadInventoryPage(currentPage);
+                          } else {
+                              alert('Failed to delete product: ' + result.message); // Use custom modal here
+                          }
+                      },
+                      error: function (error) {
+                          console.error("Error deleting product: ", error);
+                          alert('Error deleting product. Please try again.'); // Use custom modal here
+                      }
+                  });
+              }
+            }
+            window.confirmDelete = confirmDelete;
 
             // Click handlers for pagination buttons
             $('#prevPageBtn').click(function() {
@@ -250,32 +278,32 @@
         });
 
         // Moved outside $(document).ready for global access by onclick attribute
-        function confirmDelete(inventoryId) {
-            // Using a custom modal dialog is recommended instead of window.confirm for better UX.
-            // For now, keeping window.confirm as per your original code.
-            var confirmation = window.confirm("Are you sure you want to delete this product from inventory?");
+        // function confirmDelete(inventoryId) {
+        //     // Using a custom modal dialog is recommended instead of window.confirm for better UX.
+        //     // For now, keeping window.confirm as per your original code.
+        //     var confirmation = window.confirm("Are you sure you want to delete this product from inventory?");
 
-            if (confirmation) {
-                $.ajax({
-                    url: '/api/v2/inventory/' + inventoryId,
-                    type: 'DELETE',
-                    success: function (result) {
-                        // Instead of full reload, reload current page data for better UX
-                        if (result.success) {
-                            alert('Product deleted successfully!'); // Use custom modal here
-                            // Re-load the current page to reflect deletion
-                            loadInventoryPage(currentPage);
-                        } else {
-                            alert('Failed to delete product: ' + result.message); // Use custom modal here
-                        }
-                    },
-                    error: function (error) {
-                        console.error("Error deleting product: ", error);
-                        alert('Error deleting product. Please try again.'); // Use custom modal here
-                    }
-                });
-            }
-        }
+        //     if (confirmation) {
+        //         $.ajax({
+        //             url: '/api/v2/inventory/' + inventoryId,
+        //             type: 'DELETE',
+        //             success: function (result) {
+        //                 // Instead of full reload, reload current page data for better UX
+        //                 if (result.success) {
+        //                     alert('Product deleted successfully!'); // Use custom modal here
+        //                     // Re-load the current page to reflect deletion
+        //                     loadInventoryPage(currentPage);
+        //                 } else {
+        //                     alert('Failed to delete product: ' + result.message); // Use custom modal here
+        //                 }
+        //             },
+        //             error: function (error) {
+        //                 console.error("Error deleting product: ", error);
+        //                 alert('Error deleting product. Please try again.'); // Use custom modal here
+        //             }
+        //         });
+        //     }
+        // }
     </script>
     <script>
         // Existing showFileName function for CSV upload
