@@ -378,12 +378,16 @@ module.exports = {
   //  * @returns {object} An object containing the dummy sales category data, wrapped in a nested structure.
   //  */
   getFilteredSaledCategory: async (filter) => {
+    console.log("=== getFilteredSaledCategory called with filter:", filter);
     return executeTransaction(async (connection) => {
       if (filter.startDate && filter.endDate) {
         filter.endDate = new Date(filter.endDate);
         filter.endDate.setDate(filter.endDate.getDate() + 1);
         // eslint-disable-next-line max-len
-        return categoryReportRepository.getSaledCategoryBetweenDates(connection, filter.startDate, filter.endDate, filter.orgId, 15);
+        // return categoryReportRepository.getSaledCategoryBetweenDates(connection, filter.startDate, filter.endDate, filter.orgId, 15);
+        const data = await categoryReportRepository.getSaledCategoryBetweenDates(connection, filter.startDate, filter.endDate, filter.orgId, 15);
+        console.log("DB result from getSaledCategoryBetweenDates:", data);
+        return data;
       }
 
       if (filter.quarter && filter.year) {
@@ -403,16 +407,28 @@ module.exports = {
           quarterEnd = 3;
         }
         // eslint-disable-next-line max-len
-        return categoryReportRepository.getSaledCategoryForQuarter(connection, quarterStart, quarterEnd, filter.year, filter.orgId, 15);
+        // return categoryReportRepository.getSaledCategoryForQuarter(connection, quarterStart, quarterEnd, filter.year, filter.orgId, 15);
+        console.log("Calling getSaledCategoryForQuarter with:", quarterStart, quarterEnd, filter.year, filter.orgId);
+        const data = await categoryReportRepository.getSaledCategoryForQuarter(connection, quarterStart, quarterEnd, filter.year, filter.orgId, 15);
+        console.log("DB result from getSaledCategoryForQuarter:", data);
+        return data;
       }
 
       if (filter.month && filter.year) {
+        console.log("Calling getSaledCategoryForMonth with:", filter.month, filter.year, filter.orgId);
         // eslint-disable-next-line max-len
-        return categoryReportRepository.getSaledCategoryForMonth(connection, filter.month, filter.year, filter.orgId, 15);
+        // return categoryReportRepository.getSaledCategoryForMonth(connection, filter.month, filter.year, filter.orgId, 15);
+        const data = await categoryReportRepository.getSaledCategoryForMonth(connection, filter.month, filter.year, filter.orgId, 15);
+        console.log("DB result from getSaledCategoryForMonth:", data);
+        return data;
       }
 
       if (filter.year && !filter.month && !filter.quarterStart && !filter.quarterEnd) {
-        return categoryReportRepository.getSaledCategoryForYear(connection, filter.year, filter.orgId, 15);
+        console.log("Calling getSaledCategoryForYear with:", filter.year, filter.orgId);
+        // return categoryReportRepository.getSaledCategoryForYear(connection, filter.year, filter.orgId, 15);
+        const data = await categoryReportRepository.getSaledCategoryForYear(connection, filter.year, filter.orgId, 15);
+        console.log("DB result from getSaledCategoryForYear:", data);
+        return data;
     // // We are no longer using executeTransaction or repository calls directly here for dummy data.
     // // Uncomment the 'executeTransaction' and 'categoryReportRepository' imports at the top
     // // and remove this dummy data generation logic if you want to switch back to real database interaction.
@@ -444,6 +460,7 @@ module.exports = {
     //     // Default fallback if no valid filters are provided (e.g., on initial page load without specific params)
     //     scheduleData = generateDummyScheduleData('default', null, null, orgId);
       }
+      console.error("Invalid filters provided:", filter);
       throw new Error('Invalid filters provided');
     });
 
