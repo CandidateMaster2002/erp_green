@@ -466,6 +466,7 @@
 
             var product = [];
             $.get(`/api/getcartitemsininvoice/${id}`, function (data, status) {
+                // console.log("Frontend - data received:", data); // console log for received data
 
                 var items = data.data;
                 console.log("items in data", items);
