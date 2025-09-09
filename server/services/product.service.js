@@ -1,12 +1,12 @@
 const { getPool } = require('../config/database');
-const { es } = require('../config/elasticsearch');
+const { typesenseClient } = require('../config/elasticsearch');
 
 module.exports = {
 
-  // Create product in Elasticsearch index
+  //  Create product in Typesense collection
   createProductES: async (data, productId, callBack) => {
-    const body = {
-      id: productId,
+    const document = {
+      id: productId.toString(), // Typesense requires string IDs
       med_name: data.med_name,
       mfd_mkt: data.mfd_mkt,
       salt_composition: data.salt,
@@ -16,10 +16,11 @@ module.exports = {
     };
 
     try {
-      const result = await es.index({
-        index: 'product_search_index_v2',
-        body,
-      });
+      const result = await typesenseClient
+        .collections('product_search_index_v2')
+        .documents()
+        .create(document);
+
       console.log(result);
       return callBack(null, result);
     } catch (error) {
@@ -27,7 +28,7 @@ module.exports = {
     }
   },
 
-  // Create product
+  // Create product in MySQL
   createProductMYSQL: (data, callBack) => {
     getPool().query(
       `insert into sample(
@@ -55,7 +56,7 @@ module.exports = {
     );
   },
 
-  // Update product
+  // Update product in MySQL
   updateProductMYSQL: (id, data, callBack) => {
     getPool().query(
       `update sample set
@@ -122,7 +123,6 @@ module.exports = {
         }
         return callBack(null, results[0]);
       },
-
     );
   },
 };

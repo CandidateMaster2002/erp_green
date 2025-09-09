@@ -87,6 +87,7 @@ module.exports = {
         console.log(err);
         return;
       }
+      // console.log('Controller - cart items before sending:', results); // <-- Add here
       return res.status(200).json({
         success: 'Fetched cart items',
         data: results,

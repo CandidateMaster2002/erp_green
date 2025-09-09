@@ -69,12 +69,12 @@
   <ul class="menu-inner py-1" id="sidebar">
 
     <!-- Dashboard -->
-    <li class="menu-item">
-      <a href="/" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-home-circle"></i>
-        <div>Dashboard</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'home' ? 'active' : '' %>">
+  <a href="/" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+    <div>Dashboard</div>
+  </a>
+</li>
 
 
 
@@ -83,86 +83,90 @@
       <span class="menu-header-text">Features</span>
     </li>
 
-    <li class="menu-item">
-      <a href="/sale_invoice" class="menu-link ">
-        <i class="menu-icon tf-icons bx bx-cart-alt"></i>
-        <div>Sale Invoice</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'sale_invoice' ? 'active' : '' %>">
+  <a href="/sale_invoice" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-cart-alt"></i>
+    <div>Sale Invoice</div>
+  </a>
+</li>
+
 
     <!-- !! Disabled Temporarly !! -->
-    <li class="menu-item">
-      <a href="/sale_return_invoice" class="menu-link ">
-        <i class="menu-icon tf-icons bx bx-dock-top"></i>
-        <div>Sale Return</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'sale_return_invoice' ? 'active' : '' %>">
+  <a href="/sale_return_invoice" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+    <div>Sale Return</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/product_stock" class="menu-link ">
-        <i class="menu-icon tf-icons bx bx-box"></i>
-        <div>Inventory</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'product_stock' ? 'active' : '' %>">
+  <a href="/product_stock" class="menu-link ">
+    <i class="menu-icon tf-icons bx bx-box"></i>
+    <div>Inventory</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/grn" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Purchase Bill</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'grn' ? 'active' : '' %>">
+  <a href="/grn" class="menu-link">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Purchase Bill</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/purchase_order" class="menu-link ">
-        <i class="menu-icon bx bx-cart"></i>
-        <div>Purchase Order</div>
-      </a>
-    </li>
+
+    <li class="menu-item <%= activePage === 'purchase_order' ? 'active' : '' %>">
+  <a href="/purchase_order" class="menu-link">
+    <i class="menu-icon bx bx-cart"></i>
+    <div>Purchase Order</div>
+  </a>
+</li>
+
 
     <!-- Owner Control Section -->
     <li class="menu-header small text-uppercase">
       <span class="menu-header-text">Owner Controls</span>
     </li>
 
-    <li class="menu-item">
-      <a href="/employee_master" class="menu-link ">
-        <i class="menu-icon tf-icons bx bx-list-ul"></i>
-        <div>Employee Master</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'employee_master' ? 'active' : '' %>">
+  <a href="/employee_master" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-list-ul"></i>
+    <div>Employee Master</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/customer_list" class="menu-link ">
-        <i class="menu-icon tf-icons bx bx-list-ul"></i>
-        <div>Customer List</div>
-      </a>
-    </li>
 
-    <li class="menu-item">
-      <a href="/vendor_list" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-contact"></i>
-        <div>Distributor List</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'customer_list' ? 'active' : '' %>">
+  <a href="/customer_list" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-list-ul"></i>
+    <div>Customer List</div>
+  </a>
+</li>
+
+    <li class="menu-item <%= activePage === 'vendor_list' ? 'active' : '' %>">
+  <a href="/vendor_list" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-contact"></i>
+    <div>Distributor List</div>
+  </a>
+</li>
 
     <!-- Notes Section -->
     <li class="menu-header small text-uppercase">
       <span class="menu-header-text">Notes</span>
     </li>
 
-    <li class="menu-item">
-      <a href="/credit_note" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Credit Note</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'credit_note' ? 'active' : '' %>">
+  <a href="/credit_note" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Credit Note</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/debit_note" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Debit Note</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'debit_note' ? 'active' : '' %>">
+  <a href="/debit_note" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Debit Note</div>
+  </a>
+</li>
 
 
     <!-- <li class="menu-item">
@@ -177,94 +181,94 @@
       <span class="menu-header-text">Reports</span>
     </li>
 
-    <li class="menu-item">
-      <a href="/sale_entry_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Sale Entry Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'sale_entry_report' ? 'active' : '' %>">
+  <a href="/sale_entry_report" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-receipt"></i>
+    <div>Sale Entry Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/sale_return_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Sales Return Report</div>
-      </a>
-    </li>
+  <li class="menu-item <%= activePage === 'sale_return_report' ? 'active' : '' %>">
+  <a href="/sale_return_report" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-file"></i>
+    <div>Sale Return Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/grn_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>GRN Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'grn_report' ? 'active' : '' %>">
+  <a href="/grn_report" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>GRN Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/po_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>PO Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'po_report' ? 'active' : '' %>">
+  <a href="/po_report" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>PO Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/credit_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Credit Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'credit_report' ? 'active' : '' %>">
+  <a href="/credit_report" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Credit Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/debit_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Debit Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'debit_report' ? 'active' : '' %>">
+  <a href="/debit_report" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Debit Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/schedule_h1_report" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Schedule H1 Report</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'schedule_h1_report' ? 'active' : '' %>">
+  <a href="/schedule_h1_report" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Schedule H1 Report</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/inventory_in_out" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Itemwise IN/OUT</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'inventory_in_out' ? 'active' : '' %>">
+  <a href="/inventory_in_out" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Itemwise IN/OUT</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/partywise_in_out" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Partywise IN/OUT</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'partywise_in_out' ? 'active' : '' %>">
+  <a href="/partywise_in_out" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Partywise IN/OUT</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/substitute_meds" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>Med Alternative</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'substitute_meds' ? 'active' : '' %>">
+  <a href="/substitute_meds" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>Med Alternative</div>
+  </a>
+</li>
 
     <!-- Financials Section -->
     <li class="menu-header small text-uppercase">
       <span class="menu-header-text">Financials</span>
     </li>
 
-    <li class="menu-item">
-      <a href="/general_ledger" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>General Ledger</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'general_ledger' ? 'active' : '' %>">
+  <a href="/general_ledger" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>General Ledger</div>
+  </a>
+</li>
 
-    <li class="menu-item">
-      <a href="/gst/gstr1" class="menu-link ">
-        <i class="menu-icon tf-icons bx bxs-report"></i>
-        <div>GSTR-1</div>
-      </a>
-    </li>
+    <li class="menu-item <%= activePage === 'gstr1' ? 'active' : '' %>">
+  <a href="/gst/gstr1" class="menu-link ">
+    <i class="menu-icon tf-icons bx bxs-report"></i>
+    <div>GSTR-1</div>
+  </a>
+</li>
 
     <li class="menu-item">
       <a href="/gst/gstr2" class="menu-link ">

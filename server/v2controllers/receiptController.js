@@ -155,13 +155,16 @@ module.exports = {
 
   getPurchaseOrderReceipt: async (req, res) => {
     const poId = req.params.id;
+    console.log("Received PO ID for PO Receipt:", poId);
     try {
       const poReceipt = await receiptService.getPurchaseOrderReceipt(poId);
+      console.log("RECEIPT DATA:", poReceipt);
       res.status(200).json({
         success: true,
         data: poReceipt,
       });
     } catch (error) {
+      console.error("PO RECEIPT ERROR:", error);
       res.status(500).json({
         success: false,
         error: error.message,

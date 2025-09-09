@@ -163,19 +163,36 @@ module.exports = {
       });
     }
   },
-
-  getInventory: async (req, res) => {
+  
+  getPaginatedInventory: async (req, res) => {
     const orgId = req.query.orgID;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = parseInt(req.query.offset, 10) || 0;
+
+    if (!orgId) {
+      return res.status(400).json({
+        success: false,
+        message: 'orgID is required for pagination',
+      });
+    }
+
     try {
-      const inventoryData = await inventoryService.getInventory(orgId);
+      const inventoryData = await inventoryService.getPaginatedInventory(orgId, limit, offset);
+
       res.status(200).json({
         success: true,
-        data: inventoryData,
+        data: {
+          data: inventoryData.data,
+          totalCount: inventoryData.totalCount,
+        },
+        // data: inventoryData,
+        // totalCount: inventoryData.length
       });
     } catch (error) {
+      console.error('Error fetching paginated inventory (V2):', error);
       res.status(500).json({
         success: false,
-        error: error.message,
+        error: error.message || 'Internal server error',
       });
     }
   },
@@ -289,6 +306,7 @@ module.exports = {
     const batchId = req.params.batchId;
     try {
       const batch = await inventoryService.getBatchByBatchId(batchId);
+      console.log("batchId:", batchId);
       res.status(200).json({
         success: true,
         data: batch[0],

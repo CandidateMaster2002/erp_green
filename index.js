@@ -8,6 +8,7 @@ const session = require('express-session');
 const { initialisePool } = require('./server/config/database');
 require('dotenv').config();
 const { setCache } = require('./server/middlewares/cacheGobalProduct');
+
 const app = express();
 
 // View engine setup
@@ -30,10 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 // }));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET, //'dawaaiPassword', // use a secure key in production
+  secret: process.env.SESSION_SECRET, // 'dawaaiPassword', // use a secure key in production
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
+  cookie: { secure: false }, // Set to true if using HTTPS
 }));
 app.use(setCache);
 // API Routes

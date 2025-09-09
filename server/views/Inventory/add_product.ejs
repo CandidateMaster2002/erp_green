@@ -419,20 +419,23 @@
                     });
 
                     // autopopulate product
+                    let stripValue = null;
                     $("input[name='productname']").autocomplete({
                         minLength: 2,
                         source: function (request, response) {
-
+                            console.log("REQUEST IS THIS:", request);
+                            console.log("RESPONSE.TERM IS THIS:", response.term);
                             let query = request.term;
-                            console.log(query);
+                            console.log("QUERY IS THIS:", query);
 
                             $.ajax({
                                 url: `/api/autocomplete?query=${query}&orgId=${orgID}`,
                                 type: 'GET',
                                 success: function (ajaxResponse) {
-                                    // console.log(ajaxResponse);
+                                     console.log("AJAX RESPONSE IS THIS;",ajaxResponse);
 
                                     let results = ajaxResponse.filter(item => item.med_name.toLowerCase()).slice(0, 10);
+                                    console.log('Filtered Results are this:', results);
 
                                     if (results.length === 0) {
                                         results.push({ med_name: null }); // Add a null item for the custom message
@@ -448,6 +451,18 @@
                         },
                         select: function (event, ui) {
                             productId = ui.item.id;
+                            stripValue = null;
+                            if (ui.item.pack_size) {
+                                // Try to extract a number from the pack_size string
+                                const match = ui.item.pack_size.match(/(\d+)\s*tab/i);
+                                if (match) {
+                                    stripValue = match[1];
+                                } else {
+                                    // fallback: extract any number
+                                    const numMatch = ui.item.pack_size.match(/(\d+)/);
+                                    if (numMatch) stripValue = numMatch[1];
+                                }
+                            }
                             $.get(`/api/v2/check-inventory?productId=${productId}&orgId=${orgID}`, function (data, status) {
                                 console.log('got this data from inventory', data);
                                 if (data.data.length == 1) {
@@ -503,6 +518,7 @@
                                         $(this).removeClass('is-invalid');
                                     }
                                 });
+                                autofillConversionIfNeeded();
                             }, 0)
                         }
                     }).data('ui-autocomplete')._renderItem = function (ul, item) {
@@ -514,9 +530,33 @@
                                 .appendTo(ul);
                         }
                         else {
+                            console.log("Item.med_name is this:", item.med_name);
                             return $('<li>').append('<div>No matching products found</div>').appendTo(ul);
                         }
                     };
+                    // Helper function to autofill conversion
+                    function autofillConversionIfNeeded() {
+                        var primaryUnit = $("select[name='primary']").val();
+                        var secondaryUnit = $("select[name='secondary']").val();
+                        if (primaryUnit === "STP" && secondaryUnit === "TAB" && stripValue) {
+                            $("#conversion").val(stripValue);
+                            $("#primarypopulate").text("1 STP");
+                            $("#secondarypopulate").text("TAB");
+                        }
+                    }
+                    
+                    // Also check when user changes primary or secondary unit
+                    $("select[name='primary'], select[name='secondary']").on("change", function () {
+                        var primaryUnit = $("select[name='primary']").val();
+                        var secondaryUnit = $("select[name='secondary']").val();
+                    
+                        $("#primarypopulate").text(`1 ${primaryUnit}`);
+                        $("#secondarypopulate").text(`${secondaryUnit}`);
+                        $("#getprimaryunit").text(primaryUnit);
+                    
+                        // Autofill conversion if needed
+                        autofillConversionIfNeeded();
+                    });
 
                     //  Clear input fields on product name change
                     $("input[name='productname']").on('input', function () {

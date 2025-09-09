@@ -140,12 +140,12 @@ module.exports = {
   },
 
   // Register Organisation
-  insertpassword: (email,password, callBack) => {
+  insertpassword: (email, password, callBack) => {
     getPool().query(
       `insert into user_credentials(email,password) VALUES(?,?)`,
       [
         email,
-        password
+        password,
       ],
       (error, results) => {
         if (error) {
@@ -156,40 +156,53 @@ module.exports = {
       },
     );
   },
-
-  removeotp: (email ,callback) => {
-      getPool().query(
-        'DELETE FROM otps WHERE token = ?',
-        [email],
-        (error, results) => {
-          if (error) return callback(error);
-          return callback(null, results);
+  // Update user password
+  updatePassword: (email, hashedPassword, callBack) => {
+    getPool().query(
+      `UPDATE user_credentials SET password = ? WHERE email = ?`,
+      [hashedPassword, email],
+      (error, results) => {
+        if (error) {
+          console.error('Error updating password:', error);
+          return callBack(error);
         }
-      );
-    },
-// Verify user password
-verifyUserPassword: (email, password, callBack) => {
+        return callBack(null, results);
+      },
+    );
+  },
+
+  removeotp: (email, callback) => {
+    getPool().query(
+      'DELETE FROM otps WHERE token = ?',
+      [email],
+      (error, results) => {
+        if (error) return callback(error);
+        return callback(null, results);
+      },
+    );
+  },
+  // Verify user password
+  verifyUserPassword: (email, password, callBack) => {
   // First, get the user by email
-  getUserByEmail(email, async(err, results) => {
-    if (err) {
-      return callBack(err);
-    }
-    console.log({results})
-    if (results.length === 0) {
-      return callBack(null, { success: 0, message: 'Invalid email' });return callBack(null, { success: 0, message: 'Invalid email or password1' });
-    }
-    
-    const user = results[0];
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    // Compare the provided password with the stored hash
-    // bcrypt.compare(password, user.password, (bcryptErr, isMatch) => {
-    //   if (bcryptErr || !isMatch) {
-    //     return callBack(null, { success: 0, message: 'Invalid email or password2' });
-    //   }
-    console.log({password , pass1:user.password ,passwordMatch})
-    if(!passwordMatch){
-      return callBack(null, { success: 0, message: 'Incorrect Password.Please enter the correct password!' });    }
-      
+    getUserByEmail(email, async(err, results) => {
+      if (err) {
+        return callBack(err);
+      }
+      console.log({ results });
+      if (results.length === 0) {
+        return callBack(null, { success: 0, message: 'Invalid email' });return callBack(null, { success: 0, message: 'Invalid email or password1' });
+      }
+      const user = results[0];
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      // Compare the provided password with the stored hash
+      // bcrypt.compare(password, user.password, (bcryptErr, isMatch) => {
+      //   if (bcryptErr || !isMatch) {
+      //     return callBack(null, { success: 0, message: 'Invalid email or password2' });
+      //   }
+      console.log({ password, pass1: user.password, passwordMatch });
+      if (!passwordMatch) {
+        return callBack(null, { success: 0, message: 'Incorrect Password. Please enter the correct password!' });
+      }
       // Password matches, return user data
       return callBack(null, {
         success: 1,
@@ -197,13 +210,12 @@ verifyUserPassword: (email, password, callBack) => {
           org_id: user.org_id,
           org_name: user.org_name,
           email: user.email,
-          org_telephone:user.org_telephone
-        }
+          org_telephone: user.org_telephone,
+        },
       });
     });
   // });
-},
-
+  },
 
   // check email
   checkEmailExists: (email, callBack) => {
@@ -237,15 +249,15 @@ verifyUserPassword: (email, password, callBack) => {
   telephoneExistsInOrganization: (phone, callBack) => {
     const query = 'SELECT 1 FROM organisation WHERE org_telephone = ? LIMIT 1';
 
-  getPool().query(query, [phone], (error, results) => {
-    if (error) {
-      console.error('DB error:', error);
-      return callBack(error);
-    }
+    getPool().query(query, [phone], (error, results) => {
+      if (error) {
+        console.error('DB error:', error);
+        return callBack(error);
+      }
 
-    const exists = results.length > 0;
-        return callBack(null, exists);
-  });
+      const exists = results.length > 0;
+      return callBack(null, exists);
+    });
   },
 
 };

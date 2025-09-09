@@ -342,6 +342,8 @@
 
     <%- include('../partials/footercode.ejs') %>
       <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script>
 
         var customerData = [];// to push all the details of customer data in this array
@@ -595,6 +597,7 @@
 
             },
             select: function (event, ui) {
+              console.log("Selected Product Details:", ui.item); 
               setTimeout(function () {
                 productId = ui.item.product_id;
 
@@ -685,7 +688,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      ${data.data.map(item => {
+                      ${data.data.filter(item => item !== null && item.exp_date !== null && item.exp_date !== undefined).map(item => {
                   const expDate = new Date(item.exp_date);
                   const formattedExpDate = ((expDate.getMonth() + 1) + '').padStart(2, '0') + '/' + expDate.getFullYear();
                   return `

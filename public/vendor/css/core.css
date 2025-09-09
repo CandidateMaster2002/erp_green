@@ -147,7 +147,8 @@ h2,
 
 h3,
 .h3 {
-  font-size: calc(1.2875rem + 0.45vw)
+  /* font-size: calc(1.2875rem + 0.45vw) */
+  font-size: calc(1.123rem + 0.21vw);
 }
 
 @media(min-width: 1200px) {
@@ -28393,4 +28394,15 @@ a.bg-vimeo:focus {
 
 .footer.bg-lighter hr {
   border-color: rgba(105, 122, 141, .076604902)
+}
+
+.menu-item.active > .menu-link {
+  background-color: #f0f0ff; /* or your desired active background */
+  color: #4a4aff;            /* highlight text color */
+  font-weight: bold;         /* optional: to make it stand out */
+  border-radius: 5px;        /* optional: for rounded look */
+}
+
+.menu-item.active > .menu-link .menu-icon {
+  color: #4a4aff;            /* highlight icon color */
 }

@@ -1,7 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable max-len */
 /* eslint-disable camelcase */
-// Atharv Kurde
 
 const { createJwtToken } = require('../utils/token.util');
 require('dotenv').config();
@@ -341,10 +340,11 @@ exports.emailLogin = (req, res) => {
         redirect: `/register?email=${encodeURIComponent(email)}`
       });
     }
-    });
+   });
+};
 
 
-    exports.checkphone=(req,res) =>{
+exports.checkphone=(req,res) =>{
       const { phone } = req.body;
       telephoneExistsInOrganization(phone, (err, results) => {
         if (err) {
@@ -360,6 +360,6 @@ exports.emailLogin = (req, res) => {
           });
         }
     })
-    }
+    
 
-  }
+};
